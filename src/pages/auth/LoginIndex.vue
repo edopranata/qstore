@@ -12,6 +12,7 @@ const input = reactive({
   password: null,
   accept: false,
 })
+let errors = {}
 const onSubmit = async () => {
   const toPath = query.to || '/app'
   login(path, input).then(() => {
@@ -19,6 +20,7 @@ const onSubmit = async () => {
   })
 }
 const onReset = () => {
+  errors = {}
 }
 
 </script>
@@ -49,7 +51,7 @@ const onReset = () => {
               v-model="input.password"
               :rules="[
           val => val !== null && val !== '' || 'Please type your password',
-          val => val.length >= 8 || 'Password must greater than 8 character'
+          val => val.length > 5 || 'Password must greater than 6 character'
         ]"
               filled
               label="Password *"

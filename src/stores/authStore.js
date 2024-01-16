@@ -19,6 +19,31 @@ export const useAuthStore = defineStore('auth', {
   },
 
   actions: {
+    can(permissionName) {
+      let permissions = LocalStorage.has('permissions') ? LocalStorage.getItem('permissions') : []
+
+      // console.log(permissions)
+      if(permissionName.endsWith('*')){
+        let contains = permissions.filter(filtered => filtered.startsWith(permissionName.replace('*', '')))
+        return contains.length > 0
+      }else if (permissionName.endsWith(']')){
+        let first = permissionName.substring(0, permissionName.indexOf("["))
+        let only = permissionName.substring(
+          permissionName.indexOf("[") + 1,
+          permissionName.lastIndexOf("]")
+        );
+        let access = []
+        let split = only.replace(' ', '').split(',')
+        for (let i in split){
+          if(permissions.includes(first + split[i])){
+            access.push(first + split[i])
+          }
+        }
+        return access.length > 0
+      }else{
+        return permissions.includes(permissionName)
+      }
+    },
     isError(property) {
       return this.errors.hasOwnProperty(property)
     },
@@ -55,6 +80,7 @@ export const useAuthStore = defineStore('auth', {
         // set permissions to pinia and local storage
         // LocalStorage.set('permissions', permissions)
         this.permissions = permissions
+        LocalStorage.set('permissions', permissions)
 
         // set menu to pinia and local storage
         // LocalStorage.set('menu', menu)
@@ -63,23 +89,24 @@ export const useAuthStore = defineStore('auth', {
 
     },
     unsetAuthenticated() {
-        // const menu = data.menu
-        // const user = data.user
+      // const menu = data.menu
+      // const user = data.user
 
-        // set token to pinia and local storage
-        LocalStorage.remove('token')
+      // set token to pinia and local storage
+      LocalStorage.remove('token')
+      LocalStorage.remove('permissions')
 
-        // set user to pinia and local storage
-        // LocalStorage.set('user', user)
-        this.user = null
+      // set user to pinia and local storage
+      // LocalStorage.set('user', user)
+      this.user = null
 
-        // set permissions to pinia and local storage
-        // LocalStorage.set('permissions', permissions)
-        this.permissions = null
+      // set permissions to pinia and local storage
+      // LocalStorage.set('permissions', permissions)
+      this.permissions = null
 
-        // set menu to pinia and local storage
-        // LocalStorage.set('menu', menu)
-        usePage.menus = null
+      // set menu to pinia and local storage
+      // LocalStorage.set('menu', menu)
+      usePage.menus = null
 
     },
     async attempt(token) {
@@ -88,6 +115,7 @@ export const useAuthStore = defineStore('auth', {
         await this.setAuthenticated(response.data.data, token)
         return response;
       } catch (e) {
+        this.setErrors(e)
         await this.unsetAuthenticated()
         throw e
       }
