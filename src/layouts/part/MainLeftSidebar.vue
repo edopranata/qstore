@@ -1,12 +1,17 @@
 <script setup>
-import {useRoute} from "vue-router";
 import {usePageStore} from "stores/pageStore";
-import {ref} from "vue";
+import {onBeforeMount} from "vue";
+import {storeToRefs} from "pinia";
+import {LocalStorage} from "quasar";
 
-const {name} = useRoute()
-const {menus} = usePageStore()
+const {menus, setActive} = usePageStore()
+const page = usePageStore()
+const {activeMenu} =storeToRefs(usePageStore())
 
-const currentName = ref(String(name))
+onBeforeMount( async () => {
+  const active = LocalStorage.getItem('active') ?? ''
+  page.setActive(active)
+})
 </script>
 
 <template>
@@ -29,7 +34,7 @@ const currentName = ref(String(name))
         v-for="(menu, m) in menus"
         :key="m"
         :content-inset-level="1"
-        :default-opened="currentName.startsWith(menu.name)"
+        :default-opened="activeMenu.startsWith(menu.name)"
         :icon="menu.icon ?? 'double_arrow'"
         :label="menu.title"
         expand-separator
@@ -39,10 +44,10 @@ const currentName = ref(String(name))
             v-for="(child, c) in menu.children"
             :key="c"
             v-ripple
-            :active="currentName === child.name"
+            :active="activeMenu === child.name"
             :to="child.path"
             clickable
-            @click="currentName = child.name">
+            @click="setActive(child.name)">
             <q-item-section>
               {{ child.title }}
             </q-item-section>
