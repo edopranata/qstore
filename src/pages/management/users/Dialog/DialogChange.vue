@@ -3,7 +3,8 @@ import {useUsersStore} from "stores/management/users";
 import {useRoute} from "vue-router";
 
 const {path} = useRoute()
-const {dialog, form, onReset, table, submitChange} = useUsersStore()
+const {dialog, form, onReset, table, submitChange, errors} = useUsersStore()
+
 const onSubmit = async () => {
   await submitChange(path)
 }
@@ -19,26 +20,25 @@ const onSubmit = async () => {
 
       <q-form
         class="q-gutter-md"
-        @reset="onReset('change')"
+        @reset="onReset('password')"
         @submit="onSubmit"
       >
         <q-card-section class="q-pt-none">
           <q-input
-            readonly
             v-model="form.password.name"
             :rules="[ val => val && val.length > 3 || 'Nama lengkap minimal 3 huruf']"
             label="Nama Lengkap *"
             lazy-rules
+            readonly
           />
           <q-input
-            readonly
             v-model="form.password.username"
             :rules="[ val => val && val.length > 5 || 'Username minimal 6 huruf']"
             label="Username login *"
             lazy-rules
+            readonly
           />
           <q-input
-            readonly
             v-model="form.password.email"
             :rules="[
               (val) => !!val || 'E-mail wajib di isi',
@@ -46,18 +46,21 @@ const onSubmit = async () => {
             ]"
             label="Alamat E-Mail *"
             lazy-rules
+            readonly
           />
           <q-select
-            readonly
             v-model="form.password.role"
             :options="table.roles"
             :rules="[
             (val) => !!val || 'Pilih salah satu role untuk user',
           ]"
             clearable
-            label="Role User" />
+            label="Role User"
+            readonly/>
           <q-input
             v-model="form.password.password"
+            :error="!!errors.password"
+            :error-message="errors.password"
             :rules="[ val => val && val.length > 5 || 'Password minimal 6 huruf']"
             label="Kata sandi *"
             lazy-rules

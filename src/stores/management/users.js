@@ -86,11 +86,17 @@ export const useUsersStore = defineStore('users', {
         this.dialog[dialog] = !this.dialog[dialog]
       }
     },
+    closeAllDialog(){
+      for (const property in this.dialog) {
+        this.dialog[property] = false
+      }
+    },
     closeDialog(dialog){
       if(this.dialog.hasOwnProperty(dialog)){
         this.dialog[dialog] = !this.dialog[dialog]
       }
     },
+
     onReset(form){
       if(this.form.hasOwnProperty(form)){
         if(form === 'delete'){
@@ -102,8 +108,10 @@ export const useUsersStore = defineStore('users', {
           }
         }
       }
+      this.errors = {}
     },
     setError(e) {
+
       if (e.response.status === 422) {
         let error = e.response.data.errors;
         for (let property in error) {
@@ -111,10 +119,11 @@ export const useUsersStore = defineStore('users', {
         }
       } else {
         this.errors = {};
+        this.closeAllDialog()
         Notify.create({
           position: "top-right",
           type: 'negative',
-          message: e.response.statusText
+          message: e.message ?? e.response.statusText
         })
         if(e.response.status === 401){
           LocalStorage.remove('token')
@@ -199,7 +208,6 @@ export const useUsersStore = defineStore('users', {
           this.table.filter = String(Date.now())
         }).catch(e => {
           this.table.selected = []
-          this.closeDialog('edit')
           this.setError(e);
         }).finally(() => this.table.loading = false);
     },
@@ -217,7 +225,6 @@ export const useUsersStore = defineStore('users', {
           })
         }).catch(e => {
           this.table.selected = []
-          this.closeDialog('password')
           this.setError(e);
         }).finally(() => this.table.loading = false);
     },
@@ -236,7 +243,6 @@ export const useUsersStore = defineStore('users', {
           this.table.filter = String(Date.now())
         }).catch(e => {
           this.table.selected = []
-          this.closeDialog('create')
           this.setError(e);
         }).finally(() => this.table.loading = false);
     },
@@ -244,7 +250,7 @@ export const useUsersStore = defineStore('users', {
       this.table.loading = true
       const params = this.form.delete
       await api.delete(path + "/" + this.form.delete.user_id[0], {params})
-        .then(response => {
+        .then(() => {
           this.table.selected = []
           this.closeDialog('delete')
           Notify.create({
@@ -255,7 +261,6 @@ export const useUsersStore = defineStore('users', {
           this.table.filter = String(Date.now())
         }).catch(e => {
           this.table.selected = []
-          this.closeDialog('delete')
           this.setError(e);
         }).finally(() => this.table.loading = true);
     }
