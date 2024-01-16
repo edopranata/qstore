@@ -24,7 +24,7 @@ export default [
       // {
       //   path: 'roles/:id/view',
       //   name: 'app.management.roles.viewRole',
-      //   component: () => import('@/views/app/management/roles/View.vue'),
+      //   component: () => import('pages/management/roles/RolesView.vue'),
       //   meta: {
       //     auth: true,
       //   },
@@ -38,14 +38,16 @@ export default [
           auth: true,
         },
       },
-      // {
-      //   path: 'permissions/:id/view',
-      //   name: 'app.management.permissions.viewPermission',
-      //   component: () => import('@/views/app/management/permissions/View.vue'),
-      //   meta: {
-      //     auth: true,
-      //   },
-      // },
+      {
+        path: 'permissions/:id/view',
+        name: 'app.management.permissions.viewPermission',
+        component: () => import('pages/management/permissions/PermissionView.vue'),
+        meta: {
+          middleware: {
+            auth: true,
+          },
+        },
+      },
     ]
   },
 ]
