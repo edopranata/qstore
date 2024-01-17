@@ -115,7 +115,6 @@ export const useAuthStore = defineStore('auth', {
         await this.setAuthenticated(response.data.data, token)
         return response;
       } catch (e) {
-        this.setErrors(e)
         await this.unsetAuthenticated()
         throw e
       }

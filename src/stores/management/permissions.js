@@ -130,7 +130,7 @@ export const usePermissionsStore = defineStore('permissions', {
       try {
         return await api.get(path)
       } catch (e) {
-        throw e
+        this.setError(e)
       }
     },
     async getPermissionTree(path) {
@@ -161,7 +161,7 @@ export const usePermissionsStore = defineStore('permissions', {
         const response = await api.get(path, {params})
         return response.data
       } catch (e) {
-        throw e
+        this.setError(e)
       }
     },
 
@@ -230,7 +230,7 @@ export const usePermissionsStore = defineStore('permissions', {
         const response = await api.post(path, params)
         return response.data
       } catch (e) {
-        throw e
+        this.setError(e)
       }
     },
 
