@@ -31,10 +31,10 @@ onBeforeMount(async () => {
     <q-list bordered class="rounded-borders">
       <q-item
         v-ripple
-        clickable
         :active="activeMenu === 'app.index'"
-        @click="setActive('app.index')"
-        to="/app">
+        clickable
+        to="/app"
+        @click="setActive('app.index')">
         <q-item-section avatar>
           <q-icon name="home"/>
         </q-item-section>
@@ -42,32 +42,37 @@ onBeforeMount(async () => {
         <q-item-section>Dashboard</q-item-section>
       </q-item>
 
-      <q-expansion-item
+      <template
         v-for="(menu, m) in menus"
-        :key="m"
-        :content-inset-level="1"
-        :default-opened="activeMenu.startsWith(menu.name)"
-        :icon="menu.icon ?? 'check'"
-        :label="menu.title"
-        expand-separator
-      >
-        <q-list v-if="menu.children.length > 0" padding>
-          <q-item
-            v-ripple
-            clickable
-            v-for="(child, c) in menu.children"
-            :key="c"
-            :active="activeMenu === child.name"
-            :to="child.path"
-            @click="setActive(child.name)">
-            <q-item-section>
-              {{ child.title }}
-            </q-item-section>
-          </q-item>
+        :key="m">
 
-        </q-list>
-      </q-expansion-item>
 
+        <q-expansion-item
+          v-if="menu.children.length > 0"
+
+          :content-inset-level="1"
+          :default-opened="activeMenu.startsWith(menu.name)"
+          :icon="menu.icon ?? 'check'"
+          :label="menu.title"
+          expand-separator
+        >
+          <q-list v-if="menu.children.length > 0" padding>
+            <q-item
+              v-for="(child, c) in menu.children"
+              :key="c"
+              v-ripple
+              :active="activeMenu === child.name"
+              :to="child.path"
+              clickable
+              @click="setActive(child.name)">
+              <q-item-section>
+                {{ child.title }}
+              </q-item-section>
+            </q-item>
+
+          </q-list>
+        </q-expansion-item>
+      </template>
     </q-list>
   </q-card>
 
