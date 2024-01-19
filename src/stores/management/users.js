@@ -131,6 +131,7 @@ export const useUsersStore = defineStore('users', {
           this.router.push({name:'unauthorized'})
         }
       }
+
     },
     async getUsersDataFromApi(path, startRow, count, filter, sortBy, descending) {
       const data = {
@@ -262,7 +263,7 @@ export const useUsersStore = defineStore('users', {
         }).catch(e => {
           this.table.selected = []
           this.setError(e);
-        }).finally(() => this.table.loading = true);
+        }).finally(() => this.table.loading = false);
     }
   }
 })
