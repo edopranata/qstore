@@ -6,9 +6,9 @@ export default [
     redirect: {name: 'app'},
     children: [
       {
-        path: 'atm',
-        name: 'app.masterData.atm.index',
-        component: () => import('pages/masterData/atm/AtmIndex.vue'),
+        path: 'cars',
+        name: 'app.masterData.cars.index',
+        component: () => import('pages/app/masterData/car/CarIndex.vue'),
         meta: {
           auth: true,
         },
