@@ -1,7 +1,7 @@
 <script setup>
 import {usePermissionsStore} from "stores/management/permissions";
 import {useRoute} from "vue-router";
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 
 const {table} = usePermissionsStore()
 const permission = usePermissionsStore()
@@ -9,13 +9,28 @@ const {path} = useRoute();
 const tableRef = ref()
 const tableRefRoles = ref()
 const tableRefUsers = ref()
+
+const roles = ref(table.users.roles)
+
 onMounted(async () => {
   tableRef.value.requestServerInteraction()
   tableRefRoles.value.requestServerInteraction()
   tableRefUsers.value.requestServerInteraction()
-
 })
 
+watch(table.users.search, () => {
+  table.users.filter = String(Date.now())
+}, {
+  deep: true,
+  immediate: true
+})
+
+const filterRole = (val, update) => {
+  update(() => {
+    const needle = val.toLowerCase()
+    roles.value = table.users.roles.filter(v => v.toLowerCase().indexOf(needle) > -1)
+  })
+}
 const onRequest = async () => {
   await permission.viewPermission(path)
 }
@@ -73,6 +88,11 @@ const onRequestRolesHavePermission = async (props) => {
                 row-key="id"
                 @request="onRequestRolesHavePermission"
               >
+                <template v-slot:body-cell-no="props">
+                  <q-td :props="props">
+                    {{ props.rowIndex + 1 }}
+                  </q-td>
+                </template>
               </q-table>
             </q-card-section>
           </q-card>
@@ -88,6 +108,7 @@ const onRequestRolesHavePermission = async (props) => {
                 :columns="table.users.headers ?? []"
                 :loading="table.users.loading"
                 :rows="table.users.data ?? []"
+                :filter="table.users.filter"
                 binary-state-sort
                 bordered
                 flat
@@ -95,6 +116,52 @@ const onRequestRolesHavePermission = async (props) => {
                 separator="vertical"
                 @request="onRequestUsersHavePermission"
               >
+                <template v-slot:top-row>
+                  <q-tr>
+                    <q-th></q-th>
+                    <q-th>
+                      <q-input
+                        v-model="table.users.search.name"
+                        :loading="table.users.loading"
+                        clearable
+                        debounce="500"
+                        filled
+                        label="Search Name"/>
+                    </q-th>
+                    <q-th>
+                      <q-input
+                        v-model="table.users.search.username"
+                        :loading="table.users.loading"
+                        clearable
+                        debounce="500"
+                        filled
+                        label="Search Username"/>
+                    </q-th>
+                    <q-th>
+                      <q-input
+                        v-model="table.users.search.email"
+                        :loading="table.users.loading"
+                        clearable
+                        debounce="500"
+                        filled
+                        label="Search Email"/>
+                    </q-th>
+                    <q-th>
+                      <q-select
+                        v-model="table.users.search.role"
+                        :loading="table.users.loading"
+                        :options="roles"
+                        clearable
+                        filled
+                        use-input
+                        hide-selected
+                        fill-input
+                        input-debounce="0"
+                        @filter="filterRole"
+                        label="Roles"/>
+                    </q-th>
+                  </q-tr>
+                </template>
                 <template v-slot:body-cell-no="props">
                   <q-td :props="props">
                     {{ props.rowIndex + 1 }}

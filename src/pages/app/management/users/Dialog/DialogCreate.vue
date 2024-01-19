@@ -15,7 +15,7 @@ const onSubmit = async () => {
   <q-dialog v-model="dialog.create" persistent transition-hide="scale" transition-show="scale">
     <q-card style="width: 600px;">
       <q-card-section>
-        <div class="text-h6">Ubah Password User</div>
+        <div class="text-h6">Create new User</div>
       </q-card-section>
 
       <q-form

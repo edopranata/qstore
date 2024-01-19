@@ -1,46 +1,33 @@
-import {defineStore} from 'pinia'
-import {api} from "boot/axios";
+import { defineStore } from 'pinia'
 import {reactive} from "vue";
-import {Notify, LocalStorage} from "quasar";
+import {api} from "boot/axios";
+import {LocalStorage, Notify} from "quasar";
 
-export const useUsersStore = defineStore('users', {
+export const useRolesStore = defineStore('roles', {
   state: () => ({
     dialog: {
       create: false,
       edit: false,
       delete: false,
-      password: false,
+      update: false,
     },
     form: {
       create: {
         name: '',
-        username: '',
-        email: '',
-        role: '',
-        password: '',
-        password_confirmation: ''
-      },
-      password: {
-        id: '',
-        name: '',
-        username: '',
-        email: '',
-        role: '',
-        password: '',
-        password_confirmation: ''
       },
       edit: {
         id: '',
-        username: '',
-        email: '',
-        role: '',
+        name: '',
       },
       delete: {
-        user_id: []
+        roles_id: []
       },
       delete_data: [],
     },
     table: {
+      search: {
+        name: ''
+      },
       pagination: {
         sortBy: '',
         descending: false,
@@ -51,33 +38,30 @@ export const useUsersStore = defineStore('users', {
       from: 0,
       selected: [],
       filter: '',
-      search: {
-        name: '',
-        username: '',
-        email: '',
-        role: '',
-      },
       loading: false,
       headers: reactive([
-        {name: "no", label: "No", field: "id", sortable: false, align: 'left'},
+        {name: "id", label: "No", field: "id", sortable: true, align: 'left'},
+        {name: "action", label: "Action", sortable: false, align: 'left'},
         {name: "name", label: "Name", field: "name", sortable: true, align: 'left'},
-        {name: "username", label: "Username", field: "username", sortable: true, align: 'left'},
-        {name: "email", label: "Email", field: "email", sortable: true, align: 'left'},
-        {name: "role", label: "Role User", field: row => row.roles.length > 0 ? row.roles[0] : '', sortable: false, align: 'left'},
+        {name: "permissions_count", label: "Permission Count", field: "permissions_count", sortable: false, align: 'left'},
+        {name: "users_count", label: "User Count", field: "users_count", sortable: false, align: 'left'},
         {name: "created_at", label: "Created At", field: "created_at", sortable: true, align: 'left'},
       ]),
       data: [],
       roles: [],
     },
+    view:{
+      all: {},
+      active: [],
+      selected: null,
+    },
     errors: {},
   }),
 
   getters: {
-    getSelected() {
-      let selected = this.table.selected
-      let more = selected.length > 1 ? ` and ${selected.length - 1} more` : ''
-      return selected.length > 0 ? selected[0].name + more : 'No selected data'
-    },
+    doubleCount (state) {
+      return state.counter * 2
+    }
   },
 
   actions: {
@@ -100,7 +84,7 @@ export const useUsersStore = defineStore('users', {
     onReset(form){
       if(this.form.hasOwnProperty(form)){
         if(form === 'delete'){
-          this.form.delete.user_id = []
+          this.form.delete.roles_id = []
           this.form.delete_data = []
         }else{
           for (const property in this.form[form]) {
@@ -111,7 +95,6 @@ export const useUsersStore = defineStore('users', {
       this.errors = {}
     },
     setError(e) {
-
       if (e.response.status === 422) {
         let error = e.response.data.errors;
         for (let property in error) {
@@ -132,7 +115,23 @@ export const useUsersStore = defineStore('users', {
         }
       }
     },
-    async getUsersDataFromApi(path, startRow, count, filter, sortBy, descending) {
+    async loadPermissionList(path) {
+      this.table.loading = true
+      await api.get(path)
+        .then(response => {
+          this.view.selected = response.data?.data.role;
+          this.view.all = response.data?.data.all;
+          this.view.active = response.data?.data.active;
+
+        })
+        .catch(e => {
+          this.view.selected = {}
+          this.view.all = {}
+          this.view.active = []
+          this.setError(e);
+        }).finally(() => this.table.loading = false);
+    },
+    async getRolesDataFromApi(path, startRow, count, filter, sortBy, descending) {
       const data = {
         page: startRow,
         limit: count,
@@ -148,9 +147,7 @@ export const useUsersStore = defineStore('users', {
       }
       // search
       data.name = this.table.search.name ?? ''
-      data.username = this.table.search.username ?? ''
-      data.email = this.table.search.email ?? ''
-      data.role = this.table.search.role ?? ''
+
       try {
         const params = new URLSearchParams(data);
         const response = await api.get(path, {params})
@@ -160,7 +157,7 @@ export const useUsersStore = defineStore('users', {
       }
     },
 
-    async getUsersData (path, props) {
+    async getRolesData (path, props) {
       const {page, rowsPerPage, sortBy, descending} = props.pagination
       const filter = props.filter
 
@@ -174,11 +171,11 @@ export const useUsersStore = defineStore('users', {
 
       // calculate starting row of data
       // fetch data from "server"
-      const returnedData = await this.getUsersDataFromApi(path, page, fetchCount, filter, sortBy, descending)
+      const returnedData = await this.getRolesDataFromApi(path, page, fetchCount, filter, sortBy, descending)
 
       // clear out existing data and add new
       this.table.data = returnedData.data
-      this.table.roles = returnedData.roles
+      // this.table.roles = returnedData.roles
 
       // update only rowsNumber = total rows
       this.table.pagination.rowsNumber = returnedData.meta.total
@@ -193,41 +190,7 @@ export const useUsersStore = defineStore('users', {
       this.table.loading = false
       return true
     },
-    async submitEdit(path) {
-      this.table.loading = true
-      let params = this.form.edit;
-      await api.patch(path + "/" + this.form.edit.id, params)
-        .then(() => {
-          this.table.selected = []
-          this.closeDialog('edit')
-          Notify.create({
-            position: "top",
-            type: 'positive',
-            message: `user update success`
-          })
-          this.table.filter = String(Date.now())
-        }).catch(e => {
-          this.table.selected = []
-          this.setError(e);
-        }).finally(() => this.table.loading = false);
-    },
 
-    async submitChange(path){
-      let params = this.form.password;
-      await api.post(path + "/" + this.form.password.id, params)
-        .then(() => {
-          this.table.selected = []
-          this.closeDialog('password')
-          Notify.create({
-            position: "top",
-            type: 'positive',
-            message: `Change password success`
-          })
-        }).catch(e => {
-          this.table.selected = []
-          this.setError(e);
-        }).finally(() => this.table.loading = false);
-    },
     async submitCreate(path) {
       this.table.loading = true
       let params = this.form.create;
@@ -238,7 +201,25 @@ export const useUsersStore = defineStore('users', {
           Notify.create({
             position: "top",
             type: 'positive',
-            message: `User created`
+            message: `Role created`
+          })
+          this.table.filter = String(Date.now())
+        }).catch(e => {
+          this.table.selected = []
+          this.setError(e);
+        }).finally(() => this.table.loading = false);
+    },
+    async submitEdit(path) {
+      this.table.loading = true
+      let params = this.form.edit;
+      await api.patch(path + "/" + this.form.edit.id, params)
+        .then(() => {
+          this.table.selected = []
+          this.closeDialog('edit')
+          Notify.create({
+            position: "top",
+            type: 'positive',
+            message: `Role update success`
           })
           this.table.filter = String(Date.now())
         }).catch(e => {
@@ -249,20 +230,47 @@ export const useUsersStore = defineStore('users', {
     async submitDelete(path = '/'){
       this.table.loading = true
       const params = this.form.delete
-      await api.delete(path + "/" + this.form.delete.user_id[0], {params})
+      await api.delete(path + "/" + this.form.delete.roles_id[0], {params})
         .then(() => {
           this.table.selected = []
           this.closeDialog('delete')
           Notify.create({
             position: "top",
             type: 'positive',
-            message: this.form.delete.user_id.length > 1 ? `${this.form.delete.user_id.length} users delete` : `${this.form.delete.user_id.length} user delete`
+            message: this.form.delete.roles_id.length > 1 ? `${this.form.delete.roles_id.length} roles delete` : `${this.form.delete.roles_id.length} role delete`
           })
           this.table.filter = String(Date.now())
         }).catch(e => {
           this.table.selected = []
           this.setError(e);
-        }).finally(() => this.table.loading = true);
-    }
+        }).finally(() => this.table.loading = false);
+    },
+    async addPermissionsToRole(path) {
+      let params = {
+        permissions: this.view.active
+      }
+      this.errors = {}
+      this.table.loading = true
+      await api.patch(path, params)
+        .then(response => {
+          this.view.selected = response.data?.data.role;
+          this.view.all = response.data?.data.all;
+          this.view.active = response.data?.data.active;
+          Notify.create({
+            position: "top",
+            type: 'positive',
+            message: `Permission added to role ${this.view.selected.name}`
+          })
+          this.closeAllDialog()
+        })
+        .catch(e => {
+          if(e.response.status !== 422){
+            this.view.selected = {}
+            this.view.all = {}
+            this.view.active = []
+          }
+          this.setError(e);
+        }).finally( () => this.table.loading = false )
+    },
   }
 })

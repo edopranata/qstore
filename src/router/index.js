@@ -1,5 +1,5 @@
-import { route } from 'quasar/wrappers'
-import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router'
+import {route} from 'quasar/wrappers'
+import {createMemoryHistory, createRouter, createWebHashHistory, createWebHistory} from 'vue-router'
 import routes from './routes'
 import {LocalStorage} from "quasar";
 
@@ -19,7 +19,7 @@ export default route(function (/* { store, ssrContext } */) {
     : (process.env.VUE_ROUTER_MODE === 'history' ? createWebHistory : createWebHashHistory)
 
   const Router = createRouter({
-    scrollBehavior: () => ({ left: 0, top: 0 }),
+    scrollBehavior: () => ({left: 0, top: 0}),
     routes,
 
     // Leave this as is and make changes in quasar.conf.js instead!
@@ -32,9 +32,15 @@ export default route(function (/* { store, ssrContext } */) {
     if (to.matched.some(record => record.meta.auth) && !authenticated) {
       next({
         name: 'auth.login',
-        query: { to: to.path }
+        query: {to: to.path}
       })
     } else next()
   });
+  Router.afterEach((to, from) => {
+    const toDepth = to.path.split("/").length;
+    const fromDepth = from.path.split("/").length;
+    to.meta.transition = toDepth < fromDepth ? "slide-right" : "slide-left";
+  })
+
   return Router
 })

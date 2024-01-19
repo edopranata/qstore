@@ -17,6 +17,12 @@ export const usePermissionsStore = defineStore('permissions', {
           rowsPerPage: 10,
           rowsNumber: 0
         },
+        search: {
+          name: '',
+          username: '',
+          email: '',
+          role: '',
+        },
         headers: reactive([
           {name: "no", label: "No", field: "id", sortable: false, align: 'left'},
           {name: "name", label: "Name", field: 'name', sortable: true, align: 'left'},
@@ -24,6 +30,7 @@ export const usePermissionsStore = defineStore('permissions', {
           {name: "email", label: "E-Mail", field: "email", sortable: true, align: 'left'},
           {name: "role", label: "Role", field: row => row.roles.length > 0 ? row.roles[0] : '', sortable: true, align: 'left'},
         ]),
+        roles: [],
         data: [],
         filter: '',
         loading: false,
@@ -37,7 +44,7 @@ export const usePermissionsStore = defineStore('permissions', {
           rowsNumber: 0
         },
         headers: reactive([
-          {name: "id", label: "No", field: "id", sortable: false, align: 'left'},
+          {name: "no", label: "No", field: "id", sortable: false, align: 'left'},
           {name: "name", label: "Name", field: "name", sortable: true, align: 'left'},
         ]),
         data: [],
@@ -94,7 +101,7 @@ export const usePermissionsStore = defineStore('permissions', {
       } else {
         this.errors = {};
         Notify.create({
-          position: "top-right",
+          position: "top",
           type: 'negative',
           message: e.message ?? e.response.statusText
         })
@@ -110,7 +117,7 @@ export const usePermissionsStore = defineStore('permissions', {
       await api.post(path)
         .then(response => {
           Notify.create({
-            position: "top-right",
+            position: "top",
             type: 'positive',
             message: "Synchronize permissions success"
           })
@@ -225,6 +232,13 @@ export const usePermissionsStore = defineStore('permissions', {
         })
       }
 
+      if(type === 'users'){
+        data.name = this.table.users.search.name ?? ''
+        data.username = this.table.users.search.username ?? ''
+        data.email = this.table.users.search.email ?? ''
+        data.role = this.table.users.search.role ?? ''
+      }
+
       try {
         const params = new URLSearchParams(data);
         const response = await api.post(path, params)
@@ -253,6 +267,9 @@ export const usePermissionsStore = defineStore('permissions', {
       // clear out existing data and add new
       this.table[type].data = returnedData.data
 
+      if(type === 'users'){
+        this.table[type].roles = returnedData.roles
+      }
 
       // update only rowsNumber = total rows
       this.table[type].pagination.rowsNumber = returnedData.meta.total
@@ -262,6 +279,7 @@ export const usePermissionsStore = defineStore('permissions', {
       this.table[type].pagination.rowsPerPage = rowsPerPage
       this.table[type].pagination.sortBy = sortBy
       this.table[type].pagination.descending = descending
+
 
       // ...and turn of loading indicator
       this.table[type].loading = false

@@ -14,7 +14,12 @@ export const usePageStore = defineStore('page', {
       LocalStorage.set('active', routeName)
       this.activeMenu = routeName
     },
+    unsetActive(){
+      LocalStorage.set('active', '')
+      this.activeMenu = ''
+    },
     toggleLeftDrawer() {
+      LocalStorage.set('leftDrawer', !this.leftDrawer)
       this.leftDrawer = !this.leftDrawer
     },
     toggleRightDrawer() {

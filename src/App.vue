@@ -10,11 +10,10 @@ export default defineComponent({
   name: 'App',
   beforeCreate() {
     const token = LocalStorage.getItem('token')
-    if(token){
+
+    api.defaults.headers.common.Authorization = ''
+    if(token)
       api.defaults.headers.common.Authorization = 'Bearer ' + token
-    }else{
-      api.defaults.headers.common.Authorization = ''
-    }
   }
 })
 </script>

@@ -3,14 +3,24 @@ import {usePageStore} from "stores/pageStore";
 import {onBeforeMount} from "vue";
 import {storeToRefs} from "pinia";
 import {LocalStorage} from "quasar";
+import {useRoute} from "vue-router";
 
+const {name: currentName} = useRoute()
 const {menus, setActive} = usePageStore()
 const page = usePageStore()
-const {activeMenu} =storeToRefs(usePageStore())
+const {activeMenu} = storeToRefs(usePageStore())
 
-onBeforeMount( async () => {
-  const active = LocalStorage.getItem('active') ?? ''
-  page.setActive(active)
+onBeforeMount(async () => {
+  let current = currentName.split('.')
+  if (current.length === 4) {
+    current.pop()
+    current = current.join('.') + '.index'
+  } else {
+    current = 'app.index'
+  }
+
+  page.leftDrawer = LocalStorage.getItem('leftDrawer') ?? false
+  page.setActive(current)
 })
 </script>
 
@@ -22,6 +32,8 @@ onBeforeMount( async () => {
       <q-item
         v-ripple
         clickable
+        :active="activeMenu === 'app.index'"
+        @click="setActive('app.index')"
         to="/app">
         <q-item-section avatar>
           <q-icon name="home"/>
@@ -35,18 +47,18 @@ onBeforeMount( async () => {
         :key="m"
         :content-inset-level="1"
         :default-opened="activeMenu.startsWith(menu.name)"
-        :icon="menu.icon ?? 'double_arrow'"
+        :icon="menu.icon ?? 'check'"
         :label="menu.title"
         expand-separator
       >
         <q-list v-if="menu.children.length > 0" padding>
           <q-item
+            v-ripple
+            clickable
             v-for="(child, c) in menu.children"
             :key="c"
-            v-ripple
             :active="activeMenu === child.name"
             :to="child.path"
-            clickable
             @click="setActive(child.name)">
             <q-item-section>
               {{ child.title }}

@@ -1,4 +1,3 @@
-import {LocalStorage} from "quasar";
 import authRoute from "src/router/partials/authRoute";
 import managementRoute from "src/router/partials/managementRoute";
 import settingsRoute from "src/router/partials/settingsRoute";
@@ -22,7 +21,7 @@ const routes = [
     children: [
       {
         path: '',
-        name: 'app',
+        name: 'app.index',
         component: () => import('pages/app/AppIndex.vue'),
         meta: {
           auth: true

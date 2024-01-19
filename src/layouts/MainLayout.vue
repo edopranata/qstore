@@ -4,7 +4,7 @@
       <MainHeader />
     </q-header>
 
-    <q-drawer v-model="leftDrawer" side="left" bordered>
+    <q-drawer v-model="leftDrawer" side="left" bordered class="glossy">
       <MainLeftSidebar />
     </q-drawer>
 
@@ -13,7 +13,11 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view v-slot="{ Component, route }">
+        <transition mode="out-in" name="slide-x">
+          <component :is="Component" :key="route.name"/>
+        </transition>
+      </router-view>
     </q-page-container>
 
     <q-footer elevated class="bg-grey-8 text-white">
