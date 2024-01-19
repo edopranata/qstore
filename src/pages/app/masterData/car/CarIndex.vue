@@ -5,6 +5,8 @@ import {onMounted, ref, watch} from 'vue'
 import {useRoute} from "vue-router";
 import {storeToRefs} from "pinia";
 import DialogDelete from "pages/app/masterData/car/dialog/DialogDelete.vue";
+import DialogCreate from "pages/app/masterData/car/dialog/DialogCreate.vue";
+import DialogEdit from "pages/app/masterData/car/dialog/DialogEdit.vue";
 
 const {table, openDialog, dialog, form, deleted} = useCarsStore()
 const cars = useCarsStore()
@@ -37,13 +39,10 @@ watch(table, (selected_item) => {
       form.description = selected_item.selected[0].description
       form.year = selected_item.selected[0].year
     } else {
-      form.id = ''
-      form.name = ''
-      form.no_pol = ''
-      form.description = ''
-      form.year = ''
+      cars.onReset()
     }
   }else{
+    cars.onReset()
     deleted.car_id = []
     deleted.data = []
   }
@@ -60,6 +59,8 @@ onMounted(() => {
 <template>
   <q-page padding>
     <DialogDelete />
+    <DialogCreate />
+    <DialogEdit />
     <q-card>
       <q-table
         ref="tableRef"

@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia'
-import {reactive} from "vue";
+import {reactive, ref} from "vue";
 import {LocalStorage, Notify} from "quasar";
 import {api} from "boot/axios";
 
@@ -30,7 +30,7 @@ export const useCarsStore = defineStore('cars', {
         rowsNumber: 0
       },
       from: 0,
-      selected: [],
+      selected: ref([]),
       filter: '',
       search: {
         name: '',
@@ -69,19 +69,19 @@ export const useCarsStore = defineStore('cars', {
       for (const property in this.dialog) {
         this.dialog[property] = false
       }
+
     },
-    onReset(form) {
+    onReset(form = null) {
       if (this.form.hasOwnProperty(form)) {
         if (form === 'delete') {
           this.deleted.car_id = []
           this.deleted.data = []
-        } else {
-          for (const property in this.form[form]) {
-            this.form[property] = ''
-          }
+        }
+      } else {
+        for (const property in this.form) {
+          this.form[property] = ''
         }
       }
-      this.errors = {}
     },
     setError(e) {
       if (e.response.status === 422) {
@@ -164,7 +164,35 @@ export const useCarsStore = defineStore('cars', {
       this.table.loading = false
       return true
     },
-    async submitDelete(path = '/'){
+
+    async submitForm(path) {
+      this.table.loading = true
+      const params = this.form;
+      if (this.dialog.create) {
+        delete params.id
+      }
+      const url = params.id ? `${path}/${params.id}` : path
+      await api({
+        method: this.form.id ? 'patch' : 'post',
+        url: url,
+        data: params
+      }).then(() => {
+        this.table.selected = []
+        this.closeAllDialog()
+        Notify.create({
+          position: "top",
+          type: 'positive',
+          message: params.hasOwnProperty('id') ? 'Data mobil berhasil di update' : 'Data mobil berhasil disimpan'
+        })
+        this.table.filter = String(Date.now())
+        this.onReset()
+      }).catch(e => {
+        this.table.selected = []
+        this.setError(e);
+      }).finally(() => this.table.loading = false);
+    },
+
+    async submitDelete(path = '/') {
       this.table.loading = true
       const params = this.deleted
       await api.delete(path + "/" + this.deleted.car_id[0], {params})
@@ -178,7 +206,7 @@ export const useCarsStore = defineStore('cars', {
           this.table.filter = String(Date.now())
           this.table.selected = []
           this.closeDialog('delete')
-
+          this.onReset()
         }).catch(e => {
           this.table.selected = []
           this.setError(e);
