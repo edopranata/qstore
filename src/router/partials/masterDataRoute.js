@@ -21,6 +21,14 @@ export default [
           auth: true,
         },
       },
+      {
+        path: 'customers',
+        name: 'app.masterData.customers.index',
+        component: () => import('pages/app/masterData/customer/CustomerIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
 
     ]
   },
