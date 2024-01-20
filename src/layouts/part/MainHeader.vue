@@ -1,5 +1,6 @@
 <script setup>
 import {usePageStore} from "stores/pageStore";
+
 const {toggleLeftDrawer, toggleRightDrawer} = usePageStore()
 </script>
 
@@ -14,7 +15,7 @@ const {toggleLeftDrawer, toggleRightDrawer} = usePageStore()
       Title
     </q-toolbar-title>
 
-    <q-btn dense flat round icon="menu" @click="toggleRightDrawer" />
+    <q-btn dense flat icon="manage_accounts" round @click="toggleRightDrawer"/>
   </q-toolbar>
 </template>
 

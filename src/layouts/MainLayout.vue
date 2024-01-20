@@ -4,7 +4,7 @@
       <MainHeader />
     </q-header>
 
-    <q-drawer v-model="leftDrawer" side="left" bordered class="glossy">
+    <q-drawer v-model="leftDrawer" bordered side="left">
       <MainLeftSidebar />
     </q-drawer>
 
@@ -29,13 +29,11 @@
 
 <script setup>
 import {usePageStore} from "stores/pageStore";
-
-const {leftDrawer, rightDrawer} = storeToRefs(usePageStore())
 import {storeToRefs} from "pinia";
 import MainFooter from "layouts/part/MainFooter.vue";
 import MainHeader from "layouts/part/MainHeader.vue";
 import MainLeftSidebar from "layouts/part/MainLeftSidebar.vue";
 import MainRightSidebar from "layouts/part/MainRightSidebar.vue";
 
-
+const {leftDrawer, rightDrawer} = storeToRefs(usePageStore())
 </script>
