@@ -89,7 +89,7 @@ onMounted(() => {
         <template v-slot:top>
           <q-toolbar class="text-primary">
             <q-toolbar-title>
-              {{ selected }}
+              Users Data
             </q-toolbar-title>
             <div v-if="can('app.management.users.[createUser,updateUser,deleteUser,resetPassword]')"
                  class="tw-space-x-2">

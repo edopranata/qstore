@@ -84,7 +84,7 @@ onMounted(() => {
         <template v-slot:top>
           <q-toolbar class="text-primary">
             <q-toolbar-title>
-              {{ selected }}
+              Cars Data
             </q-toolbar-title>
             <div v-if="can('app.masterData.cars.[createCar,updateCar,deleteCar]')"
                  class="tw-space-x-2">
