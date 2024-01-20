@@ -44,7 +44,7 @@ const onRequestRolesHavePermission = async (props) => {
 </script>
 
 <template>
-  <q-page padding>
+  <q-page class="tw-space-y-4" padding>
     <q-card bordered class="my-card">
       <q-card-section>
         <div class="text-h6">Permission</div>
@@ -68,112 +68,106 @@ const onRequestRolesHavePermission = async (props) => {
           </q-td>
         </template>
       </q-table>
-      <q-card-section>
-        <div class="tw-flex tw-flex-col justify-between md:tw-space-x-4 md:tw-flex-row">
-          <q-card class="tw-flex-none" flat>
-            <q-card-section>
-              <div class="text-h6">List Role</div>
-            </q-card-section>
-
-            <q-card-section class="q-pa-none">
-              <q-table
-                ref="tableRefRoles"
-                v-model:pagination="table.roles.pagination"
-                :columns="table.roles.headers ?? []"
-                :loading="table.roles.loading"
-                :rows="table.roles.data ?? []"
-                binary-state-sort
-                bordered
-                flat
-                row-key="id"
-                @request="onRequestRolesHavePermission"
-              >
-                <template v-slot:body-cell-no="props">
-                  <q-td :props="props">
-                    {{ props.rowIndex + 1 }}
-                  </q-td>
-                </template>
-              </q-table>
-            </q-card-section>
-          </q-card>
-          <q-card class="tw-w-full" flat>
-            <q-card-section>
-              <div class="text-h6">List User</div>
-            </q-card-section>
-
-            <q-card-section class="q-pa-none">
-              <q-table
-                ref="tableRefUsers"
-                v-model:pagination="table.users.pagination"
-                :columns="table.users.headers ?? []"
-                :loading="table.users.loading"
-                :rows="table.users.data ?? []"
-                :filter="table.users.filter"
-                binary-state-sort
-                bordered
-                flat
-                row-key="id"
-                separator="vertical"
-                @request="onRequestUsersHavePermission"
-              >
-                <template v-slot:top-row>
-                  <q-tr>
-                    <q-th></q-th>
-                    <q-th>
-                      <q-input
-                        v-model="table.users.search.name"
-                        :loading="table.users.loading"
-                        clearable
-                        debounce="500"
-                        filled
-                        label="Search Name"/>
-                    </q-th>
-                    <q-th>
-                      <q-input
-                        v-model="table.users.search.username"
-                        :loading="table.users.loading"
-                        clearable
-                        debounce="500"
-                        filled
-                        label="Search Username"/>
-                    </q-th>
-                    <q-th>
-                      <q-input
-                        v-model="table.users.search.email"
-                        :loading="table.users.loading"
-                        clearable
-                        debounce="500"
-                        filled
-                        label="Search Email"/>
-                    </q-th>
-                    <q-th>
-                      <q-select
-                        v-model="table.users.search.role"
-                        :loading="table.users.loading"
-                        :options="roles"
-                        clearable
-                        filled
-                        use-input
-                        hide-selected
-                        fill-input
-                        input-debounce="0"
-                        @filter="filterRole"
-                        label="Roles"/>
-                    </q-th>
-                  </q-tr>
-                </template>
-                <template v-slot:body-cell-no="props">
-                  <q-td :props="props">
-                    {{ props.rowIndex + 1 }}
-                  </q-td>
-                </template>
-              </q-table>
-            </q-card-section>
-
-          </q-card>
-        </div>
-
-      </q-card-section>
     </q-card>
+
+    <div class="tw-flex tw-flex-col justify-between md:tw-space-x-4 md:tw-flex-row">
+      <q-card class="tw-flex-none" flat>
+        <q-card-section class="q-pa-none">
+          <q-table
+            ref="tableRefRoles"
+            v-model:pagination="table.roles.pagination"
+            :columns="table.roles.headers ?? []"
+            :loading="table.roles.loading"
+            :rows="table.roles.data ?? []"
+            binary-state-sort
+            bordered
+            row-key="id"
+            @request="onRequestRolesHavePermission"
+          >
+            <template v-slot:top>
+              <div class="text-h6">List Roles</div>
+            </template>
+            <template v-slot:body-cell-no="props">
+              <q-td :props="props">
+                {{ props.rowIndex + 1 }}
+              </q-td>
+            </template>
+          </q-table>
+        </q-card-section>
+      </q-card>
+      <q-card class="tw-w-full" flat>
+        <q-card-section class="q-pa-none">
+          <q-table
+            ref="tableRefUsers"
+            v-model:pagination="table.users.pagination"
+            :columns="table.users.headers ?? []"
+            :filter="table.users.filter"
+            :loading="table.users.loading"
+            :rows="table.users.data ?? []"
+            binary-state-sort
+            bordered
+            row-key="id"
+            @request="onRequestUsersHavePermission"
+          >
+
+            <template v-slot:top>
+              <div class="text-h6">List Users</div>
+            </template>
+
+            <template v-slot:top-row>
+              <q-tr>
+                <q-th></q-th>
+                <q-th>
+                  <q-input
+                    v-model="table.users.search.name"
+                    :loading="table.users.loading"
+                    clearable
+                    debounce="500"
+                    dense
+                    label="Search Name"/>
+                </q-th>
+                <q-th>
+                  <q-input
+                    v-model="table.users.search.username"
+                    :loading="table.users.loading"
+                    clearable
+                    debounce="500"
+                    dense
+                    label="Search Username"/>
+                </q-th>
+                <q-th>
+                  <q-input
+                    v-model="table.users.search.email"
+                    :loading="table.users.loading"
+                    clearable
+                    debounce="500"
+                    dense
+                    label="Search Email"/>
+                </q-th>
+                <q-th>
+                  <q-select
+                    v-model="table.users.search.role"
+                    :loading="table.users.loading"
+                    :options="roles"
+                    clearable
+                    dense
+                    fill-input
+                    hide-selected
+                    input-debounce="0"
+                    label="Roles"
+                    use-input
+                    @filter="filterRole"/>
+                </q-th>
+              </q-tr>
+            </template>
+            <template v-slot:body-cell-no="props">
+              <q-td :props="props">
+                {{ props.rowIndex + 1 }}
+              </q-td>
+            </template>
+          </q-table>
+        </q-card-section>
+      </q-card>
+    </div>
   </q-page>
 </template>
