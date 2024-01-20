@@ -99,7 +99,7 @@ onMounted(async () => {
                   :loading="table.loading"
                   :round="$q.screen.lt.md"
                   color="primary"
-                  dense
+                  :dense="$q.screen.lt.md"
                   glossy
                   icon="sync"
                   @click.prevent="table.dialog=true"
@@ -124,14 +124,11 @@ onMounted(async () => {
                 :loading="table.loading"
                 :round="$q.screen.lt.md"
                 :size="$q.screen.lt.md ? 'xs' : 'sm'"
+                :label="!$q.screen.lt.md ? 'Delete' : ''"
                 :to="'permissions/' + props.row.id + '/view'"
                 color="white"
                 icon="visibility"
-                text-color="black">
-                <template v-if="!$q.screen.lt.md" v-slot:default>
-                  View
-                </template>
-              </q-btn>
+                text-color="black"/>
             </q-td>
           </template>
         </q-table>

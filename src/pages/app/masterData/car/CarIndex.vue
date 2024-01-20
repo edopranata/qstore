@@ -96,7 +96,7 @@ onMounted(() => {
                 :loading="table.loading"
                 :round="$q.screen.lt.md"
                 color="negative"
-                dense
+                :dense="$q.screen.lt.md"
                 glossy
                 icon="delete"
                 @click.prevent="openDialog('delete')"
@@ -112,7 +112,7 @@ onMounted(() => {
                 :loading="table.loading"
                 :round="$q.screen.lt.md"
                 color="warning"
-                dense
+                :dense="$q.screen.lt.md"
                 glossy
                 icon="edit"
                 @click.prevent="openDialog('edit')"
@@ -127,7 +127,7 @@ onMounted(() => {
                 :loading="table.loading"
                 :round="$q.screen.lt.md"
                 color="secondary"
-                dense
+                :dense="$q.screen.lt.md"
                 glossy
                 icon="add_circle"
                 @click.prevent="openDialog('create')"

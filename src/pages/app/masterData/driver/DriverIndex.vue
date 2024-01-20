@@ -94,8 +94,8 @@ onMounted(() => {
                 :disable="!selected.length > 0"
                 :label="!$q.screen.lt.md ? 'Delete' : ''"
                 :loading="table.loading"
+                :dense="$q.screen.lt.md"
                 :round="$q.screen.lt.md"
-                dense
                 color="negative"
                 glossy
                 icon="delete"
@@ -110,8 +110,8 @@ onMounted(() => {
                 :disable="selected.length !== 1"
                 :label="!$q.screen.lt.md ? 'Edit Data' : ''"
                 :loading="table.loading"
+                :dense="$q.screen.lt.md"
                 :round="$q.screen.lt.md"
-                dense
                 color="warning"
                 glossy
                 icon="edit"
@@ -125,8 +125,8 @@ onMounted(() => {
                 v-if="can('app.masterData.drivers.createDriver')"
                 :label="!$q.screen.lt.md ? 'Create New' : ''"
                 :loading="table.loading"
+                :dense="$q.screen.lt.md"
                 :round="$q.screen.lt.md"
-                dense
                 color="secondary"
                 glossy
                 icon="add_circle"
