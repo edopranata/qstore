@@ -13,6 +13,14 @@ export default [
           auth: true,
         },
       },
+      {
+        path: 'drivers',
+        name: 'app.masterData.drivers.index',
+        component: () => import('pages/app/masterData/driver/DriverIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
 
     ]
   },
