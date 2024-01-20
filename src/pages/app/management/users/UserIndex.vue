@@ -14,7 +14,6 @@ const users = useUsersStore()
 const {can} = useAuthStore()
 const {getSelected: selected} = storeToRefs(useUsersStore())
 const {path} = useRoute()
-
 const tableRef = ref()
 
 async function onRequest(props) {
@@ -77,13 +76,14 @@ onMounted(() => {
         v-model:pagination="table.pagination"
         v-model:selected="table.selected"
         :columns="table.headers ?? []"
+        :dense="$q.screen.lt.md"
         :filter="table.filter"
         :loading="table.loading"
         :rows="table.data ?? []"
+        :selection="can('app.management.users.[deleteUser]') ? 'multiple' :'single'"
         binary-state-sort
         bordered
         row-key="id"
-        :selection="can('app.management.users.[deleteUser]') ? 'multiple' :'single'"
         @request="onRequest"
       >
         <template v-slot:top>
@@ -95,12 +95,14 @@ onMounted(() => {
                  class="tw-space-x-2">
               <q-btn
                 v-if="can('app.management.users.deleteUser')"
+                :dense="$q.screen.lt.md"
+                :label="!$q.screen.lt.md ? 'Delete' : ''"
                 :disable="!table.selected.length > 0"
+                :round="$q.screen.lt.md"
                 :loading="table.loading"
                 color="negative"
                 glossy
                 icon="delete"
-                label="Delete"
                 @click.prevent="openDialog('delete')"
               >
                 <q-tooltip>
@@ -109,12 +111,14 @@ onMounted(() => {
               </q-btn>
               <q-btn
                 v-if="can('app.management.users.updateUser')"
+                :dense="$q.screen.lt.md"
+                :label="!$q.screen.lt.md ? 'Edit Data' : ''"
                 :disable="table.selected.length !== 1"
+                :round="$q.screen.lt.md"
                 :loading="table.loading"
                 color="warning"
                 glossy
                 icon="edit"
-                label="Edit Data"
                 @click.prevent="openDialog('edit')"
               >
                 <q-tooltip v-if="table.selected.length !== 1">
@@ -123,12 +127,14 @@ onMounted(() => {
               </q-btn>
               <q-btn
                 v-if="can('app.management.users.resetPassword')"
+                :dense="$q.screen.lt.md"
+                :label="!$q.screen.lt.md ? 'Change Password' : ''"
                 :disable="table.selected.length !== 1"
+                :round="$q.screen.lt.md"
                 :loading="table.loading"
                 color="accent"
                 glossy
                 icon="password"
-                label="Change Password"
                 @click.prevent="openDialog('password')"
               >
                 <q-tooltip>
@@ -137,15 +143,17 @@ onMounted(() => {
               </q-btn>
               <q-btn
                 v-if="can('app.management.users.createUser')"
+                :dense="$q.screen.lt.md"
+                :label="!$q.screen.lt.md ? 'Create New' : ''"
+                :round="$q.screen.lt.md"
                 :loading="table.loading"
                 color="secondary"
                 glossy
                 icon="add_circle"
-                label="Create New"
                 @click.prevent="openDialog('create')"
               >
                 <q-tooltip>
-                  Create new
+                  Create new user
                 </q-tooltip>
               </q-btn>
             </div>

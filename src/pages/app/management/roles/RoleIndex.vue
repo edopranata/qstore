@@ -21,7 +21,7 @@ onMounted(async () => {
   tableRolesRef.value.requestServerInteraction()
 })
 watch(table.search, () => {
-    table.filter = String(Date.now())
+  table.filter = String(Date.now())
 }, {
   deep: true,
   immediate: true
@@ -49,22 +49,23 @@ watch(dialog, (newDialog) => {
 
 <template>
   <q-page padding>
-    <DialogDelete />
-    <DialogEdit />
-    <DialogCreate />
+    <DialogDelete/>
+    <DialogEdit/>
+    <DialogCreate/>
     <q-card>
       <q-table
         ref="tableRolesRef"
         v-model:pagination="table.pagination"
         v-model:selected="table.selected"
         :columns="table.headers ?? []"
+        :dense="$q.screen.lt.md"
         :filter="table.filter"
         :loading="table.loading"
         :rows="table.data ?? []"
+        :selection="can('app.management.roles.deleteRole') ? 'multiple' : 'single'"
         binary-state-sort
         bordered
         row-key="id"
-        :selection="can('app.management.roles.deleteRole') ? 'multiple' : 'single'"
         @request="onRequest"
       >
         <template v-slot:top>
@@ -73,15 +74,17 @@ watch(dialog, (newDialog) => {
               Roles list
             </q-toolbar-title>
             <div
-                 class="tw-space-x-2">
+              class="tw-space-x-2">
               <q-btn
                 v-if="can('app.management.roles.deleteRole')"
+                :dense="$q.screen.lt.md"
                 :disable="!table.selected.length > 0"
+                :label="!$q.screen.lt.md ? 'Delete' : ''"
                 :loading="table.loading"
+                :round="$q.screen.lt.md"
                 color="negative"
                 glossy
                 icon="delete"
-                label="Delete"
                 @click.prevent="openDialog('delete')"
               >
                 <q-tooltip>
@@ -90,12 +93,14 @@ watch(dialog, (newDialog) => {
               </q-btn>
               <q-btn
                 v-if="can('app.management.roles.updateRole')"
+                :dense="$q.screen.lt.md"
                 :disable="table.selected.length !== 1"
+                :label="!$q.screen.lt.md ? 'Edit Data' : ''"
                 :loading="table.loading"
+                :round="$q.screen.lt.md"
                 color="warning"
                 glossy
                 icon="edit"
-                label="Edit Data"
                 @click.prevent="openDialog('edit')"
               >
                 <q-tooltip v-if="table.selected.length !== 1">
@@ -104,11 +109,13 @@ watch(dialog, (newDialog) => {
               </q-btn>
               <q-btn
                 v-if="can('app.management.roles.createRole')"
+                :dense="$q.screen.lt.md"
+                :label="!$q.screen.lt.md ? 'Create New' : ''"
                 :loading="table.loading"
+                :round="$q.screen.lt.md"
                 color="secondary"
                 glossy
                 icon="add_circle"
-                label="Create New"
                 @click.prevent="openDialog('create')"
               >
                 <q-tooltip>
@@ -144,13 +151,15 @@ watch(dialog, (newDialog) => {
           <q-td :props="props">
             <q-btn
               :disable="!can('app.management.roles.viewRole')"
-              :to="'roles/' + props.row.id + '/view'"
+              :label="!$q.screen.lt.md ? 'Show' : ''"
               :loading="table.loading"
-              size="sm"
+              :round="$q.screen.lt.md"
+              :size="$q.screen.lt.md ? 'xs' : 'sm'"
+              :to="'roles/' + props.row.id + '/view'"
               color="white"
-              text-color="black"
               icon="visibility"
-              label="View" />
+              text-color="black"
+            />
           </q-td>
         </template>
         <template v-slot:body-cell-permissions_count="props">
@@ -159,10 +168,10 @@ watch(dialog, (newDialog) => {
           </q-td>
         </template>
         <template v-slot:body-cell-users_count="props">
-        <q-td :props="props">
-          {{ props.value > 0 ? `${props.value} users` : '-' }}
-        </q-td>
-      </template>
+          <q-td :props="props">
+            {{ props.value > 0 ? `${props.value} users` : '-' }}
+          </q-td>
+        </template>
       </q-table>
     </q-card>
   </q-page>

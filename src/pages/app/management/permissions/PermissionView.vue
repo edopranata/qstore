@@ -57,7 +57,9 @@ const onRequestRolesHavePermission = async (props) => {
         :loading="table.selected.loading"
         :rows="table.selected.data ?? []"
         binary-state-sort
-        bordered
+        :bordered="!$q.screen.lt.md"
+        :flat="$q.screen.lt.md"
+        :grid="$q.screen.lt.md"
         hide-bottom
         row-key="id"
         @request="onRequest"
@@ -79,6 +81,7 @@ const onRequestRolesHavePermission = async (props) => {
             :columns="table.roles.headers ?? []"
             :loading="table.roles.loading"
             :rows="table.roles.data ?? []"
+            :dense="$q.screen.lt.md"
             binary-state-sort
             bordered
             row-key="id"
@@ -104,6 +107,7 @@ const onRequestRolesHavePermission = async (props) => {
             :filter="table.users.filter"
             :loading="table.users.loading"
             :rows="table.users.data ?? []"
+            :dense="$q.screen.lt.md"
             binary-state-sort
             bordered
             row-key="id"
@@ -148,6 +152,7 @@ const onRequestRolesHavePermission = async (props) => {
                   <q-select
                     v-model="table.users.search.role"
                     :loading="table.users.loading"
+                    class="tw-w-32"
                     :options="roles"
                     clearable
                     dense

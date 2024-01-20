@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import {defineStore} from 'pinia'
 import {reactive} from "vue";
 import {api} from "boot/axios";
 import {LocalStorage, Notify} from "quasar";
@@ -41,7 +41,7 @@ export const useRolesStore = defineStore('roles', {
       loading: false,
       headers: reactive([
         {name: "id", label: "No", field: "id", sortable: true, align: 'left'},
-        {name: "action", label: "Action", sortable: false, align: 'left'},
+        {name: "action", label: "Action", sortable: false, align: 'left', headerClass: 'tw-w-80'},
         {name: "name", label: "Name", field: "name", sortable: true, align: 'left'},
         {name: "permissions_count", label: "Permission Count", field: "permissions_count", sortable: false, align: 'left'},
         {name: "users_count", label: "User Count", field: "users_count", sortable: false, align: 'left'},

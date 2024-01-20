@@ -52,7 +52,11 @@ export const useCarsStore = defineStore('cars', {
     errors: {},
   }),
 
-  getters: {},
+  getters: {
+    getSelected(state) {
+      return state.table.selected
+    }
+  },
 
   actions: {
     openDialog(dialog) {

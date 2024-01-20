@@ -51,7 +51,11 @@ export const useDriversStore = defineStore('drivers', {
     errors: {},
   }),
 
-  getters: {},
+  getters: {
+    getSelected(state) {
+      return state.table.selected
+    }
+  },
 
   actions: {
     openDialog(dialog) {

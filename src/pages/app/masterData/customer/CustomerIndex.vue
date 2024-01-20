@@ -73,6 +73,7 @@ onMounted(() => {
         v-model:pagination="table.pagination"
         v-model:selected="table.selected"
         :columns="table.headers ?? []"
+        :dense="$q.screen.lt.md"
         :filter="table.filter"
         :loading="table.loading"
         :rows="table.data ?? []"
@@ -92,11 +93,13 @@ onMounted(() => {
               <q-btn
                 v-if="can('app.masterData.customers.deleteCustomer')"
                 :disable="!selected.length > 0"
+                :label="!$q.screen.lt.md ? 'Delete' : ''"
                 :loading="table.loading"
+                :round="$q.screen.lt.md"
+                dense
                 color="negative"
                 glossy
                 icon="delete"
-                label="Delete"
                 @click.prevent="openDialog('delete')"
               >
                 <q-tooltip>
@@ -106,11 +109,13 @@ onMounted(() => {
               <q-btn
                 v-if="can('app.masterData.customers.updateCustomer')"
                 :disable="selected.length !== 1"
+                :label="!$q.screen.lt.md ? 'Edit Data' : ''"
                 :loading="table.loading"
+                :round="$q.screen.lt.md"
+                dense
                 color="warning"
                 glossy
                 icon="edit"
-                label="Edit Data"
                 @click.prevent="openDialog('edit')"
               >
                 <q-tooltip v-if="selected.length !== 1">
@@ -119,11 +124,13 @@ onMounted(() => {
               </q-btn>
               <q-btn
                 v-if="can('app.masterData.customers.createCustomer')"
+                :label="!$q.screen.lt.md ? 'Create New' : ''"
                 :loading="table.loading"
+                :round="$q.screen.lt.md"
+                dense
                 color="secondary"
                 glossy
                 icon="add_circle"
-                label="Create New"
                 @click.prevent="openDialog('create')"
               >
                 <q-tooltip>
@@ -140,16 +147,17 @@ onMounted(() => {
             <q-th class="text-left">#</q-th>
             <q-th>
               <q-select
-                dense
-                clearable
                 v-model="table.search.type"
                 :options="customer_model"
-                option-value="id"
-                option-label="desc"
-                option-disable="inactive"
+                clearable
+                dense
                 emit-value
-                map-options
+                fill-input
                 label="Search Customer Type"
+                map-options
+                option-disable="inactive"
+                option-label="desc"
+                option-value="id"
               />
             </q-th>
             <q-th>

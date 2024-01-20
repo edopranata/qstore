@@ -10,7 +10,6 @@ const permission = usePermissionsStore()
 const {can} = useAuthStore()
 const {path} = useRoute()
 const tableRef = ref()
-const splitterModel = ref(25)
 
 const onRequest = async (props) => {
   await permission.getPermissionsData(path, props)
@@ -25,7 +24,7 @@ const loadChild = ({node, key, done, fail}) => {
 
   api.get(path, {params}).then(response => {
     done(response.data)
-  }).catch( () => {
+  }).catch(() => {
     fail(node)
   }).finally(() => table.loading = false)
   table.loading = false
@@ -45,95 +44,98 @@ onMounted(async () => {
         </q-card-section>
 
         <q-card-actions class="tw-flex justify-between">
-          <q-btn :disable="table.loading" :loading="table.loading" flat label="Batalkan" color="primary" v-close-popup />
-          <q-btn :disable="table.loading" :loading="table.loading" flat label="Sinkron" color="primary" @click.prevent="permission.syncNewPermissions(path)" />
+          <q-btn v-close-popup :disable="table.loading" :loading="table.loading" color="primary" flat label="Batalkan"/>
+          <q-btn :disable="table.loading" :loading="table.loading" color="primary" flat label="Sinkron"
+                 @click.prevent="permission.syncNewPermissions(path)"/>
         </q-card-actions>
       </q-card>
     </q-dialog>
-    <q-card title="Permission List">
-      <q-splitter
-        v-model="splitterModel"
-      >
-        <template v-slot:before>
-          <q-card flat>
-            <q-card-section>
-              <q-toolbar class="text-primary">
-                <q-toolbar-title>
-                  Select Permission
-                </q-toolbar-title>
-              </q-toolbar>
-              <q-tree
-                v-model:selected="table.filter"
-                :nodes="trees.data"
-                default-expand-all
-                node-key="label"
-                selected-color="primary"
-                @lazy-load="loadChild"
-              />
-            </q-card-section>
+    <div class="tw-flex tw-space-y-4 tw-flex-col md:tw-space-x-4 md:tw-space-y-0 md:tw-flex-row">
+      <q-card class="md:tw-flex-none md:tw-w-80 tw-w-full">
+        <q-card-section>
+          <q-toolbar class="text-primary">
+            <q-toolbar-title>
+              Select Permission
+            </q-toolbar-title>
+          </q-toolbar>
+          <q-tree
+            v-model:selected="table.filter"
+            :dense="$q.screen.lt.md"
+            :nodes="trees.data"
+            default-expand-all
+            node-key="label"
+            selected-color="primary"
+            @lazy-load="loadChild"
+          />
+        </q-card-section>
 
-          </q-card>
+      </q-card>
 
-        </template>
-        <template v-slot:after>
-          <q-table
-            ref="tableRef"
-            v-model:pagination="table.pagination"
-            :columns="table.headers ?? []"
-            :filter="table.filter"
-            :loading="table.loading"
-            :rows="table.data ?? []"
-            binary-state-sort
-            flat
-            row-key="id"
-            @request="onRequest"
-          >
-            <template v-slot:top>
-              <q-toolbar class="text-primary">
-                <q-toolbar-title>
-                  {{ !table.filter ? 'Permission' : 'Permission ' + table.filter }}
-                </q-toolbar-title>
-                <div
-                  class="tw-space-x-2">
-                  <q-btn
-                    :disable="table.loading"
-                    :loading="table.loading"
-                    v-if="can('app.management.permissions.syncPermissions')"
-                    color="primary"
-                    glossy
-                    icon="sync"
-                    label="Sync"
-                    @click.prevent="table.dialog=true"
-                  >
-                    <q-tooltip>
-                      Synchronize Permissions
-                    </q-tooltip>
-                  </q-btn>
-                </div>
-
-              </q-toolbar>
-            </template>
-            <template v-slot:body-cell-id="props">
-              <q-td :props="props">
-                {{ props.rowIndex + 1 }}
-              </q-td>
-            </template>
-            <template v-slot:body-cell-action="props">
-              <q-td :props="props">
+      <q-card class="tw-flex-grow">
+        <q-table
+          ref="tableRef"
+          v-model:pagination="table.pagination"
+          :columns="table.headers ?? []"
+          :dense="$q.screen.lt.md"
+          :filter="table.filter"
+          :loading="table.loading"
+          :rows="table.data ?? []"
+          binary-state-sort
+          flat
+          row-key="id"
+          @request="onRequest"
+        >
+          <template v-slot:top>
+            <q-toolbar class="text-primary">
+              <q-toolbar-title>
+                {{ !table.filter ? 'Permission' : 'Permission ' + table.filter }}
+              </q-toolbar-title>
+              <div
+                class="tw-space-x-2">
                 <q-btn
-                  :to="'permissions/' + props.row.id + '/view'"
+                  v-if="can('app.management.permissions.syncPermissions')"
+                  :disable="table.loading"
+                  :label="!$q.screen.lt.md ? 'Sync' : ''"
                   :loading="table.loading"
-                  :disable="!can('app.management.permissions.viewPermission')"
-                  size="sm"
-                  color="white"
-                  text-color="black"
-                  icon="visibility"
-                  label="View" />
-              </q-td>
-            </template>
-          </q-table>
-        </template>
-      </q-splitter>
-    </q-card>
+                  :round="$q.screen.lt.md"
+                  color="primary"
+                  dense
+                  glossy
+                  icon="sync"
+                  @click.prevent="table.dialog=true"
+                >
+                  <q-tooltip>
+                    Synchronize Permissions
+                  </q-tooltip>
+                </q-btn>
+              </div>
+
+            </q-toolbar>
+          </template>
+          <template v-slot:body-cell-id="props">
+            <q-td :props="props">
+              {{ props.rowIndex + 1 }}
+            </q-td>
+          </template>
+          <template v-slot:body-cell-action="props">
+            <q-td :props="props">
+              <q-btn
+                :disable="!can('app.management.permissions.viewPermission')"
+                :loading="table.loading"
+                :round="$q.screen.lt.md"
+                :size="$q.screen.lt.md ? 'xs' : 'sm'"
+                :to="'permissions/' + props.row.id + '/view'"
+                color="white"
+                icon="visibility"
+                text-color="black">
+                <template v-if="!$q.screen.lt.md" v-slot:default>
+                  View
+                </template>
+              </q-btn>
+            </q-td>
+          </template>
+        </q-table>
+      </q-card>
+    </div>
   </q-page>
 </template>

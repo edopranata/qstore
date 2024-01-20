@@ -27,7 +27,7 @@ watch(table.search, () => {
   immediate: true
 })
 watch(dialog, () => {
-  if(dialog.create){
+  if (dialog.create) {
     table.selected = [];
   }
 })
@@ -46,7 +46,7 @@ watch(table, (selected_item) => {
     } else {
       cars.onReset()
     }
-  }else{
+  } else {
     cars.onReset()
     deleted.car_id = []
     deleted.data = []
@@ -63,15 +63,16 @@ onMounted(() => {
 
 <template>
   <q-page padding>
-    <DialogDelete />
-    <DialogCreate />
-    <DialogEdit />
+    <DialogDelete/>
+    <DialogCreate/>
+    <DialogEdit/>
     <q-card>
       <q-table
         ref="tableRef"
         v-model:pagination="table.pagination"
         v-model:selected="table.selected"
         :columns="table.headers ?? []"
+        :dense="$q.screen.lt.md"
         :filter="table.filter"
         :loading="table.loading"
         :rows="table.data ?? []"
@@ -90,12 +91,14 @@ onMounted(() => {
                  class="tw-space-x-2">
               <q-btn
                 v-if="can('app.masterData.cars.deleteCar')"
-                :disable="!table.selected.length > 0"
+                :disable="!selected.length > 0"
+                :label="!$q.screen.lt.md ? 'Delete' : ''"
                 :loading="table.loading"
+                :round="$q.screen.lt.md"
                 color="negative"
+                dense
                 glossy
                 icon="delete"
-                label="Delete"
                 @click.prevent="openDialog('delete')"
               >
                 <q-tooltip>
@@ -104,25 +107,29 @@ onMounted(() => {
               </q-btn>
               <q-btn
                 v-if="can('app.masterData.cars.updateCar')"
-                :disable="table.selected.length !== 1"
+                :disable="selected.length !== 1"
+                :label="!$q.screen.lt.md ? 'Edit Data' : ''"
                 :loading="table.loading"
+                :round="$q.screen.lt.md"
                 color="warning"
+                dense
                 glossy
                 icon="edit"
-                label="Edit Data"
                 @click.prevent="openDialog('edit')"
               >
-                <q-tooltip v-if="table.selected.length !== 1">
+                <q-tooltip v-if="selected.length !== 1">
                   Edit Data
                 </q-tooltip>
               </q-btn>
               <q-btn
                 v-if="can('app.masterData.cars.createCar')"
+                :label="!$q.screen.lt.md ? 'Create New' : ''"
                 :loading="table.loading"
+                :round="$q.screen.lt.md"
                 color="secondary"
+                dense
                 glossy
                 icon="add_circle"
-                label="Create New"
                 @click.prevent="openDialog('create')"
               >
                 <q-tooltip>

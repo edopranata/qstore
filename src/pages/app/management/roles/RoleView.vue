@@ -24,8 +24,9 @@ onMounted(async () => {
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn :loading="table.loading" flat label="Batal" color="negative" v-close-popup />
-          <q-btn :loading="table.loading" flat label="Update permission" color="primary" @click.prevent="addPermissionsToRole(path)" />
+          <q-btn v-close-popup :loading="table.loading" color="negative" flat label="Batal"/>
+          <q-btn :loading="table.loading" color="primary" flat label="Update permission"
+                 @click.prevent="addPermissionsToRole(path)"/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -37,11 +38,13 @@ onMounted(async () => {
           </q-toolbar-title>
           <div class="tw-space-x-2">
             <q-btn
+              :dense="$q.screen.lt.md"
+              :label="!$q.screen.lt.md ? 'Reload' : ''"
               :loading="table.loading"
+              :round="$q.screen.lt.md"
               color="primary"
               glossy
               icon="sync"
-              label="Reload"
               @click.prevent="loadPermissionList(path)"
             >
               <q-tooltip>
@@ -50,11 +53,13 @@ onMounted(async () => {
             </q-btn>
             <q-btn
               v-if="can('app.management.roles.addPermissionsToRole')"
+              :dense="$q.screen.lt.md"
+              :label="!$q.screen.lt.md ? 'Update Permissions' : ''"
               :loading="table.loading"
+              :round="$q.screen.lt.md"
               color="secondary"
               glossy
               icon="check"
-              label="Update Permission"
               @click.prevent="openDialog('update')"
             >
               <q-tooltip>
@@ -71,6 +76,7 @@ onMounted(async () => {
         :key="`${parent}`"
       >
         <q-markup-table
+          :dense="$q.screen.lt.md"
           bordered
           flat>
           <thead>
@@ -92,16 +98,17 @@ onMounted(async () => {
             <td class="text-left">
               <div class="tw-grid lg:tw-grid-cols-5 md:tw-grid-cols-3 tw-gap-1">
                 <q-skeleton
-                  v-show="table.loading"
                   v-for="permission in item"
+                  v-show="table.loading"
                   :key="permission.id"
                   type="QChip"/>
                 <q-checkbox
-                  :disable="!can('app.management.roles.addPermissionsToRole')"
-                  v-show="!table.loading"
                   v-for="(permission, i) in item"
+                  v-show="!table.loading"
                   :key="i"
                   v-model="view.active"
+                  :dense="$q.screen.lt.md"
+                  :disable="!can('app.management.roles.addPermissionsToRole')"
                   :label="permission.title"
                   :val="permission.name"
                   color="teal"/>
