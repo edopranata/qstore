@@ -26,6 +26,11 @@ watch(table.search, () => {
   deep: true,
   immediate: true
 })
+watch(dialog, () => {
+  if(dialog.create){
+    table.selected = [];
+  }
+})
 
 watch(table, (selected_item) => {
   if (selected_item.selected.length > 0) {
