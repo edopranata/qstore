@@ -1,9 +1,12 @@
 <script setup>
 import {useDriversStore} from "stores/data/drivers";
 import {useRoute} from "vue-router";
+import {storeToRefs} from "pinia";
+import {useCarsStore} from "stores/data/car";
 
 const {path} = useRoute()
-const {dialog, form, onReset, table, submitForm, errors} = useDriversStore()
+const {dialog, form, onReset, table, submitForm} = useDriversStore()
+const {errors} = storeToRefs(useCarsStore())
 
 
 </script>

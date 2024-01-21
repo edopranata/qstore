@@ -27,21 +27,26 @@ watch(table.search, () => {
   immediate: true
 })
 watch(dialog, () => {
+  for (let property in dialog) {
+    if (dialog[property]) {
+      drivers.errors = {}
+    }
+  }
   if (dialog.create) {
     table.selected = [];
   }
 })
-watch(table, (selected_item) => {
-  if (selected_item.selected.length > 0) {
-    deleted.driver_id = selected_item.selected.map(i => i['id'])
-    deleted.data = selected_item.selected.map(i => i['name'])
+watch(selected, (selected_item) => {
+  if (selected_item.length > 0) {
+    deleted.driver_id = selected_item.map(i => i['id'])
+    deleted.data = selected_item.map(i => i['name'])
 
-    if (selected_item.selected.length === 1) {
+    if (selected_item.length === 1) {
 
-      form.id = selected_item.selected[0].id
-      form.name = selected_item.selected[0].name
-      form.phone = selected_item.selected[0].phone
-      form.address = selected_item.selected[0].address
+      form.id = selected_item[0].id
+      form.name = selected_item[0].name
+      form.phone = selected_item[0].phone
+      form.address = selected_item[0].address
     } else {
       drivers.onReset()
     }
@@ -55,6 +60,8 @@ watch(table, (selected_item) => {
   deep: true,
 })
 onMounted(() => {
+  drivers.onReset()
+  table.selected = []
   // get initial data from server (1st page)
   tableRef.value.requestServerInteraction()
 })

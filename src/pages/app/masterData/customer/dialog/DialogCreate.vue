@@ -24,15 +24,17 @@ const {errors, customers: customer_model} = storeToRefs(useCustomersStore())
       >
         <q-card-section class="q-pt-none">
           <q-select
-            dense
-            clearable
             v-model="form.type"
+            :error="errors.hasOwnProperty('type')"
+            :error-message="errors.type"
             :options="customer_model"
-            option-value="id"
-            option-label="desc"
+            clearable
+            dense
             emit-value
-            map-options
             label="Customer Type"
+            map-options
+            option-label="desc"
+            option-value="id"
           />
           <q-input
             v-model="form.name"
@@ -44,36 +46,36 @@ const {errors, customers: customer_model} = storeToRefs(useCustomersStore())
           />
           <div class="tw-flex tw-space-x-4">
             <q-input
+              v-model="form.phone"
               :error="errors.hasOwnProperty('phone]')"
               :error-message="errors.phone"
-              v-model="form.phone"
               :rules="[ val => val && val.length <= 20 || 'Phone number must be lower than 20 characters.']"
+              class="tw-w-full"
               label="Phone Number*"
               lazy-rules
-              class="tw-w-full"
             />
 
             <q-input
               v-model="form.distance"
-              label="Distance (Km)"
+              class="tw-max-w-4xl"
               input-class="text-right"
+              label="Distance (Km)"
               mask="#"
               reverse-fill-mask
               suffix="Km"
-              class="tw-max-w-4xl"
             />
           </div>
           <q-input
-            type="textarea"
             v-model="form.address"
             label="Address"
+            type="textarea"
           />
         </q-card-section>
 
         <q-card-actions align="right">
           <q-btn v-close-popup color="warning" flat label="Batalkan" type="reset"/>
           <q-space/>
-          <q-btn :disable="table.loading"  color="primary" flat label="Simpan" type="submit"/>
+          <q-btn :disable="table.loading" color="primary" flat label="Simpan" type="submit"/>
         </q-card-actions>
       </q-form>
     </q-card>

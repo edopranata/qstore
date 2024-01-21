@@ -1,10 +1,11 @@
 <script setup>
 import {useCarsStore} from 'stores/data/car';
 import {useRoute} from "vue-router";
+import {storeToRefs} from "pinia";
 
 const {path} = useRoute()
-const {dialog, form, onReset, table, submitForm, errors} = useCarsStore()
-
+const {dialog, form, onReset, table, submitForm} = useCarsStore()
+const {errors} = storeToRefs(useCarsStore())
 
 </script>
 
@@ -12,7 +13,7 @@ const {dialog, form, onReset, table, submitForm, errors} = useCarsStore()
   <q-dialog v-model="dialog.edit" persistent transition-hide="scale" transition-show="scale">
     <q-card style="width: 600px;">
       <q-card-section>
-        <div class="text-h6">Create new User</div>
+        <div class="text-h6">Edit Car</div>
       </q-card-section>
 
       <q-form

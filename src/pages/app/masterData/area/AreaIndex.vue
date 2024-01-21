@@ -31,7 +31,6 @@ watch(dialog, () => {
     if (dialog[property]) {
       areas.errors = {}
     }
-
   }
   if (dialog.create) {
     table.selected = [];
@@ -58,6 +57,8 @@ watch(selected, (selected_item) => {
   deep: true,
 })
 onMounted(() => {
+  areas.onReset()
+  table.selected = []
   // get initial data from server (1st page)
   tableRef.value.requestServerInteraction()
 })

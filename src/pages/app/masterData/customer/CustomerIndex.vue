@@ -27,22 +27,27 @@ watch(table.search, () => {
   immediate: true
 })
 watch(dialog, () => {
+  for (let property in dialog) {
+    if (dialog[property]) {
+      customers.errors = {}
+    }
+  }
   if (dialog.create) {
     table.selected = [];
   }
 })
-watch(table, (selected_item) => {
-  if (selected_item.selected.length > 0) {
-    deleted.customer_id = selected_item.selected.map(i => i['id'])
-    deleted.data = selected_item.selected.map(i => `${i['name']} ${i['type'] = 'farmer' ? 'Petani' : 'Pengepul'}`)
+watch(selected, (selected_item) => {
+  if (selected_item.length > 0) {
+    deleted.customer_id = selected_item.map(i => i['id'])
+    deleted.data = selected_item.map(i => `${i['name']} ${i['type'] = 'farmer' ? 'Petani' : 'Pengepul'}`)
 
-    if (selected_item.selected.length === 1) {
-      form.id = selected_item.selected[0].id
-      form.name = selected_item.selected[0].name
-      form.type = selected_item.selected[0].type
-      form.phone = selected_item.selected[0].phone
-      form.address = selected_item.selected[0].address
-      form.distance = selected_item.selected[0].distance
+    if (selected_item.length === 1) {
+      form.id = selected_item[0].id
+      form.name = selected_item[0].name
+      form.type = selected_item[0].type
+      form.phone = selected_item[0].phone
+      form.address = selected_item[0].address
+      form.distance = selected_item[0].distance
     } else {
       customers.onReset()
     }
@@ -56,6 +61,8 @@ watch(table, (selected_item) => {
   deep: true,
 })
 onMounted(() => {
+  customers.onReset()
+  table.selected = []
   // get initial data from server (1st page)
   tableRef.value.requestServerInteraction()
 })

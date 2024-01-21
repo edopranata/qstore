@@ -32,7 +32,7 @@ const {errors} = storeToRefs(useDriversStore())
             lazy-rules
           />
           <q-input
-            :error="errors.hasOwnProperty('phone]')"
+            :error="errors.hasOwnProperty('phone')"
             :error-message="errors.phone"
             v-model="form.phone"
             :rules="[ val => val && val.length <= 20 || 'No handphone maksimal 20 huruf']"

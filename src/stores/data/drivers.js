@@ -191,7 +191,6 @@ export const useDriversStore = defineStore('drivers', {
         this.table.filter = String(Date.now())
         this.onReset()
       }).catch(e => {
-        this.table.selected = []
         this.setError(e);
       }).finally(() => this.table.loading = false);
     },

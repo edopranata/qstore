@@ -27,22 +27,27 @@ watch(table.search, () => {
   immediate: true
 })
 watch(dialog, () => {
+  for (let property in dialog) {
+    if (dialog[property]) {
+      cars.errors = {}
+    }
+  }
   if (dialog.create) {
     table.selected = [];
   }
 })
 
-watch(table, (selected_item) => {
-  if (selected_item.selected.length > 0) {
-    deleted.car_id = selected_item.selected.map(i => i['id'])
-    deleted.data = selected_item.selected.map(i => i['name'] + ' ' + i['no_pol'])
+watch(selected, (selected_item) => {
+  if (selected_item.length > 0) {
+    deleted.car_id = selected_item.map(i => i['id'])
+    deleted.data = selected_item.map(i => i['name'] + ' ' + i['no_pol'])
 
-    if (selected_item.selected.length === 1) {
-      form.id = selected_item.selected[0].id
-      form.name = selected_item.selected[0].name
-      form.no_pol = selected_item.selected[0].no_pol
-      form.description = selected_item.selected[0].description
-      form.year = selected_item.selected[0].year
+    if (selected_item.length === 1) {
+      form.id = selected_item[0].id
+      form.name = selected_item[0].name
+      form.no_pol = selected_item[0].no_pol
+      form.description = selected_item[0].description
+      form.year = selected_item[0].year
     } else {
       cars.onReset()
     }
@@ -55,6 +60,8 @@ watch(table, (selected_item) => {
   deep: true,
 })
 onMounted(() => {
+  cars.onReset()
+  table.selected = []
   // get initial data from server (1st page)
   tableRef.value.requestServerInteraction()
 })
