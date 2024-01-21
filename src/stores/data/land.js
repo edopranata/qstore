@@ -3,27 +3,22 @@ import {reactive, ref} from "vue";
 import {LocalStorage, Notify} from "quasar";
 import {api} from "boot/axios";
 
-export const useCustomersStore = defineStore('customers', {
+export const useLandsStore = defineStore('lands', {
   state: () => ({
     dialog: {
       create: false,
       edit: false,
       delete: false,
     },
-    customers: [
-      {id: 'farmer', desc: 'Petani'},
-      {id: 'collector', desc: 'Pengepul'},
-    ],
     form: {
       id: '',
-      type: '',
+      area_id: '',
       name: '',
-      phone: '',
-      address: '',
-      distance: '',
+      wide: '',
+      trees: '',
     },
     deleted: {
-      customer_id: [],
+      land_id: [],
       data: [],
     },
     table: {
@@ -38,20 +33,18 @@ export const useCustomersStore = defineStore('customers', {
       selected: ref([]),
       filter: '',
       search: {
+        area_id: '',
         name: '',
-        type: '',
-        phone: '',
-        address: '',
         user: '',
       },
+      areas: [],
       loading: false,
       headers: reactive([
         {name: "no", label: "No", field: "id", sortable: false, align: 'left'},
-        {name: "type", label: "Customer Type", field: "type", sortable: true, align: 'left'},
-        {name: "name", label: "Name", field: "name", sortable: true, align: 'left'},
-        {name: "Phone", label: "Phone Number", field: "phone", sortable: true, align: 'left'},
-        {name: "address", label: "Address", field: "address", sortable: true, align: 'left'},
-        {name: "distance", label: "Distance", field: "distance", sortable: true, align: 'left'},
+        {name: "area.name", label: "Area", field: "area", sortable: false, align: 'left'},
+        {name: "name", label: "Lahan", field: "name", sortable: true, align: 'left'},
+        {name: "wide", label: "Luas (Ha)", field: "wide", sortable: true, align: 'left'},
+        {name: "trees", label: "Pohon (Btg)", field: "trees", sortable: true, align: 'left'},
         {name: "user", label: "Created By", field: 'created_by', sortable: false, align: 'left'},
         {name: "created_at", label: "Created At", field: "created_at", sortable: true, align: 'left'},
       ]),
@@ -61,7 +54,7 @@ export const useCustomersStore = defineStore('customers', {
   }),
 
   getters: {
-    getSelected(state){
+    getSelected(state) {
       return state.table.selected
     }
   },
@@ -87,12 +80,12 @@ export const useCustomersStore = defineStore('customers', {
       for (const property in this.dialog) {
         this.dialog[property] = false
       }
-      this.errors = {}
+
     },
     onReset(form = null) {
       if (this.form.hasOwnProperty(form)) {
         if (form === 'delete') {
-          this.deleted.customer_id = []
+          this.deleted.land_id = []
           this.deleted.data = []
         }
       }
@@ -110,10 +103,7 @@ export const useCustomersStore = defineStore('customers', {
         Notify.create({
           position: "top",
           type: 'negative',
-          message: e.response ?
-            e.response.data ?
-              e.response.data.message : e.response.statusText :
-            e.response.message
+          message: e.message ?? e.response.statusText
         })
         if (e.response.status === 401) {
           LocalStorage.remove('token')
@@ -122,7 +112,7 @@ export const useCustomersStore = defineStore('customers', {
         }
       }
     },
-    async getCustomersDataFromApi(path, startRow, count, filter, sortBy, descending) {
+    async getLandsDataFromApi(path, startRow, count, filter, sortBy, descending) {
       const data = {
         page: startRow,
         limit: count,
@@ -138,9 +128,7 @@ export const useCustomersStore = defineStore('customers', {
       }
       // search
       data.name = this.table.search.name ?? ''
-      data.type = this.table.search.type ?? ''
-      data.phone = this.table.search.phone ?? ''
-      data.address = this.table.search.address ?? ''
+      data.area_id = this.table.search.area_id ?? ''
       data.user = this.table.search.user ?? ''
       try {
         const params = new URLSearchParams(data);
@@ -150,7 +138,7 @@ export const useCustomersStore = defineStore('customers', {
         this.setError(e)
       }
     },
-    async getCustomersData(path, props) {
+    async getLandsData(path, props) {
       const {page, rowsPerPage, sortBy, descending} = props.pagination
       const filter = props.filter
 
@@ -164,11 +152,11 @@ export const useCustomersStore = defineStore('customers', {
 
       // calculate starting row of data
       // fetch data from "server"
-      const returnedData = await this.getCustomersDataFromApi(path, page, fetchCount, filter, sortBy, descending)
+      const returnedData = await this.getLandsDataFromApi(path, page, fetchCount, filter, sortBy, descending)
 
       // clear out existing data and add new
       this.table.data = returnedData.data
-      this.table.roles = returnedData.roles
+      this.table.areas = returnedData.areas
 
       // update only rowsNumber = total rows
       this.table.pagination.rowsNumber = returnedData.meta.total
@@ -201,7 +189,7 @@ export const useCustomersStore = defineStore('customers', {
         Notify.create({
           position: "top",
           type: 'positive',
-          message: params.hasOwnProperty('id') ? 'Data customer berhasil diubah' : 'Data customer berhasil disimpan'
+          message: params.hasOwnProperty('id') ? 'Data lahan berhasil di update' : 'Data lahan berhasil disimpan'
         })
         this.table.filter = String(Date.now())
         this.onReset()
@@ -213,12 +201,12 @@ export const useCustomersStore = defineStore('customers', {
     async submitDelete(path = '/') {
       this.table.loading = true
       const params = this.deleted
-      await api.delete(path + "/" + this.deleted.customer_id[0], {params})
+      await api.delete(path + "/" + this.deleted.land_id[0], {params})
         .then(() => {
           Notify.create({
             position: "top",
             type: 'positive',
-            message: this.deleted.customer_id.length > 1 ? `${this.deleted.customer_id.length} customers delete` : `${this.deleted.customer_id.length} customer delete`
+            message: this.deleted.land_id.length > 1 ? `${this.deleted.land_id.length} lands delete` : `${this.deleted.land_id.length} land delete`
           })
 
           this.table.filter = String(Date.now())

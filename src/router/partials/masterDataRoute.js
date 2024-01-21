@@ -37,6 +37,14 @@ export default [
           auth: true,
         },
       },
+      {
+        path: 'lands',
+        name: 'app.masterData.lands.index',
+        component: () => import('pages/app/masterData/land/LandIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
 
     ]
   },

@@ -54,6 +54,12 @@ export const useAreasStore = defineStore('areas', {
   actions: {
     openDialog(dialog) {
       if (this.dialog.hasOwnProperty(dialog)) {
+        if (dialog === 'create') {
+          for (const property in this.form) {
+            this.form[property] = ''
+          }
+          this.table.selected = [];
+        }
         this.dialog[dialog] = !this.dialog[dialog]
       }
     },
@@ -66,7 +72,6 @@ export const useAreasStore = defineStore('areas', {
       for (const property in this.dialog) {
         this.dialog[property] = false
       }
-
     },
     onReset(form = null) {
       if (this.form.hasOwnProperty(form)) {
@@ -74,11 +79,8 @@ export const useAreasStore = defineStore('areas', {
           this.deleted.area_id = []
           this.deleted.data = []
         }
-      } else {
-        for (const property in this.form) {
-          this.form[property] = ''
-        }
       }
+      this.errors = {}
     },
     setError(e) {
       if (e.response.status === 422) {

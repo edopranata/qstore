@@ -60,6 +60,12 @@ export const useDriversStore = defineStore('drivers', {
   actions: {
     openDialog(dialog) {
       if (this.dialog.hasOwnProperty(dialog)) {
+        if (dialog === 'create') {
+          for (const property in this.form) {
+            this.form[property] = ''
+          }
+          this.table.selected = [];
+        }
         this.dialog[dialog] = !this.dialog[dialog]
       }
     },
@@ -79,10 +85,6 @@ export const useDriversStore = defineStore('drivers', {
         if (form === 'delete') {
           this.deleted.driver_id = []
           this.deleted.data = []
-        }
-      } else {
-        for (const property in this.form) {
-          this.form[property] = ''
         }
       }
       this.errors = {}
