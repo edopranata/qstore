@@ -194,6 +194,11 @@ onMounted(() => {
             {{ props.rowIndex + 1 }}
           </q-td>
         </template>
+        <template v-slot:body-cell-type="props">
+          <q-td :props="props">
+            {{ props.row.type === 'farmers' ? 'Petani' : 'Pengepul' }}
+          </q-td>
+        </template>
       </q-table>
     </q-card>
   </q-page>
