@@ -29,6 +29,14 @@ export default [
           auth: true,
         },
       },
+      {
+        path: 'areas',
+        name: 'app.masterData.areas.index',
+        component: () => import('pages/app/masterData/area/AreaIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
 
     ]
   },
