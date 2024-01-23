@@ -49,7 +49,7 @@ onBeforeMount(async () => {
 
         <q-expansion-item
           v-if="menu.children.length > 0"
-
+          group="menu"
           :content-inset-level="1"
           :default-opened="activeMenu.startsWith(menu.name)"
           :icon="menu.icon ?? 'check'"
