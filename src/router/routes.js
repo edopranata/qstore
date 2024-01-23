@@ -2,6 +2,7 @@ import authRoute from "src/router/partials/authRoute";
 import managementRoute from "src/router/partials/managementRoute";
 import settingsRoute from "src/router/partials/settingsRoute";
 import masterDataRoute from "src/router/partials/masterDataRoute";
+import transactionRoute from "src/router/partials/transactionRoute";
 
 const routes = [
   {
@@ -30,6 +31,7 @@ const routes = [
       ...managementRoute,
       ...settingsRoute,
       ...masterDataRoute,
+      ...transactionRoute,
     ]
   },
   ...authRoute,
