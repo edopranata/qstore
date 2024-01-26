@@ -33,6 +33,7 @@ module.exports = configure(function (/* ctx */) {
       'i18n',
       'axios',
       'attempt',
+      'qnumber'
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
