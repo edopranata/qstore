@@ -27,7 +27,7 @@ onBeforeMount(async () => {
 <template>
 
   <q-card flat square>
-    <q-img alt="Img" src="https://cdn.quasar.dev/img/parallax2.jpg"/>
+    <q-img alt="Img" src="/img/sawit.jpeg"/>
     <q-list bordered class="rounded-borders">
       <q-item
         v-ripple
