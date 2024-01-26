@@ -9,6 +9,7 @@ export const useDeliveryOrderStore = defineStore('deliveryOrder', {
     customers_option: [],
     selected_customer: null,
     form: {
+      id: '',
       delivery_date: '',
       customer_id: '',
       net_weight: '',
@@ -37,11 +38,12 @@ export const useDeliveryOrderStore = defineStore('deliveryOrder', {
         {name: "no", label: "No", field: "id", sortable: false, align: 'left'},
         {name: "customer.name", label: "Customer", field: "customer_name", sortable: false, align: 'left'},
         {name: "delivery_date", label: "Delivery Date", field: "delivery_date", sortable: true, align: 'left'},
-        {name: "net_weight", label: "Weight", field: "net_weight", sortable: true, align: 'left'},
-        {name: "net_price", label: "Price", field: "net_price", sortable: true, align: 'left'},
-        {name: "margin", label: "Margin", field: "margin", sortable: true, align: 'left'},
-        {name: "gross_total", label: "Gross Total", field: "gross_total", sortable: true, align: 'left'},
-        {name: "net_total", label: "Net Total", field: "net_total", sortable: true, align: 'left'},
+        {name: "net_weight", label: "Weight", field: "net_weight", sortable: true},
+        {name: "net_price", label: "Price", field: "net_price", sortable: true},
+        {name: "margin", label: "Margin", field: "margin", sortable: true},
+        {name: "gross_total", label: "Gross Total", field: "gross_total", sortable: true},
+        {name: "net_customer", label: "Net Customer", sortable: false},
+        {name: "net_total", label: "Net Income", field: "net_total", sortable: true},
         {name: "invoice_status", label: "Invoice", field: "invoice_status", sortable: false, align: 'left'},
         {name: "income_status", label: "Income", field: "income_status", sortable: false, align: 'left'},
       ]),
@@ -50,9 +52,14 @@ export const useDeliveryOrderStore = defineStore('deliveryOrder', {
     errors: {},
   }),
 
-  getters: {},
+  getters: {
+    getSelected(state) {
+      return state.table.selected
+    }
+  },
 
   actions: {
+
     setError(e) {
       if (e.response.status === 422) {
         let error = e.response.data.errors;
@@ -70,6 +77,31 @@ export const useDeliveryOrderStore = defineStore('deliveryOrder', {
           LocalStorage.remove('token')
           LocalStorage.remove('permission')
           this.router.push({name: 'unauthorized'})
+        }
+      }
+    },
+    unsetError(error) {
+      if (this.errors.hasOwnProperty(error)) {
+        delete this.errors[error]
+      }
+    },
+    onReset(name = null) {
+      if (!name) {
+        for (let property in this.form) {
+          this.form[property] = null
+          this.errors = {}
+          if (property === 'customer_id') {
+            this.selected_customer = null
+          }
+        }
+        this.table.selected = []
+      } else {
+        this.form[name] = null
+        if (this.errors.hasOwnProperty(name)) {
+          this.errors[name] = ''
+        }
+        if (name === 'customer_id') {
+          this.selected_customer = null
         }
       }
     },
@@ -130,6 +162,46 @@ export const useDeliveryOrderStore = defineStore('deliveryOrder', {
       // ...and turn of loading indicator
       this.table.loading = false
       return true
+    },
+    async submitForm(path) {
+      this.table.loading = true
+      const params = this.form;
+
+      const url = this.form.id ? `${path}/${this.form.id}` : path
+      await api({
+        method: this.form.id ? 'patch' : 'post',
+        url: url,
+        data: params
+      }).then(() => {
+        this.table.selected = []
+        this.onReset()
+        Notify.create({
+          position: "top",
+          type: 'positive',
+          message: params.hasOwnProperty('id') ? 'Data transaksi DO berhasil diubah' : 'Data transaksi DO berhasil disimpan'
+        })
+        this.table.filter = String(Date.now())
+        this.onReset()
+      }).catch(e => {
+        this.setError(e);
+      }).finally(() => this.table.loading = false);
+    },
+    async submitDelete(path = '/') {
+      this.table.loading = true
+      await api.delete(path + "/" + this.table.selected[0].id)
+        .then(() => {
+          Notify.create({
+            position: "top",
+            type: 'positive',
+            message: 'transaksi DO berhasil dihapus'
+          })
+          this.table.filter = String(Date.now())
+          this.table.selected = []
+          this.onReset()
+        }).catch(e => {
+          this.table.selected = []
+          this.setError(e);
+        }).finally(() => this.table.loading = false);
     },
   }
 })

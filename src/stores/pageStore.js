@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import {defineStore} from 'pinia';
 import {LocalStorage} from "quasar";
 
 export const usePageStore = defineStore('page', {
@@ -6,7 +6,21 @@ export const usePageStore = defineStore('page', {
     leftDrawer: false,
     rightDrawer: false,
     activeMenu: null,
-    menus: []
+    menus: [],
+    currencyFormat: {
+      prefix: 'Rp ',
+      suffix: '',
+      reverseFill: false,
+      min: undefined,
+      max: undefined,
+    },
+    unitFormat: {
+      prefix: '',
+      suffix: ' kg',
+      reverseFill: false,
+      min: undefined,
+      max: undefined,
+    }
   }),
 
   actions: {
