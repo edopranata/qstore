@@ -211,7 +211,7 @@ const onUpdate = () => {
                 </div>
               </template>
               <template v-slot:append>
-                <q-icon class="cursor-pointer" name="event">
+                <q-icon class="cursor-pointer" name="event" tabindex="0">
                   <q-popup-proxy cover transition-hide="scale" transition-show="scale">
                     <q-date v-model="form.delivery_date">
                       <div class="row items-center justify-end">
@@ -260,26 +260,28 @@ const onUpdate = () => {
             />
 
             <q-field
+              tabindex="-1"
               :bg-color="!!form.id ? 'yellow-2' : ''"
               :dense="$q.screen.lt.md"
               filled
               label="Terima dari pabrik (Bruto)"
               stack-label>
               <template v-slot:control>
-                <div class="self-center full-width no-outline" tabindex="0">
+                <div class="self-center full-width no-outline" tabindex="-1">
                   {{ new Intl.NumberFormat('id-ID', {style: 'currency', currency: "IDR"}).format(form.gross_total) }}
                 </div>
               </template>
             </q-field>
 
             <q-field
+              tabindex="-1"
               :bg-color="!!form.id ? 'yellow-2' : ''"
               :dense="$q.screen.lt.md"
               filled
               label="Pendapatan Bersih (netto)"
               stack-label>
               <template v-slot:control>
-                <div class="self-center full-width no-outline" tabindex="0">
+                <div class="self-center full-width no-outline" tabindex="-1">
                   {{ new Intl.NumberFormat('id-ID', {style: 'unit', unit: "kilogram"}).format(form.net_total) }}
                 </div>
               </template>
@@ -289,37 +291,40 @@ const onUpdate = () => {
           <div :class="$q.screen.lt.md ? 'tw-font-bold' : 'text-h6'" class="q-mt-sm q-mb-xs">Beli dari Petani</div>
           <div class="tw-grid lg:tw-gap-4 tw-gap-2 lg:tw-grid-cols-5 md:tw-grid-cols-4 tw-grid-cols-3">
             <q-field
+              tabindex="-1"
               :bg-color="!!form.id ? 'yellow-2' : ''"
               :dense="$q.screen.lt.md"
               filled
               label="Berat Bersih (pabrik)"
               stack-label>
               <template v-slot:control>
-                <div class="self-center full-width no-outline" tabindex="0">
+                <div class="self-center full-width no-outline" tabindex="-1">
                   {{ formattedNUmber('customer_weight', 'unit') }}
                 </div>
               </template>
             </q-field>
             <q-field
+              tabindex="-1"
               :bg-color="!!form.id ? 'yellow-2' : ''"
               :dense="$q.screen.lt.md"
               filled
               label="Harga jual (petani)"
               stack-label>
               <template v-slot:control>
-                <div class="self-center full-width no-outline" tabindex="0">{{ formattedNUmber('customer_price') }}
+                <div class="self-center full-width no-outline" tabindex="-1">{{ formattedNUmber('customer_price') }}
                 </div>
               </template>
             </q-field>
 
             <q-field
+              tabindex="-1"
               :bg-color="!!form.id ? 'yellow-2' : ''"
               :dense="$q.screen.lt.md"
               filled
               label="Total terima (petani)"
               stack-label>
               <template v-slot:control>
-                <div class="self-center full-width no-outline" tabindex="0">
+                <div class="self-center full-width no-outline" tabindex="-1">
                   {{ formattedNUmber('customer_total_price') }}
                 </div>
               </template>
