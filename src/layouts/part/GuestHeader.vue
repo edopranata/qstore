@@ -1,6 +1,4 @@
-<script setup>
-import {usePageStore} from "stores/pageStore";
-</script>
+<script setup></script>
 
 <template>
   <q-header elevated>

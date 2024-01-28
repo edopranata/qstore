@@ -1,5 +1,5 @@
 <script setup>
-import {usePageStore} from "stores/pageStore";
+import {usePageStore} from "stores/helper/pageStore";
 
 const {toggleLeftDrawer, toggleRightDrawer} = usePageStore()
 </script>

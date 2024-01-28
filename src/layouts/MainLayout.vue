@@ -28,7 +28,7 @@
 </template>
 
 <script setup>
-import {usePageStore} from "stores/pageStore";
+import {usePageStore} from "stores/helper/pageStore";
 import {storeToRefs} from "pinia";
 import MainFooter from "layouts/part/MainFooter.vue";
 import MainHeader from "layouts/part/MainHeader.vue";

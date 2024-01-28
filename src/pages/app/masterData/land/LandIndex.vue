@@ -84,7 +84,7 @@ onMounted(() => {
         :filter="table.filter"
         :loading="table.loading"
         :rows="table.data ?? []"
-        :selection="can('app.masterData.lands.[deleteLand]') ? 'multiple' :'single'"
+        :selection="can('app.masterData.lahan.[deleteLand]') ? 'multiple' :'single'"
         binary-state-sort
         bordered
         row-key="id"
@@ -95,10 +95,10 @@ onMounted(() => {
             <q-toolbar-title>
               Lands Data
             </q-toolbar-title>
-            <div v-if="can('app.masterData.lands.[createLand,updateLand,deleteLand]')"
+            <div v-if="can('app.masterData.lahan.[createLand,updateLand,deleteLand]')"
                  class="tw-space-x-2">
               <q-btn
-                v-if="can('app.masterData.lands.deleteLand')"
+                v-if="can('app.masterData.lahan.deleteLand')"
                 :dense="$q.screen.lt.md"
                 :disable="!selected.length > 0"
                 :label="!$q.screen.lt.md ? 'Delete' : ''"
@@ -114,7 +114,7 @@ onMounted(() => {
                 </q-tooltip>
               </q-btn>
               <q-btn
-                v-if="can('app.masterData.lands.updateLand')"
+                v-if="can('app.masterData.lahan.updateLand')"
                 :dense="$q.screen.lt.md"
                 :disable="selected.length !== 1"
                 :label="!$q.screen.lt.md ? 'Edit Data' : ''"
@@ -130,7 +130,7 @@ onMounted(() => {
                 </q-tooltip>
               </q-btn>
               <q-btn
-                v-if="can('app.masterData.lands.createLand')"
+                v-if="can('app.masterData.lahan.createLand')"
                 :dense="$q.screen.lt.md"
                 :label="!$q.screen.lt.md ? 'Create New' : ''"
                 :loading="table.loading"

@@ -1,7 +1,7 @@
 import {defineStore} from 'pinia';
 import {api} from 'boot/axios'
 import {LocalStorage, Notify} from 'quasar'
-import {usePageStore} from "stores/pageStore";
+import {usePageStore} from "stores/helper/pageStore";
 
 const usePage = usePageStore()
 

@@ -1,7 +1,7 @@
 <script setup>
 import {useDeliveryOrderStore} from "stores/transaction/deliveryOrder";
 import {useAuthStore} from "stores/authStore";
-import {usePageStore} from "stores/pageStore";
+import {usePageStore} from "stores/helper/pageStore";
 import {useRoute} from "vue-router";
 import {onMounted, reactive, ref, watch} from "vue";
 import {storeToRefs} from "pinia";
@@ -282,7 +282,7 @@ const onUpdate = () => {
               stack-label>
               <template v-slot:control>
                 <div class="self-center full-width no-outline" tabindex="-1">
-                  {{ new Intl.NumberFormat('id-ID', {style: 'unit', unit: "kilogram"}).format(form.net_total) }}
+                  {{ new Intl.NumberFormat('id-ID', {style: 'currency', currency: "IDR"}).format(form.net_total) }}
                 </div>
               </template>
             </q-field>

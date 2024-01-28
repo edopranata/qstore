@@ -83,7 +83,7 @@ onMounted(() => {
         :filter="table.filter"
         :loading="table.loading"
         :rows="table.data ?? []"
-        :selection="can('app.masterData.drivers.[deleteDriver]') ? 'multiple' :'single'"
+        :selection="can('app.masterData.supir.[deleteDriver]') ? 'multiple' :'single'"
         binary-state-sort
         bordered
         row-key="id"
@@ -94,10 +94,10 @@ onMounted(() => {
             <q-toolbar-title>
               Drivers Data
             </q-toolbar-title>
-            <div v-if="can('app.masterData.drivers.[createDriver,updateDriver,deleteDriver]')"
+            <div v-if="can('app.masterData.supir.[createDriver,updateDriver,deleteDriver]')"
                  class="tw-space-x-2">
               <q-btn
-                v-if="can('app.masterData.drivers.deleteDriver')"
+                v-if="can('app.masterData.supir.deleteDriver')"
                 :disable="!selected.length > 0"
                 :label="!$q.screen.lt.md ? 'Delete' : ''"
                 :loading="table.loading"
@@ -113,7 +113,7 @@ onMounted(() => {
                 </q-tooltip>
               </q-btn>
               <q-btn
-                v-if="can('app.masterData.drivers.updateDriver')"
+                v-if="can('app.masterData.supir.updateDriver')"
                 :disable="selected.length !== 1"
                 :label="!$q.screen.lt.md ? 'Edit Data' : ''"
                 :loading="table.loading"
@@ -129,7 +129,7 @@ onMounted(() => {
                 </q-tooltip>
               </q-btn>
               <q-btn
-                v-if="can('app.masterData.drivers.createDriver')"
+                v-if="can('app.masterData.supir.createDriver')"
                 :label="!$q.screen.lt.md ? 'Create New' : ''"
                 :loading="table.loading"
                 :dense="$q.screen.lt.md"

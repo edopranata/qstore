@@ -84,7 +84,7 @@ onMounted(() => {
         :filter="table.filter"
         :loading="table.loading"
         :rows="table.data ?? []"
-        :selection="can('app.masterData.customers.[deleteCustomer]') ? 'multiple' :'single'"
+        :selection="can('app.masterData.pelanggan.[deleteCustomer]') ? 'multiple' :'single'"
         binary-state-sort
         bordered
         row-key="id"
@@ -95,10 +95,10 @@ onMounted(() => {
             <q-toolbar-title>
               Customers Data
             </q-toolbar-title>
-            <div v-if="can('app.masterData.customers.[createCustomer,updateCustomer,deleteCustomer]')"
+            <div v-if="can('app.masterData.pelanggan.[createCustomer,updateCustomer,deleteCustomer]')"
                  class="tw-space-x-2">
               <q-btn
-                v-if="can('app.masterData.customers.deleteCustomer')"
+                v-if="can('app.masterData.pelanggan.deleteCustomer')"
                 :disable="!selected.length > 0"
                 :label="!$q.screen.lt.md ? 'Delete' : ''"
                 :loading="table.loading"
@@ -114,7 +114,7 @@ onMounted(() => {
                 </q-tooltip>
               </q-btn>
               <q-btn
-                v-if="can('app.masterData.customers.updateCustomer')"
+                v-if="can('app.masterData.pelanggan.updateCustomer')"
                 :disable="selected.length !== 1"
                 :label="!$q.screen.lt.md ? 'Edit Data' : ''"
                 :loading="table.loading"
@@ -130,7 +130,7 @@ onMounted(() => {
                 </q-tooltip>
               </q-btn>
               <q-btn
-                v-if="can('app.masterData.customers.createCustomer')"
+                v-if="can('app.masterData.pelanggan.createCustomer')"
                 :label="!$q.screen.lt.md ? 'Create New' : ''"
                 :loading="table.loading"
                 :round="$q.screen.lt.md"

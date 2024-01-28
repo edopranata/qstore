@@ -6,40 +6,40 @@ export default [
     redirect: {name: 'app'},
     children: [
       {
-        path: 'cars',
-        name: 'app.masterData.cars.index',
+        path: 'mobil',
+        name: 'app.masterData.mobil.index',
         component: () => import('pages/app/masterData/car/CarIndex.vue'),
         meta: {
           auth: true,
         },
       },
       {
-        path: 'drivers',
-        name: 'app.masterData.drivers.index',
+        path: 'supir',
+        name: 'app.masterData.supir.index',
         component: () => import('pages/app/masterData/driver/DriverIndex.vue'),
         meta: {
           auth: true,
         },
       },
       {
-        path: 'customers',
-        name: 'app.masterData.customers.index',
+        path: 'pelanggan',
+        name: 'app.masterData.pelanggan.index',
         component: () => import('pages/app/masterData/customer/CustomerIndex.vue'),
         meta: {
           auth: true,
         },
       },
       {
-        path: 'areas',
-        name: 'app.masterData.areas.index',
+        path: 'wilayah',
+        name: 'app.masterData.wilayah.index',
         component: () => import('pages/app/masterData/area/AreaIndex.vue'),
         meta: {
           auth: true,
         },
       },
       {
-        path: 'lands',
-        name: 'app.masterData.lands.index',
+        path: 'lahan',
+        name: 'app.masterData.lahan.index',
         component: () => import('pages/app/masterData/land/LandIndex.vue'),
         meta: {
           auth: true,

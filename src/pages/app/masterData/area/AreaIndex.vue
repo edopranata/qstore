@@ -80,7 +80,7 @@ onMounted(() => {
         :filter="table.filter"
         :loading="table.loading"
         :rows="table.data ?? []"
-        :selection="can('app.masterData.areas.[deleteArea]') ? 'multiple' :'single'"
+        :selection="can('app.masterData.wilayah.[deleteArea]') ? 'multiple' :'single'"
         binary-state-sort
         bordered
         row-key="id"
@@ -91,10 +91,10 @@ onMounted(() => {
             <q-toolbar-title>
               Areas Data
             </q-toolbar-title>
-            <div v-if="can('app.masterData.areas.[createArea,updateArea,deleteArea]')"
+            <div v-if="can('app.masterData.wilayah.[createArea,updateArea,deleteArea]')"
                  class="tw-space-x-2">
               <q-btn
-                v-if="can('app.masterData.areas.deleteArea')"
+                v-if="can('app.masterData.wilayah.deleteArea')"
                 :dense="$q.screen.lt.md"
                 :disable="!selected.length > 0"
                 :label="!$q.screen.lt.md ? 'Delete' : ''"
@@ -110,7 +110,7 @@ onMounted(() => {
                 </q-tooltip>
               </q-btn>
               <q-btn
-                v-if="can('app.masterData.areas.updateArea')"
+                v-if="can('app.masterData.wilayah.updateArea')"
                 :dense="$q.screen.lt.md"
                 :disable="selected.length !== 1"
                 :label="!$q.screen.lt.md ? 'Edit Data' : ''"
@@ -126,7 +126,7 @@ onMounted(() => {
                 </q-tooltip>
               </q-btn>
               <q-btn
-                v-if="can('app.masterData.areas.createArea')"
+                v-if="can('app.masterData.wilayah.createArea')"
                 :dense="$q.screen.lt.md"
                 :label="!$q.screen.lt.md ? 'Create New' : ''"
                 :loading="table.loading"
