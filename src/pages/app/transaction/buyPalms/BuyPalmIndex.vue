@@ -346,6 +346,7 @@ const onUpdate = () => {
               :loading="parent.table.loading"
               :round="$q.screen.lt.md"
               glossy
+              :to="`${path}/${props.row.id}/details`"
               icon="visibility"
               size="sm"
             >
