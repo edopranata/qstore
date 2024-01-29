@@ -46,7 +46,45 @@ export const useTradingsStore = defineStore('tradings', {
         data: [],
       },
     },
-    details: {},
+    details: {
+      form: {
+        id: '',
+        customer_id: '',
+        trade_date: '',
+        weight: '',
+        price: '',
+        total: '',
+      },
+      trading: {},
+      customers: [],
+      customers_option: [],
+      selected_customer: null,
+      table: {
+        pagination: {
+          sortBy: '',
+          descending: false,
+          page: 1,
+          rowsPerPage: 10,
+          rowsNumber: 0
+        },
+        selected: ref([]),
+        filter: '',
+        search: {},
+        loading: false,
+        headers: reactive([
+          {name: "no", label: "No", field: "id", sortable: false, align: 'left'},
+          {name: "trade_date", label: "Tanggal Transaksi", field: "trade_date", sortable: true, align: 'left'},
+          {name: "customer_name", label: "Petani", field: "customer_name", sortable: false, align: 'left'},
+          {name: "weight", label: "Berat (kg)", field: "weight", sortable: true},
+          {name: "price", label: "Harga (Rp)", field: "price", sortable: true},
+          {name: "total", label: "Total (Rp)", field: "total", sortable: true},
+          {name: "farmer_status", label: "Invoice Status", field: "farmer_status", sortable: true, align: 'left'},
+          {name: "created_by", label: "User", field: "created_by", sortable: false, align: 'left'},
+          {name: "created_at", label: "Created At", field: "created_at", sortable: true, align: 'left'},
+        ]),
+        data: [],
+      },
+    },
     errors: {},
   }),
 
@@ -59,6 +97,16 @@ export const useTradingsStore = defineStore('tradings', {
     },
     getSelectedDriver(state) {
       return state.parent.selected_driver
+    },
+
+    getDetailsFormField(state) {
+      return state.details.form
+    },
+    getDetailsSelected(state) {
+      return state.details.table.selected
+    },
+    getSelectedCustomer(state) {
+      return state.details.selected_customer
     },
   },
 
@@ -88,31 +136,21 @@ export const useTradingsStore = defineStore('tradings', {
         delete this.errors[error]
       }
     },
-    onReset(name = null, prop = 'parent') {
-      if (!name) {
-        for (let property in this[prop].form) {
-          this[prop].form[property] = null
-          this.errors = {}
-          if (property === 'car_id') {
-            this[prop].selected_car = null
-          }
-          if (property === 'driver_id') {
-            this[prop].selected_driver = null
-          }
-        }
-        this[prop].table.selected = []
-      } else {
-        this[prop].form[name] = null
-        if (this.errors.hasOwnProperty(name)) {
-          this.errors[name] = ''
-        }
-        if (name === 'driver_id') {
-          this[prop].selected_driver = null
-        }
-        if (name === 'car_id') {
+    onReset(prop = 'parent') {
+      for (let property in this[prop].form) {
+        this[prop].form[property] = null
+        this.errors = {}
+        if (property === 'car_id') {
           this[prop].selected_car = null
         }
+        if (property === 'driver_id') {
+          this[prop].selected_driver = null
+        }
+        if (property === 'customer_id') {
+          this[prop].selected_customer = null
+        }
       }
+      this[prop].table.selected = []
     },
     async getTradeDataFromApi(path, startRow, count, filter, sortBy, descending) {
       const data = {
@@ -176,26 +214,25 @@ export const useTradingsStore = defineStore('tradings', {
       this.parent.table.loading = false
       return true
     },
-    async submitTradingForm(path) {
-      this.parent.table.loading = true
-      const params = this.parent.form;
+    async submitTradingForm(path, prop = 'parent') {
+      this[prop].table.loading = true
+      const params = this[prop].form;
 
-      const url = this.parent.form.id ? `${path}/${this.parent.form.id}` : path
+      const url = this[prop].form.id ? `${path}/${this[prop].form.id}` : path
       await api({
-        method: this.parent.form.id ? 'patch' : 'post',
+        method: this[prop].form.id ? 'patch' : 'post',
         url: url,
         data: params
       }).then((response) => {
-        this.parent.table.selected = []
-        this.onReset()
+        this[prop].table.selected = []
         Notify.create({
           position: "top",
           type: 'positive',
-          message: params.id ? 'Data transaksi DO berhasil diubah' : 'Data transaksi DO berhasil disimpan'
+          message: params.id ? 'Data transaksi berhasil diubah' : 'Data transaksi berhasil disimpan'
         })
-        this.parent.table.filter = String(Date.now())
-        this.onReset()
-        if (response.data.hasOwnProperty('data')) {
+        this[prop].table.filter = String(Date.now())
+        this.onReset(prop)
+        if (response.data.hasOwnProperty('data') && prop === 'parent') {
           this.router.push({
             name: 'app.transaction.pembelianSawit.viewDetailsTransaction',
             params: {id: response.data.data.id}
@@ -203,24 +240,87 @@ export const useTradingsStore = defineStore('tradings', {
         }
       }).catch(e => {
         this.setError(e);
-      }).finally(() => this.parent.table.loading = false);
+      }).finally(() => this[prop].table.loading = false);
     },
-    async submitTradingDelete(path = '/') {
-      this.parent.table.loading = true
-      await api.delete(path + "/" + this.parent.table.selected[0].id)
+    async submitTradingDelete(path, prop = 'parent') {
+      this[prop].table.loading = true
+      await api.delete(path + "/" + this[prop].table.selected[0].id)
         .then(() => {
           Notify.create({
             position: "top",
             type: 'positive',
             message: 'Transaksi berhasil dihapus'
           })
-          this.parent.table.filter = String(Date.now())
-          this.parent.table.selected = []
-          this.onReset()
+          this[prop].table.filter = String(Date.now())
+          this[prop].table.selected = []
+          this.onReset(prop)
         }).catch(e => {
-          this.parent.table.selected = []
+          this[prop].table.selected = []
           this.setError(e);
-        }).finally(() => this.parent.table.loading = false);
+        }).finally(() => this[prop].table.loading = false);
+    },
+
+
+    async getDetailsTradeDataFromApi(path, startRow, count, filter, sortBy, descending) {
+      const data = {
+        page: startRow,
+        limit: count,
+      }
+
+      // Sort by field descending or ascending
+      if (sortBy) {
+        const orderBy = descending ? 'desc' : 'asc'
+        data.sortBy = JSON.stringify({
+          key: sortBy,
+          order: orderBy
+        })
+      }
+      // search
+      // data.name = this.table.search.name ?? ''
+      // data.user = this.table.search.user ?? ''
+      try {
+        const params = new URLSearchParams(data);
+        const response = await api.get(path, {params})
+        return response.data
+      } catch (e) {
+        this.setError(e)
+      }
+    },
+    async getDetailsTradeData(path, props) {
+      const {page, rowsPerPage, sortBy, descending} = props.pagination
+      const filter = props.filter
+
+      this.details.table.loading = true
+
+      // emulate server
+      // update rowsCount with appropriate value
+
+      // get all rows if "All" (0) is selected
+      const fetchCount = rowsPerPage === 0 ? this.details.table.pagination.rowsNumber : rowsPerPage
+
+      // calculate starting row of data
+      // fetch data from "server"
+      const returnedData = await this.getDetailsTradeDataFromApi(path, page, fetchCount, filter, sortBy, descending)
+
+      // clear out existing data and add new
+      this.details.trading = returnedData.trading
+      this.details.table.data = returnedData.details.data
+      this.details.customers = returnedData.customers
+      this.details.customers_option = returnedData.customers?.slice(0, 10)
+
+
+      // update only rowsNumber = total rows
+      this.details.table.pagination.rowsNumber = returnedData.details.meta.total
+
+      // don't forget to update local pagination object
+      this.details.table.pagination.page = page
+      this.details.table.pagination.rowsPerPage = rowsPerPage
+      this.details.table.pagination.sortBy = sortBy
+      this.details.table.pagination.descending = descending
+
+      // ...and turn of loading indicator
+      this.details.table.loading = false
+      return true
     },
   }
 })
