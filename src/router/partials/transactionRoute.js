@@ -30,6 +30,14 @@ export default [
           },
         },
       },
+      {
+        path: 'hasilKebun',
+        name: 'app.transaction.hasilKebun.index',
+        component: () => import('pages/app/transaction/plantation/PlantationIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
     ]
   },
 ]

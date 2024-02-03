@@ -54,6 +54,14 @@ export const useTradingsStore = defineStore('tradings', {
         weight: '',
         price: '',
         total: '',
+        net_weight: '',
+        net_price: '',
+        net_total: '',
+        car_fee: '',
+        driver_fee: '',
+        car_price: '',
+        driver_price: '',
+        net_income: '',
       },
       trading: {},
       customers: [],
@@ -214,6 +222,29 @@ export const useTradingsStore = defineStore('tradings', {
       this.parent.table.loading = false
       return true
     },
+    async submitFactoryForm(path) {
+      this.details.table.loading = true
+      const params = this.details.form;
+
+      await api({
+        method: 'patch',
+        url: path,
+        data: params
+      }).then(() => {
+        this.details.table.selected = []
+        Notify.create({
+          position: "top",
+          type: 'positive',
+          message: 'Data transaksi berhasil disimpan'
+        })
+        this.details.table.filter = String(Date.now())
+        this.onReset('details')
+
+      }).catch(e => {
+        this.setError(e);
+      }).finally(() => this.details.table.loading = false);
+    },
+
     async submitTradingForm(path, prop = 'parent') {
       this[prop].table.loading = true
       const params = this[prop].form;

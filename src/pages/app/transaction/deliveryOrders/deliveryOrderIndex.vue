@@ -417,9 +417,12 @@ const onUpdate = () => {
         selection="single"
         @request="onRequest"
       >
-        <template v-slot:top>
 
+        <template v-slot:body-selection="scope">
+          <q-checkbox v-model="scope.selected"
+                      :disable="scope.row.customer_name === 'Plantation' || scope.row.customer_name === 'Trading'"/>
         </template>
+
         <template v-slot:body-cell-no="props">
           <q-td :props="props">
             {{ props.rowIndex + 1 }}

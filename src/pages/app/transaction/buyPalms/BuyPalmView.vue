@@ -24,6 +24,7 @@ const trading = useTradingsStore()
 const tableRef = ref()
 
 onMounted(async () => {
+  trading.onReset('details')
   tableRef.value.requestServerInteraction()
 })
 
@@ -34,9 +35,35 @@ watch([getSelectedCustomer, formField], ([cusSel, formDetails]) => {
   } else {
     details.form.customer_id = cusSel
   }
+  if (formDetails) {
+    for (let property in formDetails) {
+      if (formDetails[property]?.length) {
+        trading.unsetError(property)
+      }
+    }
+  }
   if (formDetails.price && formDetails.weight) {
     details.form.total = formDetails.price * formDetails.weight
   }
+  if (formDetails.net_weight && formDetails.net_price) {
+    details.form.net_total = formDetails.net_weight * formDetails.net_price
+
+    let net_total = details.form.net_total ?? 0
+    let trade_cost = details.trading.trade_cost ?? 0
+    let car_price = details.form.car_price ?? 0
+    let driver_price = details.form.driver_price ?? 0
+    let customer_total = details.trading.customer_total_price ?? 0
+    let cost = car_price + driver_price + customer_total + trade_cost
+
+    details.form.net_income = net_total - cost
+  }
+  if (formDetails.net_total && formDetails.car_fee) {
+    details.form.car_price = formDetails.net_weight * formDetails.car_fee
+  }
+  if (formDetails.net_total && formDetails.driver_fee) {
+    details.form.driver_price = formDetails.net_weight * formDetails.driver_fee
+  }
+
 }, {deep: true})
 
 const onRequest = async (props) => {
@@ -55,6 +82,18 @@ const searchCustomer = (val, update) => {
 }
 const onReset = () => {
   trading.onReset('details')
+}
+const onSubmitFactory = () => {
+  $q.dialog({
+    title: 'Simpan data timbangan pabrik',
+    message: 'Apakah data yang di input sudah benar?',
+    cancel: true,
+    persistent: true
+  }).onOk(() => {
+    trading.submitFactoryForm(path, 'details')
+  }).onDismiss(() => {
+
+  })
 }
 const onSubmit = () => {
   $q.dialog({
@@ -104,233 +143,453 @@ const onUpdate = () => {
 <template>
   <q-page class="tw-space-y-4" padding>
     <q-card bordered>
-      <q-form
-        class="tw-w-full"
-        @reset="onReset"
-        @submit="onSubmit"
-      >
-        <q-card-section>
-          <div class="tw-flex tw-flex-col-reverse md:tw-grid md:tw-gap-4 md:tw-grid-cols-2">
-            <div class="tw-grid tw-gap-2 tw-grid-cols-3 tw-content-start">
-              <div class="tw-font-bold tw-col-span-3">Data timbangan kebun</div>
-              <q-select
-                v-model="details.selected_customer"
-                :bg-color="!!details.form.id ? 'yellow-2' : ''"
-                :dense="$q.screen.lt.md"
-                :error="errors.hasOwnProperty('customer_id')"
-                :error-message="errors.customer_id"
-                :options="details.customers_option"
-                class="tw-w-full tw-col-span-3"
-                clearable
-                fill-input
-                filled
-                hide-selected
-                label="Customer"
-                option-label="name"
-                option-value="id"
-                use-input
-                @change="details.unsetError('customer_id')"
-                @filter="searchCustomer">
-                <template v-slot:option="scope">
-                  <q-item v-bind="scope.itemProps">
-                    <q-item-section avatar>
-                      <q-icon name="person"/>
-                    </q-item-section>
-                    <q-item-section>
-                      <q-item-label>{{ scope.opt.name }}</q-item-label>
-                      <q-item-label caption>
-                        <q-icon name="phone"/>
-                        {{ scope.opt.phone }}
-                      </q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </template>
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">
-                      No results
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-select>
-              <q-number
-                v-model="details.form.weight"
-                :bg-color="!!details.form.id ? 'yellow-2' : ''"
-                :dense="$q.screen.lt.md"
-                :error="errors.hasOwnProperty('weight')"
-                :error-message="errors.weight"
-                :options="page.unitFormat"
+      <q-list>
+        <q-expansion-item
+          default-opened
+          header-class="bg-blue text-white"
+          icon="scale"
+          label="Data Timbangan Petani"
+        >
+          <q-card>
+            <q-card-section>
+              <q-form
                 class="tw-w-full"
-                filled
-                label="Berat (kg)"
-              />
-              <q-number
-                v-model="details.form.price"
-                :bg-color="!!details.form.id ? 'yellow-2' : ''"
-                :dense="$q.screen.lt.md"
-                :error="errors.hasOwnProperty('price')"
-                :error-message="errors.price"
-                :options="page.currencyFormat"
-                class="tw-w-full"
-                filled
-                label="Harga (Rp)"
-              />
-              <q-field
-                :bg-color="!!details.form.id ? 'yellow-2' : ''"
-                :dense="$q.screen.lt.md"
-                filled
-                hint=""
-                label="Total (Rp)"
-                stack-label
-                tabindex="-1">
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline" tabindex="-1">
-                    {{
-                      Intl.NumberFormat('id-ID', {
-                        style: 'currency',
-                        currency: 'IDR',
-                        minimumFractionDigits: 0
-                      }).format(formField.total)
-                    }}
+                @reset="onReset"
+                @submit="onSubmit"
+              >
+                <div class="tw-flex tw-flex-col-reverse md:tw-grid md:tw-gap-4 md:tw-grid-cols-2">
+                  <div class="tw-grid tw-gap-2 tw-grid-cols-3 tw-content-start">
+                    <div class="tw-font-bold tw-col-span-3">Data timbangan kebun</div>
+                    <q-select
+                      v-model="details.selected_customer"
+                      :bg-color="!!details.form.id ? 'yellow-2' : ''"
+                      :dense="$q.screen.lt.md"
+                      :error="errors.hasOwnProperty('customer_id')"
+                      :error-message="errors.customer_id"
+                      :options="details.customers_option"
+                      class="tw-w-full tw-col-span-3"
+                      clearable
+                      fill-input
+                      filled
+                      hide-selected
+                      label="Customer"
+                      option-label="name"
+                      option-value="id"
+                      use-input
+                      @change="details.unsetError('customer_id')"
+                      @filter="searchCustomer">
+                      <template v-slot:option="scope">
+                        <q-item v-bind="scope.itemProps">
+                          <q-item-section avatar>
+                            <q-icon name="person"/>
+                          </q-item-section>
+                          <q-item-section>
+                            <q-item-label>{{ scope.opt.name }}</q-item-label>
+                            <q-item-label caption>
+                              <q-icon name="phone"/>
+                              {{ scope.opt.phone }}
+                            </q-item-label>
+                          </q-item-section>
+                        </q-item>
+                      </template>
+                      <template v-slot:no-option>
+                        <q-item>
+                          <q-item-section class="text-grey">
+                            No results
+                          </q-item-section>
+                        </q-item>
+                      </template>
+                    </q-select>
+                    <q-number
+                      v-model="details.form.weight"
+                      :bg-color="!!details.form.id ? 'yellow-2' : ''"
+                      :dense="$q.screen.lt.md"
+                      :error="errors.hasOwnProperty('weight')"
+                      :error-message="errors.weight"
+                      :options="page.unitFormat"
+                      class="tw-w-full"
+                      filled
+                      label="Berat (kg)"
+                    />
+                    <q-number
+                      v-model="details.form.price"
+                      :bg-color="!!details.form.id ? 'yellow-2' : ''"
+                      :dense="$q.screen.lt.md"
+                      :error="errors.hasOwnProperty('price')"
+                      :error-message="errors.price"
+                      :options="page.currencyFormat"
+                      class="tw-w-full"
+                      filled
+                      label="Harga (Rp)"
+                    />
+                    <q-field
+                      :bg-color="!!details.form.id ? 'yellow-2' : ''"
+                      :dense="$q.screen.lt.md"
+                      filled
+                      hint=""
+                      label="Total (Rp)"
+                      stack-label
+                      tabindex="-1">
+                      <template v-slot:control>
+                        <div class="self-center full-width no-outline" tabindex="-1">
+                          {{
+                            Intl.NumberFormat('id-ID', {
+                              style: 'currency',
+                              currency: 'IDR',
+                              minimumFractionDigits: 0
+                            }).format(formField.total)
+                          }}
+                        </div>
+                      </template>
+                    </q-field>
                   </div>
-                </template>
-              </q-field>
-            </div>
-            <div class="tw-grid tw-gap-2 tw-grid-cols-2 tw-content-start">
-              <div class="tw-font-bold tw-col-span-2">Mobil/Supir dan uang jalan</div>
-              <q-field
-                :dense="$q.screen.lt.md"
-                filled
-                hint=""
-                label="Tanggal Transaksi"
-                stack-label
-                tabindex="-1">
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline" tabindex="-1">
-                    {{
-                      tradeDetails.trading.trade_date ? date.formatDate(tradeDetails.trading.trade_date.split(' ')[0], 'DD MMMM YYYY') : ''
-                    }}
+                  <div class="tw-grid tw-gap-2 tw-grid-cols-2 tw-content-start">
+                    <div class="tw-font-bold tw-col-span-2">Mobil/Supir dan uang jalan</div>
+                    <q-field
+                      :dense="$q.screen.lt.md"
+                      filled
+                      hint=""
+                      label="Tanggal Transaksi"
+                      stack-label
+                      tabindex="-1">
+                      <template v-slot:control>
+                        <div class="self-center full-width no-outline" tabindex="-1">
+                          {{
+                            tradeDetails.trading.trade_date ? date.formatDate(tradeDetails.trading.trade_date.split(' ')[0], 'DD MMMM YYYY') : ''
+                          }}
+                        </div>
+                      </template>
+                    </q-field>
+                    <q-field
+                      :dense="$q.screen.lt.md"
+                      filled
+                      hint=""
+                      label="Mobil"
+                      stack-label
+                      tabindex="-1">
+                      <template v-slot:control>
+                        <div class="self-center full-width no-outline" tabindex="-1">
+                          {{ tradeDetails.trading.car_no_pol }}
+                        </div>
+                      </template>
+                    </q-field>
+                    <q-field
+                      :dense="$q.screen.lt.md"
+                      filled
+                      hint=""
+                      label="Supir"
+                      stack-label
+                      tabindex="-1">
+                      <template v-slot:control>
+                        <div class="self-center full-width no-outline" tabindex="-1">
+                          {{ tradeDetails.trading.driver_name }}
+                        </div>
+                      </template>
+                    </q-field>
+                    <q-field
+                      :dense="$q.screen.lt.md"
+                      filled
+                      hint=""
+                      label="Uang Jalan"
+                      stack-label
+                      tabindex="-1">
+                      <template v-slot:control>
+                        <div class="self-center full-width no-outline" tabindex="-1">
+                          {{
+                            Intl.NumberFormat('id-ID', {
+                              style: 'currency',
+                              currency: 'IDR',
+                              minimumFractionDigits: 0
+                            }).format(tradeDetails.trading.trade_cost)
+                          }}
+                        </div>
+                      </template>
+                    </q-field>
                   </div>
-                </template>
-              </q-field>
-              <q-field
-                :dense="$q.screen.lt.md"
-                filled
-                hint=""
-                label="Mobil"
-                stack-label
-                tabindex="-1">
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline" tabindex="-1">
-                    {{ tradeDetails.trading.car_no_pol }}
-                  </div>
-                </template>
-              </q-field>
-              <q-field
-                :dense="$q.screen.lt.md"
-                filled
-                hint=""
-                label="Supir"
-                stack-label
-                tabindex="-1">
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline" tabindex="-1">
-                    {{ tradeDetails.trading.driver_name }}
-                  </div>
-                </template>
-              </q-field>
-              <q-field
-                :dense="$q.screen.lt.md"
-                filled
-                hint=""
-                label="Uang Jalan"
-                stack-label
-                tabindex="-1">
-                <template v-slot:control>
-                  <div class="self-center full-width no-outline" tabindex="-1">
-                    {{
-                      Intl.NumberFormat('id-ID', {
-                        style: 'currency',
-                        currency: 'IDR',
-                        minimumFractionDigits: 0
-                      }).format(tradeDetails.trading.trade_cost)
-                    }}
-                  </div>
-                </template>
-              </q-field>
-            </div>
-          </div>
-        </q-card-section>
-        <q-card-actions>
-          <q-btn
-            v-if="can('app.transaction.pembelianSawit.[createTransaction]')"
-            :dense="$q.screen.lt.lg"
-            :label="!$q.screen.lt.md ? 'Simpan data' : ''"
-            :loading="details.table.loading"
-            :round="$q.screen.lt.md"
-            :size="$q.screen.lt.lg ? 'md' : 'lg'"
-            color="secondary"
-            glossy
-            icon="add_circle"
-            type="submit"
-          >
-            <q-tooltip>
-              Simpan transaksi
-            </q-tooltip>
-          </q-btn>
-          <q-btn
-            v-if="can('app.transaction.pembelianSawit.[createTransaction]')"
-            :dense="$q.screen.lt.lg"
-            :label="!$q.screen.lt.md ? 'Batalkan' : ''"
-            :loading="details.table.loading"
-            :round="$q.screen.lt.md"
-            :size="$q.screen.lt.lg ? 'md' : 'lg'"
-            color="primary"
-            glossy
-            icon="cancel"
-            type="reset">
-            <q-tooltip>
-              Hapus isian yang ada di form
-            </q-tooltip>
-          </q-btn>
-          <q-space></q-space>
-          <q-btn
-            v-if="can('app.transaction.pembelianSawit.deleteTransaction')"
-            :dense="$q.screen.lt.lg"
-            :disable="selected.length !== 1"
-            :label="!$q.screen.lt.md ? 'Hapus data' : ''"
-            :loading="details.table.loading"
-            :round="$q.screen.lt.md"
-            :size="$q.screen.lt.lg ? 'md' : 'lg'"
-            color="negative"
-            glossy
-            icon="delete"
-            @click.stop="onDelete"
-          >
-            <q-tooltip>
-              Hapus transaksi yang terpilih
-            </q-tooltip>
-          </q-btn>
-          <q-btn
-            v-if="can('app.transaction.pembelianSawit.updateTransaction')"
-            :dense="$q.screen.lt.lg"
-            :disable="selected.length !== 1"
-            :label="!$q.screen.lt.md ? 'Ubah data' : ''"
-            :loading="details.table.loading"
-            :round="$q.screen.lt.md"
-            :size="$q.screen.lt.lg ? 'md' : 'lg'"
-            color="warning"
-            glossy
-            icon="edit"
-            @click.stop="onUpdate"
-          >
+                </div>
+                <div class="tw-flex tw-space-x-2">
+                  <q-btn
+                    v-if="can('app.transaction.pembelianSawit.[createTransaction]')"
+                    :dense="$q.screen.lt.lg"
+                    :label="!$q.screen.lt.md ? 'Simpan data' : ''"
+                    :loading="details.table.loading"
+                    :round="$q.screen.lt.md"
+                    :size="$q.screen.lt.lg ? 'md' : 'lg'"
+                    color="secondary"
+                    glossy
+                    icon="add_circle"
+                    type="submit"
+                  >
+                    <q-tooltip>
+                      Simpan transaksi
+                    </q-tooltip>
+                  </q-btn>
+                  <q-btn
+                    v-if="can('app.transaction.pembelianSawit.[createTransaction]')"
+                    :dense="$q.screen.lt.lg"
+                    :label="!$q.screen.lt.md ? 'Batalkan' : ''"
+                    :loading="details.table.loading"
+                    :round="$q.screen.lt.md"
+                    :size="$q.screen.lt.lg ? 'md' : 'lg'"
+                    color="primary"
+                    glossy
+                    icon="cancel"
+                    type="reset">
+                    <q-tooltip>
+                      Hapus isian yang ada di form
+                    </q-tooltip>
+                  </q-btn>
+                  <q-space></q-space>
+                  <q-btn
+                    v-if="can('app.transaction.pembelianSawit.deleteTransaction')"
+                    :dense="$q.screen.lt.lg"
+                    :disable="selected.length !== 1"
+                    :label="!$q.screen.lt.md ? 'Hapus data' : ''"
+                    :loading="details.table.loading"
+                    :round="$q.screen.lt.md"
+                    :size="$q.screen.lt.lg ? 'md' : 'lg'"
+                    color="negative"
+                    glossy
+                    icon="delete"
+                    @click.stop="onDelete"
+                  >
+                    <q-tooltip>
+                      Hapus transaksi yang terpilih
+                    </q-tooltip>
+                  </q-btn>
+                  <q-btn
+                    v-if="can('app.transaction.pembelianSawit.updateTransaction')"
+                    :dense="$q.screen.lt.lg"
+                    :disable="selected.length !== 1"
+                    :label="!$q.screen.lt.md ? 'Ubah data' : ''"
+                    :loading="details.table.loading"
+                    :round="$q.screen.lt.md"
+                    :size="$q.screen.lt.lg ? 'md' : 'lg'"
+                    color="warning"
+                    glossy
+                    icon="edit"
+                    @click.stop="onUpdate"
+                  >
 
-            <q-tooltip>
-              Ubah data transaksi yang terpilih
-            </q-tooltip>
-          </q-btn>
-        </q-card-actions>
-      </q-form>
+                    <q-tooltip>
+                      Ubah data transaksi yang terpilih
+                    </q-tooltip>
+                  </q-btn>
+                </div>
+              </q-form>
+            </q-card-section>
+          </q-card>
+        </q-expansion-item>
+        <q-expansion-item
+          header-class="bg-teal text-white"
+          icon="scale"
+          label="Data Timbangan Pabrik"
+        >
+          <q-form
+            class="tw-w-full"
+            @reset="onReset"
+            @submit="onSubmitFactory"
+          >
+            <q-card>
+              <q-card-section>
+                <div class="tw-flex tw-flex-col md:tw-grid md:tw-gap-4 md:tw-grid-cols-2">
+                  <div class="tw-grid tw-gap-2 tw-grid-cols-2 tw-content-start">
+                    <div class="tw-font-bold tw-col-span-2">Data timbangan Pabrik (DO)</div>
+                    <q-field
+                      :dense="$q.screen.lt.md"
+                      filled
+                      hint=""
+                      label="Timbangan Kebun (kg)"
+                      stack-label
+                      tabindex="-1">
+                      <template v-slot:control>
+                        <div class="self-center full-width no-outline" tabindex="-1">
+                          {{
+                            Intl.NumberFormat('id-ID', {
+                              style: 'unit',
+                              unit: 'kilogram'
+                            }).format(details.trading.customer_total_weight)
+                          }}
+                        </div>
+                      </template>
+                    </q-field>
+                    <q-field
+                      :dense="$q.screen.lt.md"
+                      filled
+                      hint=""
+                      label="Rata rata harga petani"
+                      stack-label
+                      tabindex="-1">
+                      <template v-slot:control>
+                        <div class="self-center full-width no-outline" tabindex="-1">
+                          {{
+                            Intl.NumberFormat('id-ID', {
+                              style: 'currency',
+                              currency: 'IDR',
+                              minimumFractionDigits: 0
+                            }).format(details.trading.customer_average_price ?? 0)
+                          }}
+                        </div>
+                      </template>
+                    </q-field>
+                    <q-number
+                      v-model="details.form.net_weight"
+                      :dense="$q.screen.lt.md"
+                      :error="errors.hasOwnProperty('net_weight')"
+                      :error-message="errors.net_weight"
+                      :options="page.unitFormat"
+
+                      class="tw-w-full"
+                      filled
+                      label="Berat Bersih (kg)"
+                    />
+                    <q-number
+                      v-model="details.form.net_price"
+                      :dense="$q.screen.lt.md"
+                      :error="errors.hasOwnProperty('net_price')"
+                      :error-message="errors.net_price"
+                      :options="page.currencyFormat"
+
+                      class="tw-w-full"
+                      filled
+                      label="Harga DO (Rp)"
+                    />
+                    <q-number
+                      v-model="details.form.car_fee"
+                      :dense="$q.screen.lt.md"
+                      :error="errors.hasOwnProperty('car_fee')"
+                      :error-message="errors.car_fee"
+                      :options="page.currencyFormat"
+
+                      class="tw-w-full"
+                      filled
+                      label="Amprah Mobil (Rp/kg)"
+                    />
+                    <q-number
+                      v-model="details.form.driver_fee"
+                      :dense="$q.screen.lt.md"
+                      :error="errors.hasOwnProperty('driver_fee')"
+                      :error-message="errors.driver_fee"
+                      :options="page.currencyFormat"
+
+                      class="tw-w-full"
+                      filled
+                      label="Upah Supir (Rp/kg)"
+                    />
+                  </div>
+
+                  <div class="tw-flex tw-flex-col tw-space-y-2">
+                    <div class="tw-font-bold">Detail biaya dan pendapatan bersih</div>
+                    <q-markup-table class="md:tw-w-1/2" dense>
+                      <thead>
+                      <q-tr>
+                        <q-th class="text-left">Jenis</q-th>
+                        <q-th class="text-right">Pend / Biaya</q-th>
+                      </q-tr>
+                      </thead>
+                      <tbody>
+
+                      <q-tr>
+                        <q-td>Terima dari DO :</q-td>
+                        <q-td class="text-right">
+                          {{
+                            Intl.NumberFormat('id-ID', {
+                              style: 'currency',
+                              currency: 'IDR',
+                              minimumFractionDigits: 0
+                            }).format(details.form.net_total ?? 0)
+                          }}
+                        </q-td>
+                      </q-tr>
+                      <q-tr>
+                        <q-td>Bayar Petani :</q-td>
+                        <q-td class="text-right">
+                          {{
+                            Intl.NumberFormat('id-ID', {
+                              style: 'currency',
+                              currency: 'IDR',
+                              minimumFractionDigits: 0
+                            }).format(details.trading.customer_total_price ? details.trading.customer_total_price * -1 : 0)
+                          }}
+                        </q-td>
+                      </q-tr>
+                      <q-tr>
+                        <q-td>Uang Jalan :</q-td>
+                        <q-td class="text-right">
+                          {{
+                            Intl.NumberFormat('id-ID', {
+                              style: 'currency',
+                              currency: 'IDR',
+                              minimumFractionDigits: 0
+                            }).format(details.trading.trade_cost ? details.trading.trade_cost * -1 : 0)
+                          }}
+                        </q-td>
+                      </q-tr>
+                      <q-tr>
+                        <q-td>Amprah Mobil :</q-td>
+                        <q-td class="text-right">
+                          {{
+                            Intl.NumberFormat('id-ID', {
+                              style: 'currency',
+                              currency: 'IDR',
+                              minimumFractionDigits: 0
+                            }).format(details.form.car_price ? details.form.car_price * -1 : 0)
+                          }}
+                        </q-td>
+                      </q-tr>
+                      <q-tr>
+                        <q-td>Upah Supir :</q-td>
+                        <q-td class="text-right">
+                          {{
+                            Intl.NumberFormat('id-ID', {
+                              style: 'currency',
+                              currency: 'IDR',
+                              minimumFractionDigits: 0
+                            }).format(details.form.driver_price ? details.form.driver_price * -1 : 0)
+                          }}
+                        </q-td>
+                      </q-tr>
+                      </tbody>
+                      <tfoot>
+                      <q-tr class="bg-teal text-white">
+                        <q-th class="text-left">
+                          Total Terima
+                        </q-th>
+                        <q-th class="text-right">
+                          {{
+                            Intl.NumberFormat('id-ID', {
+                              style: 'currency',
+                              currency: 'IDR',
+                              minimumFractionDigits: 0
+                            }).format(details.form.net_income ? details.form.net_income : 0)
+                          }}
+                        </q-th>
+                      </q-tr>
+                      </tfoot>
+                    </q-markup-table>
+                  </div>
+                </div>
+                <div class="tw-flex tw-mt-4">
+                  <q-btn
+                    :dense="$q.screen.lt.lg"
+                    :loading="details.table.loading"
+                    :size="$q.screen.lt.lg ? 'md' : 'lg'"
+                    color="secondary"
+                    glossy
+                    icon="add_circle"
+                    label="Simpan timbangan pabrik"
+                    type="submit"
+                  >
+                    <q-tooltip>
+                      Simpan Data timbangan pabrik
+                    </q-tooltip>
+                  </q-btn>
+                </div>
+              </q-card-section>
+            </q-card>
+          </q-form>
+        </q-expansion-item>
+      </q-list>
     </q-card>
     <q-card>
       <q-table

@@ -18,6 +18,7 @@ const trading = useTradingsStore()
 const tableRef = ref()
 
 onMounted(async () => {
+  trading.onReset()
   tableRef.value.requestServerInteraction()
 })
 
