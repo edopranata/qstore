@@ -4,6 +4,7 @@ import settingsRoute from "src/router/partials/settingsRoute";
 import masterDataRoute from "src/router/partials/masterDataRoute";
 import transactionRoute from "src/router/partials/transactionRoute";
 import invoiceRoute from "src/router/partials/invoiceRoute"
+import loanRoute from "src/router/partials/loanRoute";
 
 const routes = [
   {
@@ -34,6 +35,7 @@ const routes = [
       ...masterDataRoute,
       ...transactionRoute,
       ...invoiceRoute,
+      ...loanRoute,
     ]
   },
   ...authRoute,
