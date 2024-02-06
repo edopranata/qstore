@@ -20,8 +20,21 @@ export const usePageStore = defineStore('page', {
       reverseFill: false,
       min: undefined,
       max: undefined,
-    }
+    },
+    price: {
+      car_fee: 100,
+      driver_fee: 80,
+      trade_cost: 270000,
+      margin: 40,
+      factory: 2300
+    },
   }),
+
+  getters: {
+    getDefaultPrice(state) {
+      return state.price
+    }
+  },
 
   actions: {
     setActive(routeName) {

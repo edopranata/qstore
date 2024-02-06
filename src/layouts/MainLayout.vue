@@ -1,15 +1,15 @@
 <template>
   <q-layout view="hHh LpR lfr">
-    <q-header elevated class="bg-primary text-white" height-hint="98">
-      <MainHeader />
+    <q-header class="bg-primary text-white print-hide" elevated height-hint="98">
+      <MainHeader/>
     </q-header>
 
-    <q-drawer v-model="leftDrawer" bordered side="left">
-      <MainLeftSidebar />
+    <q-drawer v-model="leftDrawer" bordered class="print-hide" side="left">
+      <MainLeftSidebar/>
     </q-drawer>
 
-    <q-drawer v-model="rightDrawer" side="right" bordered>
-      <MainRightSidebar />
+    <q-drawer v-model="rightDrawer" bordered class="print-hide" side="right">
+      <MainRightSidebar/>
     </q-drawer>
 
     <q-page-container>
@@ -20,8 +20,8 @@
       </router-view>
     </q-page-container>
 
-    <q-footer elevated class="bg-grey-8 text-white">
-      <MainFooter />
+    <q-footer class="bg-grey-8 text-white print-hide" elevated>
+      <MainFooter/>
     </q-footer>
 
   </q-layout>

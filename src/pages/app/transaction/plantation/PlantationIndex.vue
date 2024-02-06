@@ -345,6 +345,18 @@ const onUpdate = () => {
                 use-input
                 @change="plantation.unsetError('land_id')"
                 @filter="searchLand">
+                <template v-slot:selected-item="scope">
+                  <q-chip
+                    :tabindex="scope.tabindex"
+                    class="q-ma-xs"
+                    color="primary"
+                    removable
+                    text-color="white"
+                    @remove="scope.removeAtIndex(scope.index)"
+                  >
+                    {{ scope.opt.name }}
+                  </q-chip>
+                </template>
                 <template v-slot:option="scope">
                   <q-item v-bind="scope.itemProps">
                     <q-item-section avatar>
