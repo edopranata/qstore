@@ -5,8 +5,8 @@ export default [
     redirect: {name: 'app'},
     children: [
       {
-        path: 'pinjamanPetani',
-        name: 'app.pinjaman.pinjamanPetani.index',
+        path: 'dataPinjaman',
+        name: 'app.pinjaman.dataPinjaman.index',
         component: () => import('pages/app/loan/customerLoan/CustomerLoanIndex.vue'),
         meta: {
           auth: true,

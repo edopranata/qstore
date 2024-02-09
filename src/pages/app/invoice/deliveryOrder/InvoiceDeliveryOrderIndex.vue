@@ -1,12 +1,20 @@
 <script setup>
 import {useInvoiceDeliveryOrderStore} from "stores/invoice/invoiceDeliveryOrder";
+import {usePageStore} from "stores/helper/pageStore";
 import {storeToRefs} from "pinia";
 import {useRoute} from "vue-router";
 import {onMounted, watch} from "vue";
 
+const page = usePageStore()
 const invoiceDO = useInvoiceDeliveryOrderStore()
-const {table, select} = useInvoiceDeliveryOrderStore()
-const {errors, getCustomerOption, getSummaries: summaries} = storeToRefs(useInvoiceDeliveryOrderStore())
+const {table, select, form, loan} = useInvoiceDeliveryOrderStore()
+const {
+  errors,
+  getCustomerOption,
+  getSummaries: summaries,
+  getForm,
+  getLoan
+} = storeToRefs(useInvoiceDeliveryOrderStore())
 const {path, query} = useRoute()
 
 const type = ['Customer', 'Trading', 'Plantation']
@@ -30,11 +38,23 @@ onMounted(async () => {
   }
 })
 
-watch(getCustomerOption, (getSelected) => {
+watch(getCustomerOption, async (getSelected) => {
   if (getSelected.type !== 'Customer') {
-    invoiceDO.getDeliveryOrderData()
+    await invoiceDO.getDeliveryOrderData()
+    await invoiceDO.calculation()
   } else {
     table.data = []
+    await invoiceDO.calculation()
+  }
+}, {deep: true})
+
+watch(getForm, (newForm) => {
+  if (newForm) {
+    if (newForm.installment > 0) {
+      console.log(newForm.installment)
+      loan.ending_balance = parseInt(loan.balance) - parseInt(newForm.installment)
+      form.net_total = parseInt(newForm.total) - parseInt(newForm.installment)
+    }
   }
 }, {deep: true})
 const searchCustomer = (val, update) => {
@@ -54,7 +74,7 @@ const searchCustomer = (val, update) => {
       <q-card-section class="tw-space-y-4">
         <div class="md:tw-grid md:tw-grid-cols-3 md:tw-gap-4">
           <div class="lg:tw-col-span-1 tw-col-span-2">
-            <div class="q-gutter-sm md:tw-mb-11">
+            <div class="q-gutter-sm md:tw-mb-9">
               <q-radio v-model="table.search.type" label="Pengepul" val="Customer"/>
               <q-radio v-model="table.search.type" label="Hasil Kebun" val="Plantation"/>
               <q-radio v-model="table.search.type" label="Jual Beli Sawit" val="Trading"/>
@@ -100,9 +120,74 @@ const searchCustomer = (val, update) => {
                 </q-item>
               </template>
             </q-select>
+            <div v-if="table.search.type === 'Customer'" class="tw-grid tw-grid-cols-2 tw-gap-x-4">
+              <q-number
+                v-if="summaries.loan"
+                v-model="form.installment"
+                :dense="$q.screen.lt.md"
+                :error="errors.hasOwnProperty('installment')"
+                :error-message="errors.installment"
+                :options="page.currencyFormat"
+                class="tw-w-full"
+                filled
+                label="Jumlah angsuran"
+              />
+              <q-field
+                v-if="summaries.loan"
+                :dense="$q.screen.lt.md"
+                bg-color="blue-grey"
+                color="blue-grey-2"
+                filled
+                hint=""
+                label="Pinjaman (Rp)"
+                stack-label
+                tabindex="-1">
+                <template v-slot:control>
+                  <div class="self-center full-width no-outline" tabindex="-1">
+                    {{
+                      Intl.NumberFormat('id-ID', {
+                        style: 'currency',
+                        currency: 'IDR',
+                        minimumFractionDigits: 0
+                      }).format(summaries.loan)
+                    }}
+                  </div>
+                </template>
+              </q-field>
+              <q-field
+                v-if="summaries.loan"
+                :dense="$q.screen.lt.md"
+                bg-color="blue-grey"
+                class="tw-col-span-2"
+                color="blue-grey-2"
+                filled
+                hint=""
+                label="Sisa Pinjaman (Rp)"
+                stack-label
+                tabindex="-1">
+                <template v-slot:control>
+                  <div class="self-center full-width no-outline" tabindex="-1">
+                    {{
+                      Intl.NumberFormat('id-ID', {
+                        style: 'currency',
+                        currency: 'IDR',
+                        minimumFractionDigits: 0
+                      }).format(getLoan.ending_balance)
+                    }}
+                  </div>
+                </template>
+              </q-field>
+            </div>
+
+            <div class="tw-flex tw-space-x-4">
+              <q-btn color="deep-orange" glossy label="Deep Orange"/>
+              <q-btn color="deep-orange" glossy label="Deep Orange"/>
+            </div>
           </div>
-          <div class="tw-space-y-2">
+          <div>
             <q-field
+              bg-color="blue-grey"
+              color="blue-grey-2"
               :dense="$q.screen.lt.md"
               filled
               hint=""
@@ -122,6 +207,8 @@ const searchCustomer = (val, update) => {
               </template>
             </q-field>
             <q-field
+              bg-color="blue-grey"
+              color="blue-grey-2"
               :dense="$q.screen.lt.md"
               filled
               hint=""
@@ -140,10 +227,12 @@ const searchCustomer = (val, update) => {
               </template>
             </q-field>
             <q-field
+              bg-color="blue-grey"
+              color="blue-grey-2"
               :dense="$q.screen.lt.md"
               filled
               hint=""
-              label="Total terima petani (Rp)"
+              label="Hasil kebun petani (Rp)"
               stack-label
               tabindex="-1">
               <template v-slot:control>
@@ -154,6 +243,27 @@ const searchCustomer = (val, update) => {
                       currency: 'IDR',
                       minimumFractionDigits: 0
                     }).format(summaries.total)
+                  }}
+                </div>
+              </template>
+            </q-field>
+            <q-field
+              :dense="$q.screen.lt.md"
+              bg-color="blue-grey"
+              color="blue-grey-2"
+              filled
+              hint=""
+              label="Yang diterima petani (Rp)"
+              stack-label
+              tabindex="-1">
+              <template v-slot:control>
+                <div class="self-center full-width no-outline" tabindex="-1">
+                  {{
+                    Intl.NumberFormat('id-ID', {
+                      style: 'currency',
+                      currency: 'IDR',
+                      minimumFractionDigits: 0
+                    }).format(getForm.net_total)
                   }}
                 </div>
               </template>

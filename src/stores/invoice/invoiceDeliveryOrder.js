@@ -5,6 +5,18 @@ import {LocalStorage, Notify} from "quasar";
 
 export const useInvoiceDeliveryOrderStore = defineStore('invoiceDO', {
   state: () => ({
+    form: {
+      installment: 0,
+      total: 0,
+      net_total: 0,
+      trade_id: null,
+      customer_id: null,
+    },
+    loan: {
+      balance: 0,
+      ending_balance: 0,
+    },
+
     select: {
       customers: [],
       customers_option: [],
@@ -55,10 +67,18 @@ export const useInvoiceDeliveryOrderStore = defineStore('invoiceDO', {
       data.average = state.table.data.length > 0 ? state.table.data.reduce((total, next) => total + next.net_price, 0) / state.table.data.length : 0;
       data.weight = state.table.data.length > 0 ? state.table.data.reduce((total, next) => total + next.net_weight, 0) : 0
       data.total = state.table.data.length > 0 ? state.table.data.reduce((total, next) => total + (next.gross_total - next.net_total), 0) : 0
+      data.loan = state.select.selected_customer ? state.select.selected_customer.loan ? state.select.selected_customer.loan : 0 : 0
       return data
     },
+
     getAllCustomers(state) {
       return state.select.customers
+    },
+    getForm(state) {
+      return state.form
+    },
+    getLoan(state) {
+      return state.loan
     }
   },
 
@@ -115,38 +135,59 @@ export const useInvoiceDeliveryOrderStore = defineStore('invoiceDO', {
       }
     },
     async getDeliveryOrderData() {
-      this.table.loading = true
       const searchType = this.table.search.type
 
       switch (searchType) {
         case 'Customer' :
+          this.table.loading = true
           setTimeout(() => {
             this.table.data = []
-            if (this.select.selected_customer.hasOwnProperty('id') && this.table.orders.length > 0) {
-              this.table.data = this.table.orders.filter(item => item.customer_type.endsWith(searchType) && item.customer_id === this.select.selected_customer.id)
+            if (this.select.selected_customer && this.table.orders.length > 0) {
+              let data = this.table.orders.filter(item => item.customer_type.endsWith(searchType) && item.customer_id === this.select.selected_customer.id)
+              this.table.data = data
+              this.form.trade_id = data.map(item => item.id)
+              this.table.loading = false
             } else {
               this.table.data = []
+              this.form.trade_id = null
+              this.table.loading = false
             }
-            this.table.loading = false
-          }, 700)
+            this.calculation()
+          }, 550)
           break
         case 'Plantation':
+          this.table.loading = true
           setTimeout(() => {
             this.table.data = this.table.orders.length > 0 ? this.table.orders.filter(item => item.customer_type.endsWith(searchType)) : []
             this.select.selected_customer = null
+            this.calculation()
             this.table.loading = false
           }, 500)
 
           break
         case 'Trading':
+          this.table.loading = true
           setTimeout(() => {
             this.table.data = this.table.orders.length > 0 ? this.table.orders.filter(item => item.customer_type.endsWith(searchType)) : []
             this.select.selected_customer = null
+            this.calculation()
             this.table.loading = false
           }, 500)
           break
       }
-    }
+    },
+    calculation() {
+      let loan_balance = this.select.selected_customer ? this.select.selected_customer.loan ? this.select.selected_customer.loan : 0 : 0
+      let total = this.table.data.length > 0 ? this.table.data.reduce((total, next) => total + (next.gross_total - next.net_total), 0) : 0
 
+      this.form.customer_id = this.select.selected_customer ? this.select.selected_customer.id : null
+
+      this.loan.balance = loan_balance
+      this.loan.ending_balance = loan_balance
+
+      this.form.total = total
+      this.form.net_total = total
+      this.form.installment = 0
+    }
   }
 })

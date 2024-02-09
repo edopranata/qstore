@@ -17,7 +17,9 @@ const {
   getSelectedCustomer,
   getDetailsSelected: selected,
   details: tradeDetails,
-  getDetailsFormField: formField
+  getDetailsFormField: formField,
+  getTrading,
+  editStatus
 } = storeToRefs(useTradingsStore())
 const trading = useTradingsStore()
 
@@ -25,8 +27,10 @@ const tableRef = ref()
 
 onMounted(async () => {
   trading.onReset('details')
-  tableRef.value.requestServerInteraction()
+  await tableRef.value.requestServerInteraction()
+  await trading.getTradeInfo(path)
 })
+
 
 watch([getSelectedCustomer, formField], ([cusSel, formDetails]) => {
   if (cusSel) {
@@ -89,8 +93,8 @@ const onSubmitFactory = () => {
     message: 'Apakah data yang di input sudah benar?',
     cancel: true,
     persistent: true
-  }).onOk(() => {
-    trading.submitFactoryForm(path, 'details')
+  }).onOk(async () => {
+    await trading.submitFactoryForm(path)
   }).onDismiss(() => {
 
   })
@@ -223,7 +227,8 @@ const onUpdate = () => {
                       label="Harga (Rp)"
                     />
                     <q-field
-                      :bg-color="!!details.form.id ? 'yellow-2' : ''"
+                      bg-color="blue-grey"
+                      color="blue-grey-2"
                       :dense="$q.screen.lt.md"
                       filled
                       hint=""
@@ -246,6 +251,8 @@ const onUpdate = () => {
                   <div class="tw-grid tw-gap-2 tw-grid-cols-2 tw-content-start">
                     <div class="tw-font-bold tw-col-span-2">Mobil/Supir dan uang jalan</div>
                     <q-field
+                      bg-color="blue-grey"
+                      color="blue-grey-2"
                       :dense="$q.screen.lt.md"
                       filled
                       hint=""
@@ -261,6 +268,8 @@ const onUpdate = () => {
                       </template>
                     </q-field>
                     <q-field
+                      bg-color="blue-grey"
+                      color="blue-grey-2"
                       :dense="$q.screen.lt.md"
                       filled
                       hint=""
@@ -274,6 +283,8 @@ const onUpdate = () => {
                       </template>
                     </q-field>
                     <q-field
+                      bg-color="blue-grey"
+                      color="blue-grey-2"
                       :dense="$q.screen.lt.md"
                       filled
                       hint=""
@@ -287,6 +298,8 @@ const onUpdate = () => {
                       </template>
                     </q-field>
                     <q-field
+                      bg-color="blue-grey"
+                      color="blue-grey-2"
                       :dense="$q.screen.lt.md"
                       filled
                       hint=""
@@ -381,6 +394,7 @@ const onUpdate = () => {
           </q-card>
         </q-expansion-item>
         <q-expansion-item
+          v-if="!details.form.trade_status"
           header-class="bg-teal text-white"
           icon="scale"
           label="Data Timbangan Pabrik"
@@ -396,6 +410,8 @@ const onUpdate = () => {
                   <div class="tw-grid tw-gap-2 tw-grid-cols-2 tw-content-start">
                     <div class="tw-font-bold tw-col-span-2">Data timbangan Pabrik (DO)</div>
                     <q-field
+                      bg-color="blue-grey"
+                      color="blue-grey-2"
                       :dense="$q.screen.lt.md"
                       filled
                       hint=""
@@ -414,6 +430,8 @@ const onUpdate = () => {
                       </template>
                     </q-field>
                     <q-field
+                      bg-color="blue-grey"
+                      color="blue-grey-2"
                       :dense="$q.screen.lt.md"
                       filled
                       hint=""
@@ -607,8 +625,6 @@ const onUpdate = () => {
         selection="single"
         @request="onRequest"
       >
-        <template v-slot:top>
-        </template>
         <template v-slot:body-cell-no="props">
           <q-td :props="props">
             {{ props.rowIndex + 1 }}

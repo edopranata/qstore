@@ -336,8 +336,9 @@ const onUpdate = () => {
         selection="single"
         @request="onRequest"
       >
-        <template v-slot:top>
-
+        <template v-slot:body-selection="scope">
+          <q-checkbox v-model="scope.selected"
+                      :disable="scope.row.trade_status !== null"/>
         </template>
         <template v-slot:body-cell-action="props">
           <q-td :props="props">
@@ -346,6 +347,7 @@ const onUpdate = () => {
               :label="!$q.screen.lt.md ? 'Edit Details' : ''"
               :loading="parent.table.loading"
               :round="$q.screen.lt.md"
+              :disable="props.row.trade_status !== null"
               glossy
               :to="`${path}/${props.row.id}/details`"
               icon="visibility"

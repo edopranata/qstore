@@ -62,6 +62,7 @@ export const useTradingsStore = defineStore('tradings', {
         car_price: '',
         driver_price: '',
         net_income: '',
+        trade_status: '',
       },
       trading: {},
       customers: [],
@@ -116,6 +117,12 @@ export const useTradingsStore = defineStore('tradings', {
     getSelectedCustomer(state) {
       return state.details.selected_customer
     },
+    getTrading(state) {
+      return state.details.trading
+    },
+    editStatus(state) {
+      return state.details.form.trade_status
+    }
   },
 
   actions: {
@@ -239,7 +246,9 @@ export const useTradingsStore = defineStore('tradings', {
         })
         this.details.table.filter = String(Date.now())
         this.onReset('details')
-
+        this.router.push({
+          name: 'app.transaction.pembelianSawit.index'
+        })
       }).catch(e => {
         this.setError(e);
       }).finally(() => this.details.table.loading = false);
@@ -268,6 +277,8 @@ export const useTradingsStore = defineStore('tradings', {
             name: 'app.transaction.pembelianSawit.viewDetailsTransaction',
             params: {id: response.data.data.id}
           })
+        } else {
+          this.getTradeInfo(path)
         }
       }).catch(e => {
         this.setError(e);
@@ -291,6 +302,20 @@ export const useTradingsStore = defineStore('tradings', {
         }).finally(() => this[prop].table.loading = false);
     },
 
+    async getTradeInfo(path) {
+      console.log(path)
+      try {
+        const response = await api.get(path)
+        this.details.trading = response.data.trading
+        this.details.form.net_weight = response.data.trading ? response.data.trading.net_weight : 0
+        this.details.form.net_price = response.data.trading ? response.data.trading.net_price : 0
+        this.details.form.car_fee = response.data.trading ? response.data.trading.car_fee : 0
+        this.details.form.driver_fee = response.data.trading ? response.data.trading.driver_fee : 0
+        this.details.form.trade_status = response.data.trading ? response.data.trading.trade_status !== null : false
+      } catch (e) {
+        this.setError(e)
+      }
+    },
 
     async getDetailsTradeDataFromApi(path, startRow, count, filter, sortBy, descending) {
       const data = {
@@ -334,7 +359,6 @@ export const useTradingsStore = defineStore('tradings', {
       const returnedData = await this.getDetailsTradeDataFromApi(path, page, fetchCount, filter, sortBy, descending)
 
       // clear out existing data and add new
-      this.details.trading = returnedData.trading
       this.details.table.data = returnedData.details.data
       this.details.customers = returnedData.customers
       this.details.customers_option = returnedData.customers?.slice(0, 10)
@@ -351,6 +375,7 @@ export const useTradingsStore = defineStore('tradings', {
 
       // ...and turn of loading indicator
       this.details.table.loading = false
+
       return true
     },
   }
