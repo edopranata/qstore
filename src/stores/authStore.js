@@ -85,6 +85,7 @@ export const useAuthStore = defineStore('auth', {
         // set menu to pinia and local storage
         // LocalStorage.set('menu', menu)
         usePage.menus = data.menu
+        usePage.setting = data.setting
       }
 
     },
@@ -107,6 +108,7 @@ export const useAuthStore = defineStore('auth', {
       // set menu to pinia and local storage
       // LocalStorage.set('menu', menu)
       usePage.menus = null
+      usePage.setting = {}
 
     },
     async attempt(token) {

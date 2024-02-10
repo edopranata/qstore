@@ -17,6 +17,7 @@ export const useDeliveryOrderStore = defineStore('deliveryOrder', {
       margin: '',
       net_total: '',
       gross_total: '',
+      loan: 0,
     },
     table: {
       pagination: {

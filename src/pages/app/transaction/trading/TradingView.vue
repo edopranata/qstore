@@ -18,8 +18,6 @@ const {
   getDetailsSelected: selected,
   details: tradeDetails,
   getDetailsFormField: formField,
-  getTrading,
-  editStatus
 } = storeToRefs(useTradingsStore())
 const trading = useTradingsStore()
 

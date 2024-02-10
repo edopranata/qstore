@@ -15,7 +15,7 @@ export default [
       {
         path: 'pembelianSawit',
         name: 'app.transaction.pembelianSawit.index',
-        component: () => import('pages/app/transaction/buyPalms/BuyPalmIndex.vue'),
+        component: () => import('pages/app/transaction/trading/TradingIndex.vue'),
         meta: {
           auth: true,
         },
@@ -23,7 +23,7 @@ export default [
       {
         path: 'pembelianSawit/:id/details',
         name: 'app.transaction.pembelianSawit.viewDetailsTransaction',
-        component: () => import('pages/app/transaction/buyPalms/BuyPalmView.vue'),
+        component: () => import('pages/app/transaction/trading/TradingView.vue'),
         meta: {
           middleware: {
             auth: true,

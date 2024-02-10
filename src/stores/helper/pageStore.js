@@ -7,6 +7,7 @@ export const usePageStore = defineStore('page', {
     rightDrawer: false,
     activeMenu: null,
     menus: [],
+    setting: {},
     currencyFormat: {
       prefix: 'Rp ',
       suffix: '',

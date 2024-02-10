@@ -12,6 +12,8 @@ export const useTradingsStore = defineStore('tradings', {
         trade_cost: '',
         car_id: '',
         driver_id: '',
+        car_fee: '',
+        driver_fee: '',
       },
       drivers: [],
       drivers_option: [],

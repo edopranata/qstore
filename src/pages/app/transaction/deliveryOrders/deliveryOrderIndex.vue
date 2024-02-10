@@ -8,6 +8,7 @@ import {storeToRefs} from "pinia";
 import {date, useQuasar} from "quasar";
 
 const page = usePageStore()
+const {setting} = usePageStore()
 const {path} = useRoute()
 const {can} = useAuthStore()
 const {form, table} = useDeliveryOrderStore()
@@ -34,6 +35,9 @@ const calc = reactive({
 onMounted(async () => {
   deliveries.customers_option = deliveries.customers
   deliveries.onReset()
+  if(setting.hasOwnProperty('do_margin')){
+    form.margin = setting.do_margin
+  }
   tableRef.value.requestServerInteraction()
 })
 
@@ -63,10 +67,14 @@ const searchCustomer = (val, update) => {
 }
 watch(selected_customer, (selected) => {
   if (selected) {
-    if (selected.hasOwnProperty('id'))
+    if (selected.hasOwnProperty('id')){
       form.customer_id = selected.id
+      form.loan = selected.loan
+    }
+
   } else {
     form.customer_id = selected
+    form.loan = selected
   }
 })
 
@@ -222,6 +230,22 @@ const onUpdate = () => {
                 </q-icon>
               </template>
             </q-field>
+            <q-field
+              v-if="form.loan > 0"
+              tabindex="-1"
+              bg-color="blue-grey"
+              color="blue-grey-2"
+              :dense="$q.screen.lt.md"
+              filled
+              label="Pinjaman petani"
+              stack-label>
+              <template v-slot:control>
+                <div class="self-center full-width no-outline" tabindex="-1">
+                  {{ new Intl.NumberFormat('id-ID', {style: 'currency', currency: "IDR"}).format(form.loan ?? 0) }}
+                </div>
+              </template>
+            </q-field>
+
           </div>
           <div :class="$q.screen.lt.md ? 'tw-font-bold' : 'text-h6'" class="q-mt-sm q-mb-xs">Data Timbangan Pabrik</div>
           <div class="tw-grid lg:tw-gap-4 tw-gap-2 lg:tw-grid-cols-5 md:tw-grid-cols-4 tw-grid-cols-3">
@@ -261,7 +285,8 @@ const onUpdate = () => {
 
             <q-field
               tabindex="-1"
-              :bg-color="!!form.id ? 'yellow-2' : ''"
+              bg-color="blue-grey"
+              color="blue-grey-2"
               :dense="$q.screen.lt.md"
               filled
               label="Terima dari pabrik (Bruto)"
@@ -275,7 +300,8 @@ const onUpdate = () => {
 
             <q-field
               tabindex="-1"
-              :bg-color="!!form.id ? 'yellow-2' : ''"
+              bg-color="blue-grey"
+              color="blue-grey-2"
               :dense="$q.screen.lt.md"
               filled
               label="Pendapatan Bersih (netto)"
@@ -292,7 +318,8 @@ const onUpdate = () => {
           <div class="tw-grid lg:tw-gap-4 tw-gap-2 lg:tw-grid-cols-5 md:tw-grid-cols-4 tw-grid-cols-3">
             <q-field
               tabindex="-1"
-              :bg-color="!!form.id ? 'yellow-2' : ''"
+              bg-color="blue-grey"
+              color="blue-grey-2"
               :dense="$q.screen.lt.md"
               filled
               label="Berat Bersih (pabrik)"
@@ -305,7 +332,8 @@ const onUpdate = () => {
             </q-field>
             <q-field
               tabindex="-1"
-              :bg-color="!!form.id ? 'yellow-2' : ''"
+              bg-color="blue-grey"
+              color="blue-grey-2"
               :dense="$q.screen.lt.md"
               filled
               label="Harga jual (petani)"
@@ -318,7 +346,8 @@ const onUpdate = () => {
 
             <q-field
               tabindex="-1"
-              :bg-color="!!form.id ? 'yellow-2' : ''"
+              bg-color="blue-grey"
+              color="blue-grey-2"
               :dense="$q.screen.lt.md"
               filled
               label="Total terima (petani)"
@@ -420,7 +449,7 @@ const onUpdate = () => {
 
         <template v-slot:body-selection="scope">
           <q-checkbox v-model="scope.selected"
-                      :disable="scope.row.customer_name === 'Plantation' || scope.row.customer_name === 'Trading'"/>
+                      :disable="scope.row.customer_name === 'Plantation' || scope.row.customer_name === 'Trading' || scope.row.income !== null || scope.row.invoice !== null"/>
         </template>
 
         <template v-slot:body-cell-no="props">

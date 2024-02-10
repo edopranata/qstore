@@ -9,6 +9,7 @@ import {storeToRefs} from "pinia";
 
 const $q = useQuasar()
 const page = usePageStore()
+const {setting} = usePageStore()
 const {path} = useRoute()
 const {can} = useAuthStore()
 const {parent} = useTradingsStore()
@@ -19,6 +20,11 @@ const tableRef = ref()
 
 onMounted(async () => {
   trading.onReset()
+  for (let property in setting){
+    if(parent.form.hasOwnProperty(property)){
+      parent.form[property] = setting[property]
+    }
+  }
   tableRef.value.requestServerInteraction()
 })
 
@@ -235,6 +241,8 @@ const onUpdate = () => {
                 </q-item>
               </template>
             </q-select>
+          </div>
+          <div class="tw-grid lg:tw-gap-4 tw-gap-2 lg:tw-grid-cols-5 md:tw-grid-cols-4 tw-grid-cols-2">
             <q-number
               v-model="parent.form.trade_cost"
               :bg-color="!!parent.form.id ? 'yellow-2' : ''"
@@ -245,6 +253,30 @@ const onUpdate = () => {
               class="tw-w-full"
               filled
               label="Uang Jalan (Rp)"
+            />
+
+            <q-number
+              v-model="parent.form.car_fee"
+              :bg-color="!!parent.form.id ? 'yellow-2' : ''"
+              :dense="$q.screen.lt.md"
+              :error="errors.hasOwnProperty('car_fee')"
+              :error-message="errors.car_fee"
+              :options="page.currencyFormat"
+              class="tw-w-full"
+              filled
+              label="Amprah Mobil (Rp/kg)"
+            />
+
+            <q-number
+              v-model="parent.form.driver_fee"
+              :bg-color="!!parent.form.id ? 'yellow-2' : ''"
+              :dense="$q.screen.lt.md"
+              :error="errors.hasOwnProperty('driver_fee')"
+              :error-message="errors.driver_fee"
+              :options="page.currencyFormat"
+              class="tw-w-full"
+              filled
+              label="Upah Supir (Rp/kg)"
             />
           </div>
         </q-card-section>

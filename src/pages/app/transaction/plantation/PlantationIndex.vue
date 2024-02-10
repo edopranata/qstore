@@ -9,6 +9,7 @@ import {storeToRefs} from "pinia";
 
 const $q = useQuasar()
 const page = usePageStore()
+const {setting} = usePageStore()
 const {path} = useRoute()
 const {can} = useAuthStore()
 const {table, form, cars, drivers, lands} = usePlantationsStore()
@@ -30,6 +31,12 @@ const tableRef = ref()
 
 onMounted(async () => {
   plantation.onReset()
+  for (let property in setting){
+    console.log(property, setting)
+    if(form.hasOwnProperty(property)){
+      form[property] = setting[property]
+    }
+  }
   tableRef.value.requestServerInteraction()
 })
 
@@ -326,7 +333,30 @@ const onUpdate = () => {
                   </q-item>
                 </template>
               </q-select>
+              <q-number
+                v-model="form.car_fee"
+                :bg-color="!!form.id ? 'yellow-2' : ''"
+                :dense="$q.screen.lt.md"
+                :error="errors.hasOwnProperty('car_fee')"
+                :error-message="errors.car_fee"
+                :options="page.currencyFormat"
 
+                class="tw-w-full"
+                filled
+                label="Amprah Mobil (Rp/kg)"
+              />
+              <q-number
+                v-model="form.driver_fee"
+                :bg-color="!!form.id ? 'yellow-2' : ''"
+                :dense="$q.screen.lt.md"
+                :error="errors.hasOwnProperty('driver_fee')"
+                :error-message="errors.driver_fee"
+                :options="page.currencyFormat"
+
+                class="tw-w-full"
+                filled
+                label="Upah Supir (Rp/kg)"
+              />
               <q-select
                 v-model="plantation.selected_lands"
                 :bg-color="!!form.id ? 'yellow-2' : ''"
@@ -521,26 +551,9 @@ const onUpdate = () => {
         selection="single"
         @request="onRequest"
       >
-        <template v-slot:top>
-
-        </template>
-        <template v-slot:body-cell-action="props">
-          <q-td :props="props">
-            <q-btn
-              :dense="$q.screen.lt.lg"
-              :label="!$q.screen.lt.md ? 'Edit Details' : ''"
-              :loading="table.loading"
-              :round="$q.screen.lt.md"
-              :to="`${path}/${props.row.id}/details`"
-              glossy
-              icon="visibility"
-              size="sm"
-            >
-              <q-tooltip>
-                Lihat atau edit detail transaksi
-              </q-tooltip>
-            </q-btn>
-          </q-td>
+        <template v-slot:body-selection="scope">
+          <q-checkbox v-model="scope.selected"
+                      :disable="scope.row.invoice !== null"/>
         </template>
         <template v-slot:body-cell-no="props">
           <q-td :props="props">
