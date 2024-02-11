@@ -320,7 +320,7 @@ const onUpdate = () => {
                 </div>
                 <div class="tw-flex tw-space-x-2">
                   <q-btn
-                    v-if="can('app.transaction.pembelianSawit.[createTransaction]')"
+                    v-if="can('app.transaction.pembelianSawit.createDetailsTransaction')"
                     :dense="$q.screen.lt.lg"
                     :label="!$q.screen.lt.md ? 'Simpan data' : ''"
                     :loading="details.table.loading"
@@ -336,7 +336,7 @@ const onUpdate = () => {
                     </q-tooltip>
                   </q-btn>
                   <q-btn
-                    v-if="can('app.transaction.pembelianSawit.[createTransaction]')"
+                    v-if="can('app.transaction.pembelianSawit.[createDetailsTransaction,deleteDetailsTransaction,updateDetailsTransaction]')"
                     :dense="$q.screen.lt.lg"
                     :label="!$q.screen.lt.md ? 'Batalkan' : ''"
                     :loading="details.table.loading"
@@ -352,7 +352,7 @@ const onUpdate = () => {
                   </q-btn>
                   <q-space></q-space>
                   <q-btn
-                    v-if="can('app.transaction.pembelianSawit.deleteTransaction')"
+                    v-if="can('app.transaction.pembelianSawit.deleteDetailsTransaction')"
                     :dense="$q.screen.lt.lg"
                     :disable="selected.length !== 1"
                     :label="!$q.screen.lt.md ? 'Hapus data' : ''"
@@ -369,7 +369,7 @@ const onUpdate = () => {
                     </q-tooltip>
                   </q-btn>
                   <q-btn
-                    v-if="can('app.transaction.pembelianSawit.updateTransaction')"
+                    v-if="can('app.transaction.pembelianSawit.updateDetailsTransaction')"
                     :dense="$q.screen.lt.lg"
                     :disable="selected.length !== 1"
                     :label="!$q.screen.lt.md ? 'Ubah data' : ''"
@@ -392,7 +392,7 @@ const onUpdate = () => {
           </q-card>
         </q-expansion-item>
         <q-expansion-item
-          v-if="!details.form.trade_status"
+          v-if="can('app.transaction.pembelianSawit.createFactoryTransaction')"
           header-class="bg-teal text-white"
           icon="scale"
           label="Data Timbangan Pabrik"
@@ -587,6 +587,7 @@ const onUpdate = () => {
                 </div>
                 <div class="tw-flex tw-mt-4">
                   <q-btn
+                    v-if="can('app.transaction.pembelianSawit.createFactoryTransaction')"
                     :dense="$q.screen.lt.lg"
                     :loading="details.table.loading"
                     :size="$q.screen.lt.lg ? 'md' : 'lg'"

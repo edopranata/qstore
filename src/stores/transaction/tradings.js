@@ -1,8 +1,10 @@
 import {defineStore} from 'pinia'
+import {useAuthStore} from "stores/authStore";
 import {reactive, ref} from "vue";
 import {LocalStorage, Notify} from "quasar";
 import {api} from "boot/axios";
 
+const {can} = useAuthStore()
 export const useTradingsStore = defineStore('tradings', {
   state: () => ({
     parent: {
@@ -129,23 +131,31 @@ export const useTradingsStore = defineStore('tradings', {
 
   actions: {
     setError(e) {
-      if (e.response.status === 422) {
-        let error = e.response.data.errors;
-        for (let property in error) {
-          this.errors[property] = error[property][0];
+      if(e.hasOwnProperty('response')){
+        if (e.response.status === 422) {
+          let error = e.response.data.errors;
+          for (let property in error) {
+            this.errors[property] = error[property][0];
+          }
+        }else if (e.response.status === 401) {
+          LocalStorage.remove('token')
+          LocalStorage.remove('permission')
+          this.router.replace({name: 'unauthorized'})
+        } else {
+          this.errors = {};
+          Notify.create({
+            position: "top",
+            type: 'negative',
+            message: e.message ?? e.response.statusText
+          })
+          this.router.replace({name: 'app.unauthorized'})
         }
-      } else {
-        this.errors = {};
+      }else{
         Notify.create({
           position: "top",
           type: 'negative',
-          message: e.message ?? e.response.statusText
+          message: 'Unknown error'
         })
-        if (e.response.status === 401) {
-          LocalStorage.remove('token')
-          LocalStorage.remove('permission')
-          this.router.push({name: 'unauthorized'})
-        }
       }
     },
     unsetError(error) {
@@ -274,7 +284,7 @@ export const useTradingsStore = defineStore('tradings', {
         })
         this[prop].table.filter = String(Date.now())
         this.onReset(prop)
-        if (response.data.hasOwnProperty('data') && prop === 'parent') {
+        if (response.data.hasOwnProperty('data') && prop === 'parent' && can('app.transaction.pembelianSawit.viewDetailsTransaction')) {
           this.router.push({
             name: 'app.transaction.pembelianSawit.viewDetailsTransaction',
             params: {id: response.data.data.id}
@@ -305,7 +315,6 @@ export const useTradingsStore = defineStore('tradings', {
     },
 
     async getTradeInfo(path) {
-      console.log(path)
       try {
         const response = await api.get(path)
         this.details.trading = response.data.trading

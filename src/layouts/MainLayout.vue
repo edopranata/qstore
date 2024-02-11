@@ -1,14 +1,14 @@
 <template>
   <q-layout view="hHh LpR lfr">
-    <q-header class="bg-primary text-white print-hide" elevated height-hint="98">
+    <q-header v-if="!print" class="bg-primary text-white print-hide" elevated height-hint="98">
       <MainHeader/>
     </q-header>
 
-    <q-drawer v-model="leftDrawer" bordered class="print-hide" side="left">
+    <q-drawer v-if="!print" v-model="leftDrawer" bordered class="print-hide" side="left">
       <MainLeftSidebar/>
     </q-drawer>
 
-    <q-drawer v-model="rightDrawer" bordered class="print-hide" side="right">
+    <q-drawer v-if="!print" v-model="rightDrawer" bordered class="print-hide" side="right">
       <MainRightSidebar/>
     </q-drawer>
 
@@ -20,7 +20,7 @@
       </router-view>
     </q-page-container>
 
-    <q-footer class="bg-grey-8 text-white print-hide" elevated>
+    <q-footer v-if="!print" class="bg-grey-8 text-white print-hide" elevated>
       <MainFooter/>
     </q-footer>
 
@@ -35,5 +35,8 @@ import MainHeader from "layouts/part/MainHeader.vue";
 import MainLeftSidebar from "layouts/part/MainLeftSidebar.vue";
 import MainRightSidebar from "layouts/part/MainRightSidebar.vue";
 
-const {leftDrawer, rightDrawer} = storeToRefs(usePageStore())
+const {leftDrawer, rightDrawer, print} = storeToRefs(usePageStore())
+
+
+
 </script>

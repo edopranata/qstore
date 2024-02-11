@@ -3,14 +3,8 @@ import {reactive, ref} from "vue";
 import {LocalStorage, Notify} from "quasar";
 import {api} from "boot/axios";
 
-export const useLoanStore = defineStore('loan', {
+export const useInvoiceDataStore = defineStore('invoice', {
   state: () => ({
-    select: {
-      type: null,
-      customers: [],
-      customers_option: [],
-      selected_customer: null,
-    },
     table: {
       pagination: {
         sortBy: '',
@@ -19,18 +13,18 @@ export const useLoanStore = defineStore('loan', {
         rowsPerPage: 10,
         rowsNumber: 0
       },
-      loan: null,
       filter: null,
       selected: ref([]),
       loading: false,
       headers: reactive([
         {name: "no", label: "No", field: "id", sortable: false, align: 'left'},
-        {name: "trade_date", label: "Tanggal", field: "trade_date", sortable: false, align: 'left'},
-        {name: "invoice", label: "Transaksi", field: "invoice", sortable: false, align: 'left'},
-        {name: "opening_balance", label: "Saldo awal", field: "opening_balance", sortable: false},
-        {name: "debit", label: "Debit (Pinjaman)", field: "balance", sortable: false},
-        {name: "credit", label: "Kredit (Angsuran)", field: "balance", sortable: false},
-        {name: "ending_balance", label: "Saldo Akhir", field: "balance", sortable: false},
+        {name: "customer_name", label: "Customer", field: "customer_name", sortable: false, align: 'left'},
+        {name: "trade_date", label: "Trade Date", field: "trade_date", sortable: true, align: 'left'},
+        {name: "invoice_number", label: "No Nota", field: "invoice_number", sortable: true, align: 'left'},
+        {name: "detail_do", label: "DO", field: "detail_do", sortable: false, align: 'right'},
+        {name: "loan_detail", label: "Pinjaman", field: "loan_detail", sortable: false, align: 'right'},
+        {name: "created_by", label: "Created by", field: "created_by", sortable: false, align: 'left'},
+        {name: "created_at", label: "Created by", field: "created_at", sortable: true, align: 'left'},
       ]),
       data: [],
     },
@@ -41,13 +35,9 @@ export const useLoanStore = defineStore('loan', {
     getSelected(state) {
       return state.table.selected
     },
-    getSelectedType(state) {
-      return state.select.type
-    }
   },
 
   actions: {
-
     onReset(form = null) {
       if (this.form.hasOwnProperty(form)) {
         if (form === 'delete') {
@@ -85,7 +75,7 @@ export const useLoanStore = defineStore('loan', {
         })
       }
     },
-    async getLoanDataFromApi(path, startRow, count, filter, sortBy, descending) {
+    async getInvoiceDataFromApi(path, startRow, count, filter, sortBy, descending) {
       const data = {
         page: startRow,
         limit: count,
@@ -101,30 +91,21 @@ export const useLoanStore = defineStore('loan', {
       }
       // search
 
-      if (!!this.select.type && this.select.selected_customer?.hasOwnProperty('id')) {
-        data.details = true
-        data.type = this.select.type
-        data.customer_id = this.select.selected_customer.id
-        try {
-          const params = new URLSearchParams(data);
-          const response = await api.get(path, {params})
-          this.table.data = response.data.details.data
-          this.table.loan = response.data.loan
 
-          // update only rowsNumber = total rows
-          this.table.pagination.rowsNumber = response.data.details.total
-        } catch (e) {
-          // this.setError(e)
-        }
-      } else {
-        this.table.data = []
+      try {
+        const params = new URLSearchParams(data);
+        const response = await api.get(path, {params})
+        this.table.data = response.data.data
+
         // update only rowsNumber = total rows
-        this.table.pagination.rowsNumber = 0
+        this.table.pagination.rowsNumber = response.data.details.total
+      } catch (e) {
+        // this.setError(e)
       }
 
       this.table.loading = false
     },
-    async getLoanData(path, props) {
+    async getInvoiceData(path, props) {
       const {page, rowsPerPage, sortBy, descending} = props.pagination
       const filter = props.filter
 
@@ -138,7 +119,7 @@ export const useLoanStore = defineStore('loan', {
 
       // calculate starting row of data
       // fetch data from "server"
-      const returnedData = await this.getLoanDataFromApi(path, page, fetchCount, filter, sortBy, descending)
+      const returnedData = await this.getInvoiceDataFromApi(path, page, fetchCount, filter, sortBy, descending)
 
       if (returnedData) {
         // clear out existing data and add new

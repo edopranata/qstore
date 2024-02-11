@@ -16,7 +16,12 @@ const routes = [
         path: '',
         name: 'index',
         component: () => import('pages/IndexPage.vue')
-      }
+      },
+      {
+        path: "unauthorized",
+        name: "app.unauthorized",
+        component: () => import("pages/ErrorPage403.vue")
+      },
     ],
   },
   {
@@ -53,7 +58,7 @@ const routes = [
   {
     path: "/unauthorized",
     name: "unauthorized",
-    component: () => import("pages/ErrorUnauthorized.vue")
+    component: () => import("pages/ErrorPage401.vue")
   },
 ]
 

@@ -125,13 +125,13 @@ const onUpdate = () => {
 </script>
 <template>
   <q-page class="tw-space-y-4" padding>
-    <q-card v-if="can('app.transaction.pembelianSawit.[createTransaction]')" bordered>
+    <q-card bordered>
       <q-form
         class="tw-w-full"
         @reset="onReset"
         @submit="onSubmit"
       >
-        <q-card-section>
+        <q-card-section v-if="can('app.transaction.pembelianSawit.[createTransaction]')">
           <div :class="$q.screen.lt.md ? 'tw-font-bold' : 'text-h6'" class="q-mt-sm q-mb-xs">Pembelian sawit petani
           </div>
           <div class="tw-grid lg:tw-gap-4 tw-gap-2 lg:tw-grid-cols-5 md:tw-grid-cols-4 tw-grid-cols-2">
@@ -379,7 +379,7 @@ const onUpdate = () => {
               :label="!$q.screen.lt.md ? 'Edit Details' : ''"
               :loading="parent.table.loading"
               :round="$q.screen.lt.md"
-              :disable="props.row.trade_status !== null"
+              :disable="!can('app.transaction.pembelianSawit.viewDetailsTransaction')"
               glossy
               :to="`${path}/${props.row.id}/details`"
               icon="visibility"

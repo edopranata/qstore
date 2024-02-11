@@ -93,23 +93,31 @@ export const usePermissionsStore = defineStore('permissions', {
 
   actions: {
     setError(e) {
-      if (e.response.status === 422) {
-        let error = e.response.data.errors;
-        for (let property in error) {
-          this.errors[property] = error[property][0];
+      if(e.hasOwnProperty('response')){
+        if (e.response.status === 422) {
+          let error = e.response.data.errors;
+          for (let property in error) {
+            this.errors[property] = error[property][0];
+          }
+        }else if (e.response.status === 401) {
+          LocalStorage.remove('token')
+          LocalStorage.remove('permission')
+          this.router.replace({name: 'unauthorized'})
+        } else {
+          this.errors = {};
+          Notify.create({
+            position: "top",
+            type: 'negative',
+            message: e.message ?? e.response.statusText
+          })
+          this.router.replace({name: 'app.unauthorized'})
         }
-      } else {
-        this.errors = {};
+      }else{
         Notify.create({
           position: "top",
           type: 'negative',
-          message: e.message ?? e.response.statusText
+          message: 'Unknown error'
         })
-        if(e.response.status === 401){
-          LocalStorage.remove('token')
-          LocalStorage.remove('permission')
-          this.router.push({name:'unauthorized'})
-        }
       }
     },
     async syncNewPermissions(path){

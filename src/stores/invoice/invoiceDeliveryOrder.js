@@ -5,12 +5,18 @@ import {LocalStorage, Notify} from "quasar";
 
 export const useInvoiceDeliveryOrderStore = defineStore('invoiceDO', {
   state: () => ({
+    dialog: {
+      open: false,
+      print: false,
+    },
     form: {
+      type: '',
       installment: 0,
       total: 0,
       net_total: 0,
       trade_id: null,
       customer_id: null,
+      trade_date: null,
     },
     loan: {
       balance: 0,
@@ -32,9 +38,6 @@ export const useInvoiceDeliveryOrderStore = defineStore('invoiceDO', {
       },
       selected: [],
       filter: '',
-      search: {
-        type: null,
-      },
       loading: false,
       headers: reactive([
         {name: "no", label: "No", field: "id", sortable: false, align: 'left'},
@@ -60,7 +63,7 @@ export const useInvoiceDeliveryOrderStore = defineStore('invoiceDO', {
       return state.table.selected
     },
     getCustomerOption(state) {
-      return state.table.search
+      return state.form.type
     },
     getSummaries(state) {
       let data = {}
@@ -84,23 +87,38 @@ export const useInvoiceDeliveryOrderStore = defineStore('invoiceDO', {
 
   actions: {
     setError(e) {
-      if (e.response.status === 422) {
-        let error = e.response.data.errors;
-        for (let property in error) {
-          this.errors[property] = error[property][0];
+      if(e.hasOwnProperty('response')){
+        if (e.response.status === 422) {
+          let error = e.response.data.errors;
+          for (let property in error) {
+            this.errors[property] = error[property][0];
+          }
+        }else if (e.response.status === 401) {
+          LocalStorage.remove('token')
+          LocalStorage.remove('permission')
+          this.router.replace({name: 'unauthorized'})
+        } else if( e.response.status === 403) {
+          this.errors = {};
+          Notify.create({
+            position: "top",
+            type: 'negative',
+            message: e.response.message ?? e.response.statusText
+          })
+          this.router.replace({name: 'app.unauthorized'})
+        }else{
+          this.errors = {};
+          Notify.create({
+            position: "top",
+            type: 'negative',
+            message: e.response.message ?? e.response.statusText
+          })
         }
-      } else {
-        this.errors = {};
+      }else{
         Notify.create({
           position: "top",
           type: 'negative',
-          message: e.message ?? e.response.statusText
+          message: 'Unknown error'
         })
-        if (e.response.status === 401) {
-          LocalStorage.remove('token')
-          LocalStorage.remove('permission')
-          this.router.push({name: 'unauthorized'})
-        }
       }
     },
     unsetError(error) {
@@ -109,14 +127,16 @@ export const useInvoiceDeliveryOrderStore = defineStore('invoiceDO', {
       }
     },
     onReset() {
-      this.table.search.type = null
+      for (let property in this.form){
+        this.form[property] = null
+      }
       this.select.selected_customer = null
       this.errors = {}
       this.table.selected = []
-
+      this.dialog.open = false
     },
     async getCustomersOrder(path) {
-      const type = this.table.search.type ?? 'Customer'
+      const type = this.form.type ?? 'Customer'
       const data = {
         type: type,
       }
@@ -135,7 +155,7 @@ export const useInvoiceDeliveryOrderStore = defineStore('invoiceDO', {
       }
     },
     async getDeliveryOrderData() {
-      const searchType = this.table.search.type
+      const searchType = this.form.type
 
       switch (searchType) {
         case 'Customer' :
@@ -158,7 +178,9 @@ export const useInvoiceDeliveryOrderStore = defineStore('invoiceDO', {
         case 'Plantation':
           this.table.loading = true
           setTimeout(() => {
-            this.table.data = this.table.orders.length > 0 ? this.table.orders.filter(item => item.customer_type.endsWith(searchType)) : []
+            let data = this.table.orders.length > 0 ? this.table.orders.filter(item => item.customer_type.endsWith(searchType)) : []
+            this.table.data = data
+            this.form.trade_id = data.length > 0 ? data.map(item => item.id) : null
             this.select.selected_customer = null
             this.calculation()
             this.table.loading = false
@@ -168,7 +190,9 @@ export const useInvoiceDeliveryOrderStore = defineStore('invoiceDO', {
         case 'Trading':
           this.table.loading = true
           setTimeout(() => {
-            this.table.data = this.table.orders.length > 0 ? this.table.orders.filter(item => item.customer_type.endsWith(searchType)) : []
+            let data = this.table.orders.length > 0 ? this.table.orders.filter(item => item.customer_type.endsWith(searchType)) : []
+            this.table.data = data
+            this.form.trade_id = data.length > 0 ? data.map(item => item.id) : null
             this.select.selected_customer = null
             this.calculation()
             this.table.loading = false
@@ -188,6 +212,32 @@ export const useInvoiceDeliveryOrderStore = defineStore('invoiceDO', {
       this.form.total = total
       this.form.net_total = total
       this.form.installment = 0
+    },
+    async submitForm(path) {
+      this.table.loading = true
+      const params = this.form;
+
+      const url = this.form.id ? `${path}/${this.form.id}` : path
+      await api({
+        method: this.form.id ? 'patch' : 'post',
+        url: url,
+        data: params
+      }).then(() => {
+        this.table.selected = []
+        Notify.create({
+          position: "top",
+          type: 'positive',
+          message: params.id ? 'Data transaksi berhasil diubah' : 'Data transaksi berhasil disimpan'
+        })
+        this.table.filter = String(Date.now())
+        this.onReset()
+
+      }).catch(e => {
+        this.setError(e);
+      }).finally(() => {
+        this.table.loading = false
+        this.dialog.open = false
+      });
     }
   }
 })

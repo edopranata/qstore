@@ -7,6 +7,7 @@ export const usePageStore = defineStore('page', {
     rightDrawer: false,
     activeMenu: null,
     menus: [],
+    print: false,
     setting: {},
     currencyFormat: {
       prefix: 'Rp ',
@@ -34,6 +35,9 @@ export const usePageStore = defineStore('page', {
   getters: {
     getDefaultPrice(state) {
       return state.price
+    },
+    getPrintStatus(state){
+      return state.print
     }
   },
 

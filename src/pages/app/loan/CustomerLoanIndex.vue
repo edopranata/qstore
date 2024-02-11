@@ -1,14 +1,19 @@
 <script setup>
 import {useLoanStore} from "stores/loan/loan";
+import {useAuthStore} from "stores/authStore";
 import {storeToRefs} from "pinia";
 import {onMounted, ref, watch} from "vue";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
+import {useQuasar} from "quasar";
 
+const {can} = useAuthStore()
+const router = useRouter()
 const {table, select} = useLoanStore()
 const {path} = useRoute()
 const {errors, getSelectedType} = storeToRefs(useLoanStore())
 const loan = useLoanStore()
 
+const $q = useQuasar()
 const tableRef = ref()
 
 onMounted(async () => {
@@ -30,6 +35,18 @@ const onRequest = async (props) => {
   await loan.getLoanData(path, props)
 }
 
+const onPrint = async (invoice) => {
+  if (invoice)
+    $q.dialog({
+      title: 'Print invoice',
+      message: `Invoice number : ${invoice}`,
+      cancel: true,
+      persistent: true
+    }).onOk(async () => {
+      await router.replace({name: 'app.invoice.invoiceData.printInvoice', params: {invoice_number: invoice}})
+    })
+}
+
 const searchCustomer = (val, update) => {
   update(() => {
     const customers = select.customers.filter(customer => customer.type === select.type)
@@ -45,7 +62,14 @@ const searchCustomer = (val, update) => {
 
 <template>
   <q-page class="tw-space-y-4" padding>
-    <q-card bordered>
+    <q-card>
+      <q-card-section>
+        <q-toolbar class="text-primary">
+          <q-toolbar-title>
+            Data mutasi pinjaman
+          </q-toolbar-title>
+        </q-toolbar>
+      </q-card-section>
       <q-card-section class="tw-space-y-4">
         <div class="md:tw-grid md:tw-grid-cols-3 md:tw-gap-4">
           <div class="lg:tw-col-span-1 tw-col-span-2">
@@ -99,7 +123,7 @@ const searchCustomer = (val, update) => {
         </div>
       </q-card-section>
 
-      <q-card-section>
+      <q-card-section class="no-padding">
         <q-table
           v-model:pagination="table.pagination"
           v-model:selected="table.selected"
@@ -110,12 +134,34 @@ const searchCustomer = (val, update) => {
           :rows="table.data ?? []"
           binary-state-sort
           bordered
+          flat
           row-key="id"
           @request="onRequest"
         >
           <template v-slot:body-cell-no="props">
             <q-td :props="props">
               {{ props.rowIndex + 1 }}
+            </q-td>
+          </template>
+          <template v-slot:body-cell-invoice="props">
+            <q-td :props="props">
+              <q-chip
+                v-if="can('app.invoice.invoiceData.printInvoice')"
+                clickable
+                color="primary"
+                icon="print"
+                text-color="white"
+                @click="onPrint(props.row.invoice?.invoice_number)">
+                {{ props.row.invoice?.invoice_number }}
+              </q-chip>
+              <q-chip
+                v-else
+                color="primary"
+                icon="print"
+                text-color="white"
+              >
+                {{ props.row.invoice?.invoice_number }}
+              </q-chip>
             </q-td>
           </template>
           <template v-slot:body-cell-opening_balance="props">

@@ -449,7 +449,7 @@ const onUpdate = () => {
 
         <template v-slot:body-selection="scope">
           <q-checkbox v-model="scope.selected"
-                      :disable="scope.row.customer_name === 'Plantation' || scope.row.customer_name === 'Trading' || scope.row.income !== null || scope.row.invoice !== null"/>
+                      :disable="scope.row.customer_name === 'Plantation' || scope.row.customer_name === 'Trading' || !!scope.row.invoice_status || !!scope.row.income_status"/>
         </template>
 
         <template v-slot:body-cell-no="props">
@@ -520,17 +520,6 @@ const onUpdate = () => {
                 minimumFractionDigits: 0
               }).format(props.row.gross_total - props.row.net_total)
             }}
-          </q-td>
-        </template>
-
-        <template v-slot:body-cell-invoice="props">
-          <q-td :props="props" class="text-right">
-            {{ props.value }}
-          </q-td>
-        </template>
-        <template v-slot:body-cell-income="props">
-          <q-td :props="props" class="text-right">
-            {{ props.value }}
           </q-td>
         </template>
       </q-table>
