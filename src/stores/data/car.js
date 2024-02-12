@@ -13,6 +13,7 @@ export const useCarsStore = defineStore('cars', {
     form: {
       id: '',
       name: '',
+      status: '',
       no_pol: '',
       description: '',
       year: '',
@@ -22,6 +23,10 @@ export const useCarsStore = defineStore('cars', {
       data: [],
     },
     table: {
+      car_status: [
+        {id: 'yes', desc: 'Milik Sendiri'},
+        {id: 'no', desc: 'Tidak Milik Sendiri'},
+      ],
       pagination: {
         sortBy: '',
         descending: false,
@@ -33,6 +38,7 @@ export const useCarsStore = defineStore('cars', {
       selected: ref([]),
       filter: '',
       search: {
+        status: '',
         name: '',
         no_pol: '',
         year: '',
@@ -41,9 +47,10 @@ export const useCarsStore = defineStore('cars', {
       loading: false,
       headers: reactive([
         {name: "no", label: "No", field: "id", sortable: false, align: 'left'},
-        {name: "name", label: "Name", field: "name", sortable: true, align: 'left'},
+        {name: "status", label: "Kepemilikan", field: "status", sortable: true, align: 'left'},
+        {name: "name", label: "Nama", field: "name", sortable: true, align: 'left'},
         {name: "plat_no", label: "Plat No", field: "no_pol", sortable: true, align: 'left'},
-        {name: "year", label: "Year", field: "year", sortable: true, align: 'left'},
+        {name: "year", label: "Tahun", field: "year", sortable: true, align: 'left'},
         {name: "user", label: "Created By", field: 'created_by', sortable: false, align: 'left'},
         {name: "created_at", label: "Created At", field: "created_at", sortable: true, align: 'left'},
       ]),
@@ -134,10 +141,9 @@ export const useCarsStore = defineStore('cars', {
         })
       }
       // search
-      data.name = this.table.search.name ?? ''
-      data.no_pol = this.table.search.no_pol ?? ''
-      data.year = this.table.search.year ?? ''
-      data.user = this.table.search.user ?? ''
+      for (let property in this.table.search){
+        data[property] = this.table.search[property] ?? ''
+      }
       try {
         const params = new URLSearchParams(data);
         const response = await api.get(path, {params})

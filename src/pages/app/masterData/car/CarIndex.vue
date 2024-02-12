@@ -45,6 +45,7 @@ watch(selected, (selected_item) => {
     if (selected_item.length === 1) {
       form.id = selected_item[0].id
       form.name = selected_item[0].name
+      form.status = selected_item[0].status
       form.no_pol = selected_item[0].no_pol
       form.description = selected_item[0].description
       form.year = selected_item[0].year
@@ -152,6 +153,19 @@ onMounted(() => {
             <q-th></q-th>
             <q-th class="text-left">#</q-th>
             <q-th>
+              <q-select
+                v-model="table.search.status"
+                :options="table.car_status"
+                clearable
+                dense
+                emit-value
+                label="Status Kepemilikan"
+                map-options
+                option-label="desc"
+                option-value="id"
+              />
+            </q-th>
+            <q-th>
               <q-input v-model="table.search.name" :loading="table.loading" clearable debounce="500" dense
                        label="Search Name"/>
             </q-th>
@@ -174,6 +188,11 @@ onMounted(() => {
         <template v-slot:body-cell-no="props">
           <q-td :props="props">
             {{ props.rowIndex + 1 }}
+          </q-td>
+        </template>
+        <template v-slot:body-cell-status="props">
+          <q-td :props="props">
+            {{ props.value === 'yes' ? 'Milik Sendiri' : 'Tidak' }}
           </q-td>
         </template>
       </q-table>

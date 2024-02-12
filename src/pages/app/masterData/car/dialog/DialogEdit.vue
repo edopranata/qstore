@@ -22,6 +22,20 @@ const {errors} = storeToRefs(useCarsStore())
         @submit="submitForm(path)"
       >
         <q-card-section class="q-pt-none">
+          <q-select
+            v-model="form.status"
+            :error="errors.hasOwnProperty('status')"
+            :error-message="errors.status"
+            :options="table.car_status"
+            :rules="[ val => !!val || 'Status kepemilikan diperlukan']"
+            clearable
+            dense
+            emit-value
+            label="Status Kepemilikan"
+            map-options
+            option-label="desc"
+            option-value="id"
+          />
           <q-input
             v-model="form.name"
             :error="errors.hasOwnProperty('name')"
