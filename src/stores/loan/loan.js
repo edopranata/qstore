@@ -5,11 +5,21 @@ import {api} from "boot/axios";
 
 export const useLoanStore = defineStore('loan', {
   state: () => ({
+    modal: {
+      in: false,
+      out: false
+    },
     select: {
       type: null,
+      print: false,
       customers: [],
       customers_option: [],
       selected_customer: null,
+      customer_id: null,
+      loan_id: null,
+      amount: null,
+      installment: null,
+      trade_date: null,
     },
     table: {
       pagination: {
@@ -43,18 +53,34 @@ export const useLoanStore = defineStore('loan', {
     },
     getSelectedType(state) {
       return state.select.type
+    },
+    getSelectedCustomer(state){
+      return state.select.selected_customer
+    },
+    getModal(state){
+      return state.modal
     }
   },
 
   actions: {
-
-    onReset(form = null) {
-      if (this.form.hasOwnProperty(form)) {
-        if (form === 'delete') {
-          this.deleted.area_id = []
-          this.deleted.data = []
-        }
+    unsetError(name){
+      if(this.errors.hasOwnProperty(name)){
+        delete this.errors[name]
       }
+    },
+    onReset() {
+      this.select.selected_customer = null
+      this.select.type = null
+
+      this.select.customer_id = null
+      this.select.loan_type = null
+      this.select.amount = null
+      this.select.installment = null
+      this.select.trade_date = null
+      this.select.print = false
+
+      this.table.data = []
+
       this.errors = {}
     },
     setError(e) {
@@ -166,5 +192,49 @@ export const useLoanStore = defineStore('loan', {
         this.setError(e)
       }
     },
+
+    async submitLoan(path) {
+      this.table.loading = true
+      const loan_id = this.select.loan_id
+      let act = null
+      const data = {
+        customer_id: this.select.customer_id,
+        customer_type: this.select.type,
+        trade_date: this.select.trade_date,
+      }
+      if(this.select.installment > 0){
+        data.installment = this.select.installment * -1
+        act = `${path}/${loan_id}/installment`
+      }
+      if(this.select.amount > 0){
+        data.amount = this.select.amount
+        act = `${path}/${loan_id}/add`
+      }
+
+      if(loan_id) {
+        try {
+          const response = await api.post(act, data)
+          const invoice_number = response.data.data?.invoice_number
+          if(this.select.print && invoice_number){
+            this.table.loading = false
+            this.router.replace({name: 'app.invoice.invoiceData.printInvoice', params: { invoice_number : invoice_number }})
+          }else{
+            await this.loadAllCustomers(path)
+            this.onReset()
+
+            for (let property in this.modal) {
+              this.modal[property] = false
+            }
+            this.table.loading = false
+          }
+
+        } catch (e) {
+          this.setError(e)
+        }
+      }
+
+    },
+
+
   }
 })
