@@ -6,6 +6,7 @@ import transactionRoute from "src/router/partials/transactionRoute";
 import invoiceRoute from "src/router/partials/invoiceRoute"
 import loanRoute from "src/router/partials/loanRoute";
 import reportRoute from "src/router/partials/reportRoute";
+import costRoute from "src/router/partials/costRoute";
 
 const routes = [
   {
@@ -41,6 +42,7 @@ const routes = [
       ...masterDataRoute,
       ...transactionRoute,
       ...invoiceRoute,
+      ...costRoute,
       ...loanRoute,
       ...reportRoute,
     ]

@@ -30,6 +30,7 @@ export const usePageStore = defineStore('page', {
       margin: 40,
       factory: 2300
     },
+    errors: {},
   }),
 
   getters: {

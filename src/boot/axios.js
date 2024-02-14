@@ -1,4 +1,4 @@
-import { boot } from 'quasar/wrappers'
+import {boot} from 'quasar/wrappers'
 import axios from 'axios'
 
 // Be careful when using SSR for cross-request state pollution
@@ -8,7 +8,9 @@ import axios from 'axios'
 // "export default () => {}" function below (which runs individually
 // for each client)
 
-const api = axios.create({ baseURL: 'http://sawit.test/api' })
+const API_URL = import.meta.env.VITE_API_URL
+
+const api = axios.create({ baseURL: API_URL })
 
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
