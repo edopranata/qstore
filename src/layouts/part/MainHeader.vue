@@ -6,14 +6,9 @@ const {toggleLeftDrawer, toggleRightDrawer} = usePageStore()
 
 <template>
   <q-toolbar class="glossy">
-    <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
-
-    <q-toolbar-title>
-      <q-avatar>
-        <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg" alt="img">
-      </q-avatar>
-      Title
-    </q-toolbar-title>
+    <q-btn flat round icon="menu" @click="toggleLeftDrawer" />
+    <q-btn outline round label="mm" to="/app" class="tw-ml-2" />
+    <q-toolbar-title>MAY MAY</q-toolbar-title>
 
     <q-btn dense flat icon="manage_accounts" round @click="toggleRightDrawer"/>
   </q-toolbar>

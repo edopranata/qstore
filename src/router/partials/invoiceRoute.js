@@ -13,6 +13,14 @@ export default [
         },
       },
       {
+        path: 'buatInvoicePetani',
+        name: 'app.invoice.buatInvoicePetani.index',
+        component: () => import('pages/app/invoice/Trading/InvoiceTradingIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
         path: 'invoiceData',
         name: 'app.invoice.invoiceData.index',
         component: () => import('pages/app/invoice/invoiceData/InvoiceDataIndex.vue'),

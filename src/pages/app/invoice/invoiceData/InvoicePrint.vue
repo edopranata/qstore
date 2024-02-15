@@ -84,7 +84,7 @@ const onPrint = () => {
             <span class="tw-px-4 tw-border-gray-800 tw-border-x"></span>
           </div>
 
-          <template v-if="data.detail_do">
+          <template v-if="data.detail_do?.length > 0">
             <div v-for="(item, index) in data.detail_do" :key="index" class="tw-grid tw-grid-cols-5">
               <span class="tw-px-4 tw-border-gray-800 tw-border-l tw-col-span-2">{{
                   date.formatDate(item.delivery_date.split('T')[0], 'DD MMMM YYYY')
@@ -110,19 +110,64 @@ const onPrint = () => {
                   }).format(item.customer_total)
                 }}</span>
             </div>
+
+            <div v-if="data.type !== 'LN'" class="tw-grid tw-grid-cols-5">
+              <span class="tw-px-4 tw-border-gray-800 tw-border-l tw-col-span-2"></span>
+              <span class="tw-px-4 tw-border-gray-800 tw-border-l"></span>
+              <span class="tw-px-4 tw-border-gray-800 tw-border-l"></span>
+              <span class="tw-px-4 tw-border-gray-800 tw-border-x tw-font-bold text-right">{{
+                  Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0
+                  }).format(summaries.total)
+                }}</span>
+            </div>
           </template>
-          <div v-if="data.type !== 'LN'" class="tw-grid tw-grid-cols-5">
-            <span class="tw-px-4 tw-border-gray-800 tw-border-l tw-col-span-2"></span>
-            <span class="tw-px-4 tw-border-gray-800 tw-border-l"></span>
-            <span class="tw-px-4 tw-border-gray-800 tw-border-l"></span>
-            <span class="tw-px-4 tw-border-gray-800 tw-border-x tw-font-bold text-right">{{
-                Intl.NumberFormat('id-ID', {
-                  style: 'currency',
-                  currency: 'IDR',
-                  minimumFractionDigits: 0
-                }).format(summaries.total)
-              }}</span>
-          </div>
+
+          <template v-if="data.detail_trades?.length > 0">
+            <div v-for="(item, index) in data.detail_trades" :key="index" class="tw-grid tw-grid-cols-5">
+              <span class="tw-px-4 tw-border-gray-800 tw-border-l tw-col-span-2">{{
+                  date.formatDate(item.trade_date.split('T')[0], 'DD MMMM YYYY')
+                }}</span>
+              <span class="tw-px-4 tw-border-gray-800 tw-border-l tw-text-right">{{
+                  Intl.NumberFormat('id-ID', {
+                    style: 'unit',
+                    unit: 'kilogram'
+                  }).format(item.weight)
+                }}</span>
+              <span class="tw-px-4 tw-border-gray-800 tw-border-l tw-text-right">{{
+                  Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0
+                  }).format(item.price)
+                }}</span>
+              <span class="tw-px-4 tw-border-gray-800 tw-border-x tw-text-right">{{
+                  Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0
+                  }).format(item.total)
+                }}</span>
+            </div>
+
+            <div v-if="data.type !== 'LN'" class="tw-grid tw-grid-cols-5">
+              <span class="tw-px-4 tw-border-gray-800 tw-border-l tw-col-span-2"></span>
+              <span class="tw-px-4 tw-border-gray-800 tw-border-l"></span>
+              <span class="tw-px-4 tw-border-gray-800 tw-border-l"></span>
+              <span class="tw-px-4 tw-border-gray-800 tw-border-x tw-font-bold text-right">{{
+                  Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0
+                  }).format(summaries.total_trading)
+                }}</span>
+            </div>
+          </template>
+
+
+
 
           <template v-if="data.type !== 'LN'">
             <blank-row-print v-for="item in summaries.count" :key="item"/>

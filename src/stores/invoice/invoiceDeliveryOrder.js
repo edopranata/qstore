@@ -222,15 +222,20 @@ export const useInvoiceDeliveryOrderStore = defineStore('invoiceDO', {
         method: this.form.id ? 'patch' : 'post',
         url: url,
         data: params
-      }).then(() => {
+      }).then((response) => {
         this.table.selected = []
         Notify.create({
           position: "top",
           type: 'positive',
           message: params.id ? 'Data transaksi berhasil diubah' : 'Data transaksi berhasil disimpan'
         })
-        this.table.filter = String(Date.now())
-        this.onReset()
+        const invoice_number = response.data.data?.invoice_number
+        if(this.dialog.print && invoice_number){
+          this.router.replace({name: 'app.invoice.invoiceData.printInvoice', params: { invoice_number : invoice_number }})
+        }else {
+          this.table.filter = String(Date.now())
+          this.onReset()
+        }
 
       }).catch(e => {
         this.setError(e);

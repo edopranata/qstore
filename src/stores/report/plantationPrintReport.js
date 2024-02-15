@@ -2,7 +2,7 @@ import {defineStore} from 'pinia'
 import {LocalStorage, Notify} from "quasar";
 import {api} from "boot/axios";
 
-export const usePlantationReportStore = defineStore('plantationReport', {
+export const usePlantationPrintStore = defineStore('plantationPrint', {
   state: () => ({
     form: {
       type: 'Period',
@@ -11,11 +11,6 @@ export const usePlantationReportStore = defineStore('plantationReport', {
       monthly: null,
       annual: null,
     },
-    reportOptions: [
-      {label: 'Periode', value: 'Period'},
-      {label: 'Bulanan', value: 'Monthly'},
-      {label: 'Tahunan', value: 'Annual'}
-    ],
     table: {
       data: [],
       loading: false,
@@ -24,32 +19,25 @@ export const usePlantationReportStore = defineStore('plantationReport', {
   }),
 
   getters: {
-    getReportOptions(state) {
-      return state.reportOptions
+    getAllData(state) {
+      return state.table.data ?? []
     },
-    getTypeChange(state) {
-      return state.form.type
+    getSummaries(state) {
+      let data = {}
+      data.tonase = state.table.data ? state.table.data.reduce((total, next) => total + next.net_weight, 0) : 0
+      data.price = state.table.data ? state.table.data.length > 0 ? state.table.data.reduce((total, next) => total + next.net_price, 0) / state.table.data.length : 0 : 0
+      data.trade_cost = state.table.data ? state.table.data.reduce((total, next) => total + next.trade_cost, 0) : 0
+      data.car_fee = state.table.data ? state.table.data.reduce((total, next) => total + (next.net_weight * next.car_fee), 0) : 0
+      data.driver_fee = state.table.data ? state.table.data.reduce((total, next) => total + (next.net_weight * next.driver_fee), 0) : 0
+      data.cost = data.trade_cost + data.driver_fee + data.car_fee
+      data.bruto = state.table.data ? state.table.data.reduce((total, next) => total + next.net_total, 0) : 0
+      data.netto = state.table.data ? state.table.data.reduce((total, next) => total + next.net_income, 0) : 0
+      return data;
     }
   },
 
   actions: {
-    onReset() {
-      for (let property in this.form) {
-        if (property !== 'type') {
-          this.form[property] = null
-        }
-      }
-      this.errors = {}
-    },
-    unsetError(name = null){
-      if(name){
-        delete this.errors[name]
-      }else{
-        for (let property in this.errors){
-          delete this.errors[property]
-        }
-      }
-    },
+
     setError(e) {
       if (e.response.status === 422) {
         let error = e.response.data.errors;

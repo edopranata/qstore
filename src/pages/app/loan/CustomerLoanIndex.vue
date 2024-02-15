@@ -441,7 +441,7 @@ const onSubmit = async () => {
                   style: 'currency',
                   currency: 'IDR',
                   minimumFractionDigits: 0
-                }).format(props.row.opening_balance + props.value)
+                }).format(parseFloat(props.row.opening_balance) + parseFloat(props.value))
               }}
             </q-td>
           </template>

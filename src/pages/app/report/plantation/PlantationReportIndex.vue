@@ -44,10 +44,10 @@ const onSubmit = async () => {
               <div class="tw-grid md:tw-grid-cols-4 tw-grid-cols-2 tw-gap-4">
                 <div class="text-h6 md:tw-col-span-4 tw-col-span-2">Periode Laporan Hasil Kebun</div>
                 <q-field
-                  :loading="table.loading"
                   :dense="$q.screen.lt.md"
                   :error="errors.hasOwnProperty('period_start')"
                   :error-message="errors.period_start"
+                  :loading="table.loading"
                   :stack-label="!!form.period_start"
                   class="tw-w-full"
 
@@ -71,10 +71,10 @@ const onSubmit = async () => {
                   </template>
                 </q-field>
                 <q-field
-                  :loading="table.loading"
                   :dense="$q.screen.lt.md"
                   :error="errors.hasOwnProperty('period_end')"
                   :error-message="errors.period_end"
+                  :loading="table.loading"
                   :stack-label="!!form.period_end"
                   class="tw-w-full"
                   filled
@@ -96,6 +96,15 @@ const onSubmit = async () => {
                     </q-icon>
                   </template>
                 </q-field>
+                <div class="md:tw-col-span-4 tw-col-span-2 tw-space-x-2">
+                  <q-btn :disable="table.loading" :loading="table.loading" color="primary" glossy label="Lihat laporan"
+                         type="submit"/>
+                  <q-btn :disable="table.loading || !form.type || !form.period_start || !form.period_end"
+                         :loading="table.loading"
+                         :to="{name: 'app.laporan.dataLaporan.printHasilKebun', query: {type: form.type, period_end: form.period_end, period_start: form.period_start}}"
+                         color="deep-orange"
+                         glossy icon="print" label="Print laporan" type="submit"/>
+                </div>
               </div>
 
             </q-tab-panel>
@@ -104,10 +113,10 @@ const onSubmit = async () => {
               <div class="tw-grid md:tw-grid-cols-4 tw-grid-cols-2 tw-gap-4">
                 <div class="text-h6 md:tw-col-span-4 tw-col-span-2">Laporan Bulanan Hasil Kebun</div>
                 <q-input
-                  :loading="table.loading"
                   v-model="form.monthly"
                   :error="errors.hasOwnProperty('monthly')"
                   :error-message="errors.monthly"
+                  :loading="table.loading"
                   filled
                   hint="Contoh: 2024/01"
                   label="Periode bulan"
@@ -115,16 +124,25 @@ const onSubmit = async () => {
                   @change="report.unsetError('monthly')"
                 />
               </div>
+              <div class="md:tw-col-span-4 tw-col-span-2 tw-mt-2 tw-space-x-2">
+                <q-btn :disable="table.loading" :loading="table.loading" color="primary" glossy label="Lihat laporan"
+                       type="submit"/>
+                <q-btn :disable="table.loading || !form.type || String(form.monthly).length !== 7"
+                       :loading="table.loading"
+                       :to="{name: 'app.laporan.dataLaporan.printHasilKebun', query: {type: form.type, monthly: form.monthly}}"
+                       color="deep-orange"
+                       glossy icon="print" label="Print laporan" type="submit"/>
+              </div>
             </q-tab-panel>
 
             <q-tab-panel name="Annual">
               <div class="tw-grid md:tw-grid-cols-4 tw-grid-cols-2 tw-gap-4">
                 <div class="text-h6 md:tw-col-span-4 tw-col-span-2">Laporan Tahunan Hasil Kebun</div>
                 <q-input
-                  :loading="table.loading"
                   v-model="form.annual"
                   :error="errors.hasOwnProperty('annual')"
                   :error-message="errors.annual"
+                  :loading="table.loading"
                   filled
                   hint="Contoh: 2024"
                   label="Periode tahun"
@@ -132,9 +150,17 @@ const onSubmit = async () => {
                   @change="report.unsetError('annual')"
                 />
               </div>
+              <div class="md:tw-col-span-4 tw-col-span-2 tw-mt-2 tw-space-x-2">
+                <q-btn :disable="table.loading" :loading="table.loading" color="primary" glossy label="Lihat laporan"
+                       type="submit"/>
+                <q-btn :disable="table.loading || !form.type || !form.annual || String(form.annual).length !== 4"
+                       :loading="table.loading"
+                       :to="{name: 'app.laporan.dataLaporan.printHasilKebun', query: {type: form.type, annual: form.annual}}"
+                       color="deep-orange"
+                       glossy icon="print" label="Print laporan" type="submit"/>
+              </div>
             </q-tab-panel>
           </q-tab-panels>
-          <q-btn color="deep-orange" :disable="table.loading" :loading="table.loading" glossy label="Lihat laporan" type="submit"/>
         </q-card-section>
         <q-card-section>
           <q-markup-table>
