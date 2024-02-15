@@ -3,7 +3,9 @@ import {useAuthStore} from "stores/authStore";
 import {usePageStore} from "stores/helper/pageStore";
 import {reactive} from "vue";
 import {storeToRefs} from "pinia";
+import {useQuasar} from "quasar";
 
+const $q = useQuasar()
 const page = usePageStore()
 const auth = useAuthStore()
 const {user} = storeToRefs(useAuthStore())
@@ -12,6 +14,34 @@ const form = reactive({
   password: '',
   password_confirmation: '',
 })
+
+const logout = async () => {
+  $q.dialog({
+    title: 'Keluar aplikasi',
+    message: 'Anda yakin akan keluar dari aplikasi',
+    cancel: true,
+    persistent: true
+  }).onOk( async () => {
+    page.rightDrawer = false
+    await auth.logout()
+  })
+}
+
+const changePassword = async () => {
+  $q.dialog({
+    title: 'Ganti password',
+    message: 'Anda yakin akan mengganti password?',
+    cancel: true,
+    persistent: true
+  }).onOk( async () => {
+    page.rightDrawer = false
+    await auth.changePassword(form).then( () => {
+      form.password = ''
+      form.password_confirmation = ''
+    })
+  })
+}
+
 </script>
 
 <template>
@@ -27,6 +57,9 @@ const form = reactive({
         <q-item-label>{{ user?.name }}</q-item-label>
         <q-item-label caption>{{ user?.username }}</q-item-label>
       </q-item-section>
+      <q-item-section side>
+        <q-btn flat round icon="logout" @click="logout" />
+      </q-item-section>
     </q-item>
 
     <q-separator spaced/>
@@ -34,19 +67,19 @@ const form = reactive({
 
     <q-item>
       <q-item-section>
-        <q-input standout v-model="form.password"  label="Current Password" />
+        <q-input type="password" standout v-model="form.password"  label="Current Password" />
       </q-item-section>
     </q-item>
 
     <q-item>
       <q-item-section>
-        <q-input standout v-model="form.password_confirmation"  label="Confirmation Password" />
+        <q-input type="password" standout v-model="form.password_confirmation"  label="Confirmation Password" />
       </q-item-section>
     </q-item>
 
     <q-item>
       <q-item-section>
-        <q-btn color="primary" glossy label="Change Password" />
+        <q-btn color="primary" glossy label="Change Password" @click="changePassword" />
       </q-item-section>
     </q-item>
 

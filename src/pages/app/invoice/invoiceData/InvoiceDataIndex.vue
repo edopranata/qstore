@@ -75,6 +75,13 @@ const onRequest = async (props) => {
               </q-chip>
             </q-td>
           </template>
+          <template v-slot:body-cell-detail_trades="props">
+            <q-td :props="props">
+              <div>
+                {{ new Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(props.row.detail_trades.length > 0 ? props.row.detail_trades.reduce((total, item) => total + item.total, 0) : 0) }}
+              </div>
+            </q-td>
+          </template>
           <template v-slot:body-cell-detail_do="props">
             <q-td :props="props">
               <div>

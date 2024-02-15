@@ -113,7 +113,7 @@ export const useInvoiceTradingStore = defineStore('invoiceTrading', {
         if(this.dialog.print && invoice_number){
           this.router.replace({name: 'app.invoice.invoiceData.printInvoice', params: { invoice_number : invoice_number }})
         }else {
-          this.table.filter = String(Date.now())
+          this.getCustomerTrade(path)
           this.onReset()
         }
       }).catch(e => {

@@ -137,5 +137,30 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
+    async logout() {
+      try {
+        let response = await api.post('/logout')
+        if(response.data.status) {
+          this.unsetAuthenticated()
+          this.router.replace({name: 'auth.login'})
+        }
+      } catch (e) {
+        this.setErrors(e)
+      }
+    },
+
+    async changePassword(data){
+      try {
+        await api.post('/change-password', data)
+        Notify.create({
+          position: 'top',
+          type: 'positive',
+          message: 'Password berhasil di ubah'
+        })
+      } catch (e) {
+        this.setErrors(e)
+      }
+    }
+
   }
 });

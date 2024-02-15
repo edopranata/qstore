@@ -5,7 +5,7 @@ import {useRoute, useRouter} from "vue-router";
 
 const router = useRouter()
 const auth = useAuthStore()
-const {login, isError} = useAuthStore()
+const {isError} = useAuthStore()
 const {path, query} = useRoute()
 const input = reactive({
   username: null,
@@ -15,7 +15,7 @@ const input = reactive({
 let errors = {}
 const onSubmit = async () => {
   const toPath = query.to || '/app'
-  login(path, input).then(() => {
+  await auth.login(path, input).then(() => {
     router.replace({path: toPath})
   })
 }
@@ -59,7 +59,7 @@ const onReset = () => {
               type="password"
             />
 
-            <q-checkbox v-model="input.accept" label="Remember me"/>
+            <q-checkbox v-model="input.accept" v-if="false" label="Remember me"/>
 
           </q-card-section>
 
@@ -68,9 +68,6 @@ const onReset = () => {
           <q-card-actions class="row justify-between">
             <q-btn color="warning" label="Reset" type="reset"/>
             <q-btn color="primary" label="Submit" type="submit"/>
-          </q-card-actions>
-          <q-card-actions>
-            <q-btn color="dark" label="Home" to="/app" type="button"/>
           </q-card-actions>
         </q-form>
       </q-card>
