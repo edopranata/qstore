@@ -1,31 +1,44 @@
 <script setup>
-import {usePlantationReportStore} from "stores/report/plantationReport";
-import {useAuthStore} from "stores/authStore";
+import {useLandReportStore} from "stores/report/landReport";
 import {storeToRefs} from "pinia";
 import {onMounted, watch} from "vue";
 import {date} from "quasar";
 import {useRoute} from "vue-router";
 
-const {can} = useAuthStore()
 const {path} = useRoute()
-const report = usePlantationReportStore()
-const {table, form} = usePlantationReportStore()
-const {getReportOptions: options, getTypeChange, errors} = storeToRefs(usePlantationReportStore())
+const report = useLandReportStore()
+const {table, form, select} = useLandReportStore()
+const {getReportOptions: options, getTypeChange, getSelectedLands, errors} = storeToRefs(useLandReportStore())
 
-watch(getTypeChange, (optType) => {
+watch([getTypeChange, getSelectedLands], (optType, landSel) => {
   if (optType) {
     report.onReset()
   }
+  if (landSel) {
+    form.land_id = landSel
+  } else {
+    form.land_id = []
+  }
 })
 
-onMounted(async () => {
-  table.data = []
-  form.type = 'Period'
-  report.onReset()
+
+onMounted( async () => {
+  await report.getLandData(path)
 })
 
 const onSubmit = async () => {
   await report.getReportData(path)
+}
+
+const searchLand = (val, update) => {
+  update(() => {
+    if (val === '') {
+      select.lands_option = select.lands.slice(0, 10)
+    } else {
+      const needle = val.toLowerCase()
+      select.lands_option = select.lands.filter(({name}) => name.toLowerCase().indexOf(needle) > -1).slice(0, 10)
+    }
+  })
 }
 </script>
 
@@ -51,6 +64,57 @@ const onSubmit = async () => {
             <q-tab-panel name="Period">
               <div class="tw-grid md:tw-grid-cols-4 tw-grid-cols-2 tw-gap-4">
                 <div class="text-h6 md:tw-col-span-4 tw-col-span-2">Periode Laporan Hasil Kebun</div>
+                <q-select
+                  v-model="select.selected_lands"
+                  :dense="$q.screen.lt.md"
+                  :error="errors.hasOwnProperty('land_id')"
+                  :error-message="errors.land_id"
+                  :options="select.lands_option"
+                  class="tw-w-full tw-col-span-2"
+                  fill-input
+                  filled
+                  label="Lahan"
+                  multiple
+                  option-label="name"
+                  option-value="id"
+                  use-chips
+                  use-input
+                  @change="report.unsetError('land_id')"
+                  @filter="searchLand">
+                  <template v-slot:selected-item="scope">
+                    <q-chip
+                      :tabindex="scope.tabindex"
+                      class="q-ma-xs"
+                      color="primary"
+                      removable
+                      text-color="white"
+                      @remove="scope.removeAtIndex(scope.index)"
+                    >
+                      {{ scope.opt.name }}
+                    </q-chip>
+                  </template>
+                  <template v-slot:option="scope">
+                    <q-item v-bind="scope.itemProps">
+                      <q-item-section avatar>
+                        <q-icon name="forest"/>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label>{{ scope.opt.name }}</q-item-label>
+                        <q-item-label caption>
+                          <q-icon name="phone"/>
+                          {{ scope.opt.area }}
+                        </q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        No results
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-select>
                 <q-field
                   :dense="$q.screen.lt.md"
                   :error="errors.hasOwnProperty('period_start')"
@@ -105,15 +169,13 @@ const onSubmit = async () => {
                   </template>
                 </q-field>
                 <div class="md:tw-col-span-4 tw-col-span-2 tw-space-x-2">
-                  <q-btn v-if="can('app.laporan.dataLaporan.hasilKebun')" :disable="table.loading" :loading="table.loading" color="primary" glossy
-                         label="Lihat laporan"
+                  <q-btn :disable="table.loading" :loading="table.loading" color="primary" glossy label="Lihat laporan"
                          type="submit"/>
-                  <q-btn v-if="can('app.laporan.dataLaporan.printHasilKebun')"
-                         :disable="table.loading || !form.type || !form.period_start || !form.period_end"
+                  <q-btn :disable="table.loading || !form.type || !form.period_start || !form.period_end"
                          :loading="table.loading"
                          :to="{name: 'app.laporan.dataLaporan.printHasilKebun', query: {type: form.type, period_end: form.period_end, period_start: form.period_start}}"
                          color="deep-orange"
-                         glossy icon="print" label="Print laporan" type="submit"/>
+                         glossy icon="print" label="Print laporan"/>
                 </div>
               </div>
 
@@ -135,15 +197,13 @@ const onSubmit = async () => {
                 />
               </div>
               <div class="md:tw-col-span-4 tw-col-span-2 tw-mt-2 tw-space-x-2">
-                <q-btn v-if="can('app.laporan.dataLaporan.hasilKebun')" :disable="table.loading" :loading="table.loading" color="primary" glossy
-                       label="Lihat laporan"
+                <q-btn :disable="table.loading" :loading="table.loading" color="primary" glossy label="Lihat laporan"
                        type="submit"/>
-                <q-btn v-if="can('app.laporan.dataLaporan.printHasilKebun')"
-                       :disable="table.loading || !form.type || String(form.monthly).length !== 7"
+                <q-btn :disable="table.loading || !form.type || String(form.monthly).length !== 7"
                        :loading="table.loading"
                        :to="{name: 'app.laporan.dataLaporan.printHasilKebun', query: {type: form.type, monthly: form.monthly}}"
                        color="deep-orange"
-                       glossy icon="print" label="Print laporan" type="submit"/>
+                       glossy icon="print" label="Print laporan"/>
               </div>
             </q-tab-panel>
 
@@ -163,15 +223,13 @@ const onSubmit = async () => {
                 />
               </div>
               <div class="md:tw-col-span-4 tw-col-span-2 tw-mt-2 tw-space-x-2">
-                <q-btn v-if="can('app.laporan.dataLaporan.hasilKebun')" :disable="table.loading" :loading="table.loading" color="primary" glossy
-                       label="Lihat laporan"
+                <q-btn :disable="table.loading" :loading="table.loading" color="primary" glossy label="Lihat laporan"
                        type="submit"/>
-                <q-btn v-if="can('app.laporan.dataLaporan.printHasilKebun')"
-                       :disable="table.loading || !form.type || !form.annual || String(form.annual).length !== 4"
+                <q-btn :disable="table.loading || !form.type || !form.annual || String(form.annual).length !== 4"
                        :loading="table.loading"
                        :to="{name: 'app.laporan.dataLaporan.printHasilKebun', query: {type: form.type, annual: form.annual}}"
                        color="deep-orange"
-                       glossy icon="print" label="Print laporan" type="submit"/>
+                       glossy icon="print" label="Print laporan"/>
               </div>
             </q-tab-panel>
           </q-tab-panels>

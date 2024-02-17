@@ -29,6 +29,32 @@ export default [
         },
       },
 
+      {
+        path: 'dataLaporan/hasilLahan',
+        name: 'app.laporan.dataLaporan.hasilLahan',
+        component: () => import('pages/app/report/plantation/LandReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+
+      {
+        path: 'dataLaporan/printHasilLahan',
+        name: 'app.laporan.dataLaporan.printHasilLahan',
+        component: () => import('pages/app/report/plantation/LandReportPrint.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'dataLaporan/printHasilLahanPerArea',
+        name: 'app.laporan.dataLaporan.printHasilLahanPerArea',
+        component: () => import('pages/app/report/plantation/AreaReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+
     ]
   },
 ]
