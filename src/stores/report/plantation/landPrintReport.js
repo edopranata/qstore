@@ -2,7 +2,7 @@ import {defineStore} from 'pinia'
 import {LocalStorage, Notify} from "quasar";
 import {api} from "boot/axios";
 
-export const useLandReportStore = defineStore('landReport', {
+export const useLandPrintStore = defineStore('landPrint', {
   state: () => ({
     form: {
       type: 'Period',
@@ -12,39 +12,53 @@ export const useLandReportStore = defineStore('landReport', {
       annual: null,
       land_id: [],
     },
-    select: {
-      selected_lands: [],
-      lands: [],
-      lands_option: [],
-    },
-    reportOptions: [
-      {label: 'Periode', value: 'Period'},
-      {label: 'Bulanan', value: 'Monthly'},
-      {label: 'Tahunan', value: 'Annual'}
-    ],
     table: {
       data: [],
+      lands: [],
       loading: false,
     },
     errors: {},
   }),
 
   getters: {
-    getLandId(state){
-      return state.form.land_id.map(e => e)
+    getAllData(state) {
+      return state.table.data ?? []
     },
-    getReportOptions(state) {
-      return state.reportOptions
-    },
-    getTypeChange(state) {
-      return state.form.type
-    },
-    getSelectedLands(state) {
-      return state.select.selected_lands ? state.select.selected_lands.map(({id}) => id) : []
-    },
+    getSummaries(state) {
+      let data = {}
+      data.wide = state.table.data ? state.table.data.reduce((total, next) => total + next.wide, 0) : 0
+      data.trees = state.table.data ? state.table.data.reduce((total, next) => total + next.trees, 0) : 0
+      data.trade_cost = state.table.data ? state.table.data.reduce((total, next) => total + next.trade_cost, 0) : 0
+      data.driver_cost = state.table.data ? state.table.data.reduce((total, next) => total + next.driver_cost, 0) : 0
+      data.car_cost = state.table.data ? state.table.data.reduce((total, next) => total + next.car_cost, 0) : 0
+      data.cost = state.table.data ? state.table.data.reduce((total, next) => total + next.cost, 0) : 0
+      data.net_weight = state.table.data ? state.table.data.reduce((total, next) => total + next.net_weight, 0) : 0
+      data.net_price = state.table.data ? state.table.data.reduce((total, next) => total + next.net_price, 0) : 0
+      data.bruto = state.table.data ? state.table.data.reduce((total, next) => total + next.bruto, 0) : 0
+      data.netto = state.table.data ? state.table.data.reduce((total, next) => total + next.netto, 0) : 0
+      data.avg_wide = state.table.data ? state.table.data.reduce((total, next) => total + next.avg_wide, 0) : 0
+      data.avg_tree = state.table.data ? state.table.data.reduce((total, next) => total + next.avg_tree, 0) : 0
+      data.avg_wide_weight = state.table.data ? state.table.data.reduce((total, next) => total + next.avg_wide_weight, 0) : 0
+      data.avg_tree_weight = state.table.data ? state.table.data.reduce((total, next) => total + next.avg_tree_weight, 0) : 0
+      data.avg_cost = state.table.data ? state.table.data.reduce((total, next) => total + next.avg_cost, 0) : 0
+
+      return data;
+    }
   },
 
   actions: {
+    setSummaries(response){
+      let data = {}
+      response.forEach(item => {
+        data = {}
+        data = this.calculateAvgCost(item)
+        data.trade_date = item.plantation.trade_date
+        data.name = item.land.name
+        data.area = item.land.area
+
+        this.table.data.push(data)
+      })
+    },
     calculateAvgCost(detail) {
       const data = {}
       data.wide = parseFloat(detail.wide)
@@ -55,10 +69,10 @@ export const useLandReportStore = defineStore('landReport', {
       data.cost = data.trade_cost + data.driver_cost + data.car_cost
 
       data.net_weight = parseFloat(detail.plantation.net_weight)
+      data.net_price = parseFloat(detail.plantation.net_price)
 
       data.bruto = (parseFloat(detail.plantation.net_total) / parseFloat(detail.plantation.wide_total)) * data.wide
       data.netto = (parseFloat(detail.plantation.net_income) / parseFloat(detail.plantation.wide_total)) * data.wide
-
 
       data.avg_wide = (data.net_weight / parseFloat(detail.plantation.wide_total))
       data.avg_tree = (data.net_weight / parseFloat(detail.plantation.trees_total))
@@ -69,27 +83,6 @@ export const useLandReportStore = defineStore('landReport', {
 
       return data
 
-    },
-    onReset() {
-      for (let property in this.form) {
-        if (property !== 'type') {
-          this.form[property] = null
-          if(property === 'land_id'){
-            this.form[property] = []
-            this.select.selected_lands = []
-          }
-        }
-      }
-      this.errors = {}
-    },
-    unsetError(name = null) {
-      if (name) {
-        delete this.errors[name]
-      } else {
-        for (let property in this.errors) {
-          delete this.errors[property]
-        }
-      }
     },
     setError(e) {
       if (e.response.status === 422) {
@@ -112,56 +105,15 @@ export const useLandReportStore = defineStore('landReport', {
       }
       this.table.loading = false
     },
-    async getLandData(path) {
-      this.select.lands_option = []
-      this.select.lands = []
-      this.table.loading = true
-      const data = {
-        type: 'index'
-      }
-
-      try {
-        const params = new URLSearchParams(data);
-        await api.get(path, {params}).then(response => {
-          let temp = {}
-          if (response.data.areas.length > 0) {
-            let state = response.data.areas
-            state.forEach(area => {
-              area?.lands.forEach(land => {
-                temp = land
-                temp.area = area.name
-                this.select.lands_option.push(temp)
-                this.select.lands.push(temp)
-              })
-            })
-          }
-        }).finally( () => this.table.loading = false)
-
-      } catch (e) {
-        console.log(e)
-        this.setError(e)
-      }
-    },
-
     async getReportData(path) {
       this.table.loading = true
-      const data = {}
-      for (let property in this.form) {
-        if (this.form[property]) {
-          if(property === 'land_id'){
-            data[property]  = this.form[property].map(e => e)
-
-          }else{
-            data[property] = this.form[property]
-          }
-        }
-      }
 
       try {
-        const params = new URLSearchParams(data);
-        const response = await api.get(path, {params})
+        const params = this.form
+        const response = await api.post(path, params)
         if (response.data.lands.length > 0) {
-          this.table.data = response.data.lands
+          // this.table.data = response.data.lands
+          this.setSummaries(response.data.lands)
         } else {
           Notify.create({
             position: "top",
@@ -172,6 +124,7 @@ export const useLandReportStore = defineStore('landReport', {
         }
         this.table.loading = false
       } catch (e) {
+        console.log(e)
         this.setError(e)
       }
     },

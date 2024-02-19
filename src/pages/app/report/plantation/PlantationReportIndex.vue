@@ -1,5 +1,5 @@
 <script setup>
-import {usePlantationReportStore} from "stores/report/plantationReport";
+import {usePlantationReportStore} from "stores/report/plantation/plantationReport";
 import {useAuthStore} from "stores/authStore";
 import {storeToRefs} from "pinia";
 import {onMounted, watch} from "vue";

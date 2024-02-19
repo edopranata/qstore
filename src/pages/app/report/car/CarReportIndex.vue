@@ -1,5 +1,5 @@
 <script setup>
-import {useLandReportStore} from "stores/report/plantation/landReport";
+import {useCarReportStore} from "stores/report/car/carReport";
 import {useAuthStore} from "stores/authStore";
 import {storeToRefs} from "pinia";
 import {onMounted, watch} from "vue";
@@ -8,16 +8,16 @@ import {useRoute} from "vue-router";
 
 const {can} = useAuthStore()
 const {path} = useRoute()
-const report = useLandReportStore()
-const {table, form, select} = useLandReportStore()
-const {getReportOptions: options, getTypeChange, getSelectedLands, errors} = storeToRefs(useLandReportStore())
+const report = useCarReportStore()
+const {table, form, select} = useCarReportStore()
+const {getReportOptions: options, getTypeChange, getSelectedCars, errors} = storeToRefs(useCarReportStore())
 
-watch([getSelectedLands], ([landSel]) => {
-  if (landSel) {
-    form.land_id = landSel
-    delete report.errors.land_id
+watch([getSelectedCars], ([carSel]) => {
+  if (carSel) {
+    form.car_id = carSel
+    delete report.errors.car_id
   } else {
-    form.land_id = []
+    form.car_id = []
   }
 })
 
@@ -32,20 +32,20 @@ onMounted(async () => {
   table.data = []
   form.type = 'Period'
   report.onReset()
-  await report.getLandData(path)
+  await report.getCarData(path)
 })
 
 const onSubmit = async () => {
   await report.getReportData(path)
 }
 
-const searchLand = (val, update) => {
+const searchCar = (val, update) => {
   update(() => {
     if (val === '') {
-      select.lands_option = select.lands.slice(0, 10)
+      select.cars_option = select.cars.slice(0, 10)
     } else {
       const needle = val.toLowerCase()
-      select.lands_option = select.lands.filter(({name}) => name.toLowerCase().indexOf(needle) > -1).slice(0, 10)
+      select.cars_option = select.cars.filter(({name}) => name.toLowerCase().indexOf(needle) > -1).slice(0, 10)
     }
   })
 }
@@ -73,27 +73,27 @@ const searchLand = (val, update) => {
             <q-tab-panel name="Period">
               <q-card flat>
                 <q-card-section class="no-padding tw-mb-4">
-                  <div class="text-h6">Periode Laporan Hasil Berasarkan Lahan</div>
+                  <div class="text-h6">Periode Laporan Pendapatan Mobil</div>
                 </q-card-section>
                 <q-card-section class="no-padding">
                   <div class="tw-flex md:tw-grid md:tw-grid-cols-2">
                     <q-select
-                      v-model="select.selected_lands"
+                      v-model="select.selected_cars"
                       :dense="$q.screen.lt.md"
-                      :error="errors.hasOwnProperty('land_id')"
-                      :error-message="errors.land_id"
-                      :options="select.lands_option"
+                      :error="errors.hasOwnProperty('car_id')"
+                      :error-message="errors.car_id"
+                      :options="select.cars_option"
                       class="tw-w-full"
                       fill-input
                       filled
-                      label="Lahan"
+                      label="Mobil"
                       multiple
-                      option-label="name"
+                      option-label="no_pol"
                       option-value="id"
                       use-chips
                       use-input
-                      @change="report.unsetError('land_id')"
-                      @filter="searchLand">
+                      @change="report.unsetError('car_id')"
+                      @filter="searchCar">
                       <template v-slot:selected-item="scope">
                         <q-chip
                           :tabindex="scope.tabindex"
@@ -109,13 +109,13 @@ const searchLand = (val, update) => {
                       <template v-slot:option="scope">
                         <q-item v-bind="scope.itemProps">
                           <q-item-section avatar>
-                            <q-icon name="forest"/>
+                            <q-icon name="local_shipping"/>
                           </q-item-section>
                           <q-item-section>
                             <q-item-label>{{ scope.opt.name }}</q-item-label>
                             <q-item-label caption>
                               <q-icon name="phone"/>
-                              {{ scope.opt.area }}
+                              {{ scope.opt.no_pol }}
                             </q-item-label>
                           </q-item-section>
                         </q-item>
@@ -193,16 +193,16 @@ const searchLand = (val, update) => {
                 </q-card-section>
                 <q-card-actions class="no-padding tw-mt-4">
                   <div class="md:tw-col-span-4 tw-col-span-2 tw-space-x-2">
-                    <q-btn v-if="can('app.laporan.dataLaporan.hasilLahan')" :disable="table.loading" :loading="table.loading" color="primary"
+                    <q-btn v-if="can('app.laporan.dataLaporan.penghasilanMobil')" :disable="table.loading" :loading="table.loading" color="primary"
                            glossy
 
                            label="Lihat laporan"
                            type="submit"/>
                     <q-btn
-                      v-if="can('app.laporan.dataLaporan.printHasilLahan')"
-                      :disable="table.loading || !form.type || !form.period_start || !form.period_end || !form.land_id.length"
+                      v-if="can('app.laporan.dataLaporan.printPenghasilanMobil')"
+                      :disable="table.loading || !form.type || !form.period_start || !form.period_end || !form.car_id.length"
                       :loading="table.loading"
-                      :to="{name: 'app.laporan.dataLaporan.printHasilLahan', query: {type: form.type, period_end: form.period_end, period_start: form.period_start, land_id: select.selected_lands.map(e => e.id) }}"
+                      :to="{name: 'app.laporan.dataLaporan.printPenghasilanMobil', query: {type: form.type, period_end: form.period_end, period_start: form.period_start, car_id: select.selected_cars.map(e => e.id) }}"
                       color="deep-orange"
                       glossy icon="print" label="Print laporan"/>
                   </div>
@@ -213,27 +213,27 @@ const searchLand = (val, update) => {
             <q-tab-panel name="Monthly">
               <q-card flat>
                 <q-card-section class="no-padding tw-mb-4">
-                  <div class="text-h6">Laporan Bulanan Berasarkan Lahan</div>
+                  <div class="text-h6">Laporan Bulanan Pendapatan Mobil</div>
                 </q-card-section>
                 <q-card-section class="no-padding">
                   <div class="tw-flex md:tw-grid md:tw-grid-cols-2">
                     <q-select
-                      v-model="select.selected_lands"
+                      v-model="select.selected_cars"
                       :dense="$q.screen.lt.md"
-                      :error="errors.hasOwnProperty('land_id')"
-                      :error-message="errors.land_id"
-                      :options="select.lands_option"
+                      :error="errors.hasOwnProperty('car_id')"
+                      :error-message="errors.car_id"
+                      :options="select.cars_option"
                       class="tw-w-full"
                       fill-input
                       filled
-                      label="Lahan"
+                      label="Mobil"
                       multiple
-                      option-label="name"
+                      option-label="no_pol"
                       option-value="id"
                       use-chips
                       use-input
-                      @change="report.unsetError('land_id')"
-                      @filter="searchLand">
+                      @change="report.unsetError('car_id')"
+                      @filter="searchCar">
                       <template v-slot:selected-item="scope">
                         <q-chip
                           :tabindex="scope.tabindex"
@@ -249,13 +249,13 @@ const searchLand = (val, update) => {
                       <template v-slot:option="scope">
                         <q-item v-bind="scope.itemProps">
                           <q-item-section avatar>
-                            <q-icon name="forest"/>
+                            <q-icon name="local_shipping"/>
                           </q-item-section>
                           <q-item-section>
                             <q-item-label>{{ scope.opt.name }}</q-item-label>
                             <q-item-label caption>
                               <q-icon name="phone"/>
-                              {{ scope.opt.area }}
+                              {{ scope.opt.no_pol }}
                             </q-item-label>
                           </q-item-section>
                         </q-item>
@@ -289,14 +289,14 @@ const searchLand = (val, update) => {
                 </q-card-section>
                 <q-card-actions class="no-padding tw-mt-4">
                   <div class="md:tw-col-span-4 tw-col-span-2 tw-space-x-2">
-                    <q-btn v-if="can('app.laporan.dataLaporan.hasilLahan')" :disable="table.loading" :loading="table.loading" color="primary"
+                    <q-btn v-if="can('app.laporan.dataLaporan.penghasilanMobil')" :disable="table.loading" :loading="table.loading" color="primary"
                            glossy
                            label="Lihat laporan"
                            type="submit"/>
-                    <q-btn v-if="can('app.laporan.dataLaporan.printHasilLahan')"
+                    <q-btn v-if="can('app.laporan.dataLaporan.printPenghasilanMobil')"
                            :disable="table.loading || !form.type || String(form.monthly).length !== 7"
                            :loading="table.loading"
-                           :to="{name: 'app.laporan.dataLaporan.printHasilLahan', query: {type: form.type, monthly: form.monthly, land_id: select.selected_lands.map(e => e.id)}}"
+                           :to="{name: 'app.laporan.dataLaporan.printPenghasilanMobil', query: {type: form.type, monthly: form.monthly, car_id: select.selected_cars.map(e => e.id)}}"
                            color="deep-orange"
                            glossy icon="print" label="Print laporan"/>
                   </div>
@@ -306,27 +306,27 @@ const searchLand = (val, update) => {
             <q-tab-panel name="Annual">
               <q-card flat>
                 <q-card-section class="no-padding tw-mb-4">
-                  <div class="text-h6">Laporan Tahunan Berasarkan Lahan</div>
+                  <div class="text-h6">Laporan Tahunan Pendapatan Mobil</div>
                 </q-card-section>
                 <q-card-section class="no-padding">
                   <div class="tw-flex md:tw-grid md:tw-grid-cols-2">
                     <q-select
-                      v-model="select.selected_lands"
+                      v-model="select.selected_cars"
                       :dense="$q.screen.lt.md"
-                      :error="errors.hasOwnProperty('land_id')"
-                      :error-message="errors.land_id"
-                      :options="select.lands_option"
+                      :error="errors.hasOwnProperty('car_id')"
+                      :error-message="errors.car_id"
+                      :options="select.cars_option"
                       class="tw-w-full"
                       fill-input
                       filled
-                      label="Lahan"
+                      label="Mobil"
                       multiple
-                      option-label="name"
+                      option-label="no_pol"
                       option-value="id"
                       use-chips
                       use-input
-                      @change="report.unsetError('land_id')"
-                      @filter="searchLand">
+                      @change="report.unsetError('car_id')"
+                      @filter="searchCar">
                       <template v-slot:selected-item="scope">
                         <q-chip
                           :tabindex="scope.tabindex"
@@ -342,13 +342,13 @@ const searchLand = (val, update) => {
                       <template v-slot:option="scope">
                         <q-item v-bind="scope.itemProps">
                           <q-item-section avatar>
-                            <q-icon name="forest"/>
+                            <q-icon name="local_shipping"/>
                           </q-item-section>
                           <q-item-section>
                             <q-item-label>{{ scope.opt.name }}</q-item-label>
                             <q-item-label caption>
                               <q-icon name="phone"/>
-                              {{ scope.opt.area }}
+                              {{ scope.opt.no_pol }}
                             </q-item-label>
                           </q-item-section>
                         </q-item>
@@ -382,14 +382,14 @@ const searchLand = (val, update) => {
                 </q-card-section>
                 <q-card-actions class="no-padding tw-mt-4">
                   <div class="md:tw-col-span-4 tw-col-span-2 tw-space-x-2">
-                    <q-btn v-if="can('app.laporan.dataLaporan.hasilLahan')" :disable="table.loading" :loading="table.loading" color="primary"
+                    <q-btn v-if="can('app.laporan.dataLaporan.penghasilanMobil')" :disable="table.loading" :loading="table.loading" color="primary"
                            glossy
                            label="Lihat laporan"
                            type="submit"/>
-                    <q-btn v-if="can('app.laporan.dataLaporan.printHasilLahan')"
+                    <q-btn v-if="can('app.laporan.dataLaporan.printPenghasilanMobil')"
                            :disable="table.loading || !form.type || !form.annual || String(form.annual).length !== 4"
                            :loading="table.loading"
-                           :to="{name: 'app.laporan.dataLaporan.printHasilLahan', query: {type: form.type, annual: form.annual, land_id: select.selected_lands.map(e => e.id)}}"
+                           :to="{name: 'app.laporan.dataLaporan.printPenghasilanMobil', query: {type: form.type, annual: form.annual, car_id: select.selected_cars.map(e => e.id)}}"
                            color="deep-orange"
                            glossy icon="print" label="Print laporan"/>
                   </div>
@@ -402,74 +402,48 @@ const searchLand = (val, update) => {
           <q-markup-table>
             <thead>
             <tr>
-              <th class="text-left">Lahan</th>
+              <th class="text-left">Mobil</th>
               <th class="text-left">Tanggal Transaksi</th>
               <th class="text-right">Harga (Rp/kg)</th>
-              <th class="text-right">Luas Lahan</th>
-              <th class="text-right">Total Batang</th>
-              <th class="text-right">Biaya (Rp)</th>
-              <th class="text-right">Kilogram (Ha)</th>
-              <th class="text-right">Bruto (Rp)</th>
-              <th class="text-right">Netto (Rp)</th>
+              <th class="text-right">Tonase</th>
+              <th class="text-right">Perkebunan</th>
+              <th class="text-right">Jual Beli Sawit</th>
             </tr>
             </thead>
             <tbody v-if="table.data.length > 0">
             <tr v-for="( detail, i) in table.data" :key="i">
               <td>
-                <div class="text-bold">{{ detail.land?.name }}</div>
-                <div class="tw-text-xs">{{ detail.land?.area }}</div>
+                <div class="text-bold">{{ detail.name }}</div>
+                <div class="tw-text-xs">{{ detail.no_pol }}</div>
               </td>
               <td class="text-left">
-                {{ detail.plantation.trade_date }}
+                {{ detail.trade_date }}
               </td>
               <td class="text-right">
                 {{
                   new Intl.NumberFormat('id-ID', {
                     style: 'currency',
                     currency: 'IDR'
-                  }).format(detail.plantation.net_price)
+                  }).format(detail.car_fee)
                 }}
               </td>
               <td class="text-right">
-                {{ new Intl.NumberFormat('id-ID').format(detail.wide) }} Ha
+                {{ new Intl.NumberFormat('id-ID', {
+                style: 'unit',
+                unit: 'kilogram'
+              }).format(detail.net_weight) }}
               </td>
               <td class="text-right">
-                {{ new Intl.NumberFormat('id-ID').format(detail.trees) }} Btg
+                {{ new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR'
+              }).format(detail.type === 'Plantation' ? detail.car_price : 0) }}
               </td>
               <td class="text-right">
-                {{
-                  new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR'
-                  }).format(parseFloat(report.calculateAvgCost(detail).avg_cost))
-                }}
-              </td>
-              <td class="text-right">
-                <div>
-                  {{
-                    new Intl.NumberFormat('id-ID', {
-                      style: 'unit',
-                      unit: 'kilogram'
-                    }).format(parseFloat(report.calculateAvgCost(detail).avg_wide_weight))
-                  }}
-                </div>
-
-              </td>
-              <td class="text-right">
-                {{
-                  new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR'
-                  }).format(parseFloat(report.calculateAvgCost(detail).bruto))
-                }}
-              </td>
-              <td class="text-right">
-                {{
-                  new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR'
-                  }).format(parseFloat(report.calculateAvgCost(detail).netto))
-                }}
+                {{ new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR'
+              }).format(detail.type === 'Trading' ? detail.car_price : 0) }}
               </td>
             </tr>
             </tbody>

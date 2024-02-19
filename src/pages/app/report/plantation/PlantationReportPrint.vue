@@ -1,5 +1,5 @@
 <script setup>
-import {usePlantationPrintStore} from "stores/report/plantationPrintReport";
+import {usePlantationPrintStore} from "stores/report/plantation/plantationPrintReport";
 import {usePageStore} from "stores/helper/pageStore";
 import {useRoute} from "vue-router";
 import {onMounted} from "vue";

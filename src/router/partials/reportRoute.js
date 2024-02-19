@@ -37,7 +37,6 @@ export default [
           auth: true,
         },
       },
-
       {
         path: 'dataLaporan/printHasilLahan',
         name: 'app.laporan.dataLaporan.printHasilLahan',
@@ -47,14 +46,53 @@ export default [
         },
       },
       {
-        path: 'dataLaporan/printHasilLahanPerArea',
-        name: 'app.laporan.dataLaporan.printHasilLahanPerArea',
+        path: 'dataLaporan/hasilLahanPerArea',
+        name: 'app.laporan.dataLaporan.hasilLahanPerArea',
         component: () => import('pages/app/report/plantation/AreaReportIndex.vue'),
         meta: {
           auth: true,
         },
       },
-
+      {
+        path: 'dataLaporan/printHasilLahanPerArea',
+        name: 'app.laporan.dataLaporan.printHasilLahanPerArea',
+        component: () => import('pages/app/report/plantation/AreaReportPrint.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'dataLaporan/penghasilanMobil',
+        name: 'app.laporan.dataLaporan.penghasilanMobil',
+        component: () => import('pages/app/report/car/CarReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'dataLaporan/printPenghasilanMobil',
+        name: 'app.laporan.dataLaporan.printPenghasilanMobil',
+        component: () => import('pages/app/report/car/CarReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'dataLaporan/rekapPenghasilanMobil',
+        name: 'app.laporan.dataLaporan.rekapPenghasilanMobil',
+        component: () => import('pages/app/report/car/CarRecapReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'dataLaporan/printRekapPenghasilanMobil',
+        name: 'app.laporan.dataLaporan.printRekapPenghasilanMobil',
+        component: () => import('pages/app/report/car/CarRecapReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
     ]
   },
 ]

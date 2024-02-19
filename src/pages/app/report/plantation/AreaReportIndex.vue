@@ -1,5 +1,5 @@
 <script setup>
-import {useLandReportStore} from "stores/report/landReport";
+import {useLandReportStore} from "stores/report/plantation/landReport";
 import {storeToRefs} from "pinia";
 import {onMounted, watch} from "vue";
 import {date} from "quasar";
