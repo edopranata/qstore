@@ -39,7 +39,7 @@ const {can} = useAuthStore()
                 :to="{name: 'app.laporan.dataLaporan.penghasilanMobil'}"
                 clickable>
           <q-item-section>
-            <q-item-label>Laporan Penghasilam Mobil</q-item-label>
+            <q-item-label>Laporan Penghasilan Mobil</q-item-label>
             <q-item-label caption lines="1">
               laporan pendapatan amprah mobil berdasarkan periode, bulanan dan tahunan
             </q-item-label>
