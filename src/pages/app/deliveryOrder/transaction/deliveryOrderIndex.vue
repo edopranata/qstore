@@ -154,7 +154,7 @@ const onUpdate = () => {
 </script>
 <template>
   <q-page class="tw-space-y-4" padding>
-    <q-card v-if="can('app.transaction.deliveryOrders.createDeliveryOrder')" bordered>
+    <q-card v-if="can('app.deliveryOrder.transaksiDO.createDeliveryOrder')" bordered>
       <q-form
         class="tw-w-full"
         @reset="onReset"
@@ -362,7 +362,7 @@ const onUpdate = () => {
         </q-card-section>
         <q-card-actions class="tw-p-4">
           <q-btn
-            v-if="can('app.transaction.deliveryOrders.createDeliveryOrder')"
+            v-if="can('app.deliveryOrder.transaksiDO.createDeliveryOrder')"
             :dense="$q.screen.lt.lg"
             :label="!$q.screen.lt.md ? 'Simpan data' : ''"
             :loading="table.loading"
@@ -393,7 +393,7 @@ const onUpdate = () => {
           </q-btn>
           <q-space></q-space>
           <q-btn
-            v-if="can('app.transaction.deliveryOrders.deleteDeliveryOrder')"
+            v-if="can('app.deliveryOrder.transaksiDO.deleteDeliveryOrder')"
             :dense="$q.screen.lt.lg"
             :disable="selected.length !== 1"
             :label="!$q.screen.lt.md ? 'Hapus data' : ''"
@@ -410,7 +410,7 @@ const onUpdate = () => {
             </q-tooltip>
           </q-btn>
           <q-btn
-            v-if="can('app.transaction.deliveryOrders.updateDeliveryOrder')"
+            v-if="can('app.deliveryOrder.transaksiDO.updateDeliveryOrder')"
             :dense="$q.screen.lt.lg"
             :disable="selected.length !== 1"
             :label="!$q.screen.lt.md ? 'Ubah data' : ''"

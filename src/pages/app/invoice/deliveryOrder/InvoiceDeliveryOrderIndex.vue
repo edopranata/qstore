@@ -20,7 +20,7 @@ const {
 } = storeToRefs(useInvoiceDeliveryOrderStore())
 const {path, query} = useRoute()
 
-const type = ['Customer', 'Trading', 'Plantation']
+const type = ['Customer']
 onMounted(async () => {
   invoiceDO.onReset()
   await invoiceDO.getCustomersOrder(path)
@@ -103,7 +103,7 @@ const onReset = () => {
             </div>
           </div>
         </q-card-section>
-        <q-checkbox v-if="can('app.invoice.invoiceData.printInvoice')" size="lg" v-model="dialog.print" :val="dialog.print" label="Simpan dan print" />
+        <q-checkbox v-if="can('app.deliveryOrder.invoiceData.printInvoice')" size="lg" v-model="dialog.print" :val="dialog.print" label="Simpan dan print" />
         <q-card-actions>
           <q-btn
             v-close-popup
@@ -134,11 +134,11 @@ const onReset = () => {
         <q-card-section class="tw-space-y-4">
           <div class="md:tw-grid md:tw-grid-cols-3 md:tw-gap-4">
             <div class="lg:tw-col-span-1 tw-col-span-2">
-              <div class="q-gutter-sm md:tw-mb-9">
-                <q-radio v-model="form.type" label="Pengepul" val="Customer"/>
-                <q-radio v-model="form.type" label="Hasil Kebun" val="Plantation"/>
-                <q-radio v-model="form.type" label="Jual Beli Sawit" val="Trading"/>
-              </div>
+<!--              <div class="q-gutter-sm md:tw-mb-9">-->
+<!--                <q-radio v-model="form.type" label="Pengepul" val="Customer"/>-->
+<!--                <q-radio v-model="form.type" label="Hasil Kebun" val="Plantation"/>-->
+<!--                <q-radio v-model="form.type" label="Jual Beli Sawit" val="Trading"/>-->
+<!--              </div>-->
               <q-field
                 v-if="form.type"
                 :dense="$q.screen.lt.md"

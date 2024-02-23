@@ -7,7 +7,7 @@ export default [
       {
         path: 'deliveryOrders',
         name: 'app.transaction.deliveryOrders.index',
-        component: () => import('pages/app/transaction/deliveryOrders/deliveryOrderIndex.vue'),
+        component: () => import('pages/app/deliveryOrder/transaction/deliveryOrderIndex.vue'),
         meta: {
           auth: true,
         },

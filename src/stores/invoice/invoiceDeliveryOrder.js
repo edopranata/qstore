@@ -10,7 +10,7 @@ export const useInvoiceDeliveryOrderStore = defineStore('invoiceDO', {
       print: false,
     },
     form: {
-      type: '',
+      type: 'Customer',
       installment: 0,
       total: 0,
       net_total: 0,
@@ -134,6 +134,7 @@ export const useInvoiceDeliveryOrderStore = defineStore('invoiceDO', {
       this.errors = {}
       this.table.selected = []
       this.dialog.open = false
+      this.form.type = 'Customer'
     },
     async getCustomersOrder(path) {
       const type = this.form.type ?? 'Customer'
@@ -231,7 +232,7 @@ export const useInvoiceDeliveryOrderStore = defineStore('invoiceDO', {
         })
         const invoice_number = response.data.data?.invoice_number
         if(this.dialog.print && invoice_number){
-          this.router.replace({name: 'app.invoice.invoiceData.printInvoice', params: { invoice_number : invoice_number }})
+          this.router.replace({name: 'app.deliveryOrder.invoiceData.printInvoice', params: { invoice_number : invoice_number }})
         }else {
           this.table.filter = String(Date.now())
           this.onReset()
