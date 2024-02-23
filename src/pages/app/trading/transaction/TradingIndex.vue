@@ -20,11 +20,7 @@ const tableRef = ref()
 
 onMounted(async () => {
   trading.onReset()
-  for (let property in setting){
-    if(parent.form.hasOwnProperty(property)){
-      parent.form[property] = setting[property]
-    }
-  }
+  trading.loadSetting()
   tableRef.value.requestServerInteraction()
 })
 
@@ -131,7 +127,7 @@ const onUpdate = () => {
         @reset="onReset"
         @submit="onSubmit"
       >
-        <q-card-section v-if="can('app.transaction.pembelianSawit.[createTransaction]')">
+        <q-card-section v-if="can('app.jualBeliSawit.pembelianSawit.[createTransaction]')">
           <div :class="$q.screen.lt.md ? 'tw-font-bold' : 'text-h6'" class="q-mt-sm q-mb-xs">Pembelian sawit petani
           </div>
           <div class="tw-grid lg:tw-gap-4 tw-gap-2 lg:tw-grid-cols-5 md:tw-grid-cols-4 tw-grid-cols-2">
@@ -278,11 +274,36 @@ const onUpdate = () => {
               filled
               label="Upah Supir (Rp/kg)"
             />
+
+          </div>
+          <div class="tw-grid lg:tw-gap-4 tw-gap-2 lg:tw-grid-cols-5 md:tw-grid-cols-4 tw-grid-cols-2">
+            <q-number
+              v-model="parent.form.car_transport"
+              :bg-color="!!parent.form.id ? 'yellow-2' : ''"
+              :dense="$q.screen.lt.md"
+              :error="errors.hasOwnProperty('car_transport')"
+              :error-message="errors.car_transport"
+              :options="page.currencyFormat"
+              class="tw-w-full"
+              filled
+              label="Uang Transport (Minyak) (Rp)"
+            />
+            <q-number
+              v-model="parent.form.loader_fee"
+              :bg-color="!!parent.form.id ? 'yellow-2' : ''"
+              :dense="$q.screen.lt.md"
+              :error="errors.hasOwnProperty('loader_fee')"
+              :error-message="errors.loader_fee"
+              :options="page.currencyFormat"
+              class="tw-w-full"
+              filled
+              label="Upah Muat (Rp/kg)"
+            />
           </div>
         </q-card-section>
         <q-card-actions class="tw-p-4">
           <q-btn
-            v-if="can('app.transaction.pembelianSawit.[createTransaction]')"
+            v-if="can('app.jualBeliSawit.pembelianSawit.[createTransaction]')"
             :dense="$q.screen.lt.lg"
             :label="!$q.screen.lt.md ? 'Simpan data' : ''"
             :loading="parent.table.loading"
@@ -298,7 +319,7 @@ const onUpdate = () => {
             </q-tooltip>
           </q-btn>
           <q-btn
-            v-if="can('app.transaction.pembelianSawit.[createTransaction]')"
+            v-if="can('app.jualBeliSawit.pembelianSawit.[createTransaction]')"
             :dense="$q.screen.lt.lg"
             :label="!$q.screen.lt.md ? 'Batalkan' : ''"
             :loading="parent.table.loading"
@@ -314,7 +335,7 @@ const onUpdate = () => {
           </q-btn>
           <q-space></q-space>
           <q-btn
-            v-if="can('app.transaction.pembelianSawit.deleteTransaction')"
+            v-if="can('app.jualBeliSawit.pembelianSawit.deleteTransaction')"
             :dense="$q.screen.lt.lg"
             :disable="selected.length !== 1"
             :label="!$q.screen.lt.md ? 'Hapus data' : ''"
@@ -331,7 +352,7 @@ const onUpdate = () => {
             </q-tooltip>
           </q-btn>
           <q-btn
-            v-if="can('app.transaction.pembelianSawit.updateTransaction')"
+            v-if="can('app.jualBeliSawit.pembelianSawit.updateTransaction')"
             :dense="$q.screen.lt.lg"
             :disable="selected.length !== 1"
             :label="!$q.screen.lt.md ? 'Ubah data' : ''"
@@ -369,8 +390,7 @@ const onUpdate = () => {
         @request="onRequest"
       >
         <template v-slot:body-selection="scope">
-          <q-checkbox v-model="scope.selected"
-                      :disable="scope.row.trade_status !== null"/>
+          <q-checkbox v-model="scope.selected"/>
         </template>
         <template v-slot:body-cell-action="props">
           <q-td :props="props">
@@ -379,7 +399,7 @@ const onUpdate = () => {
               :label="!$q.screen.lt.md ? 'Edit Details' : ''"
               :loading="parent.table.loading"
               :round="$q.screen.lt.md"
-              :disable="!can('app.transaction.pembelianSawit.viewDetailsTransaction')"
+              :disable="!can('app.jualBeliSawit.pembelianSawit.viewDetailsTransaction')"
               glossy
               :to="`${path}/${props.row.id}/details`"
               icon="visibility"

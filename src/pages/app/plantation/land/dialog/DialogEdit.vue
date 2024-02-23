@@ -14,7 +14,7 @@ const {errors} = storeToRefs(useLandsStore())
   <q-dialog v-model="dialog.edit" persistent transition-hide="scale" transition-show="scale">
     <q-card style="width: 600px;">
       <q-card-section>
-        <div class="text-h6">Edit Data Lahan</div>
+        <div class="text-h6">Edit Data</div>
       </q-card-section>
 
       <q-form

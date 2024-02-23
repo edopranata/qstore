@@ -25,8 +25,8 @@ const tableRef = ref()
 
 onMounted(async () => {
   trading.onReset('details')
-  await tableRef.value.requestServerInteraction()
   await trading.getTradeInfo(path)
+  await tableRef.value.requestServerInteraction()
 })
 
 
@@ -52,10 +52,12 @@ watch([getSelectedCustomer, formField], ([cusSel, formDetails]) => {
 
     let net_total = details.form.net_total ?? 0
     let trade_cost = details.trading.trade_cost ?? 0
+    let car_transport = details.trading.car_transport ?? 0
     let car_price = details.form.car_price ?? 0
     let driver_price = details.form.driver_price ?? 0
+    let loader_price = details.form.loader_price ?? 0
     let customer_total = details.trading.customer_total_price ?? 0
-    let cost = car_price + driver_price + customer_total + trade_cost
+    let cost = car_price + driver_price + customer_total + loader_price + trade_cost + car_transport
 
     details.form.net_income = net_total - cost
   }
@@ -64,6 +66,10 @@ watch([getSelectedCustomer, formField], ([cusSel, formDetails]) => {
   }
   if (formDetails.net_total && formDetails.driver_fee) {
     details.form.driver_price = formDetails.net_weight * formDetails.driver_fee
+  }
+
+  if (formDetails.net_total && formDetails.loader_fee) {
+    details.form.loader_price = formDetails.net_weight * formDetails.loader_fee
   }
 
 }, {deep: true})
@@ -260,7 +266,7 @@ const onUpdate = () => {
                       <template v-slot:control>
                         <div class="self-center full-width no-outline" tabindex="-1">
                           {{
-                            tradeDetails.trading.trade_date ? date.formatDate(tradeDetails.trading.trade_date.split(' ')[0], 'DD MMMM YYYY') : ''
+                            tradeDetails.trading ? tradeDetails.trading.trade_date ? date.formatDate(tradeDetails.trading.trade_date.split(' ')[0], 'DD MMMM YYYY') : '' : ''
                           }}
                         </div>
                       </template>
@@ -276,7 +282,7 @@ const onUpdate = () => {
                       tabindex="-1">
                       <template v-slot:control>
                         <div class="self-center full-width no-outline" tabindex="-1">
-                          {{ tradeDetails.trading.car_no_pol }}
+                          {{ tradeDetails.trading?.car_no_pol }}
                         </div>
                       </template>
                     </q-field>
@@ -291,7 +297,7 @@ const onUpdate = () => {
                       tabindex="-1">
                       <template v-slot:control>
                         <div class="self-center full-width no-outline" tabindex="-1">
-                          {{ tradeDetails.trading.driver_name }}
+                          {{ tradeDetails.trading?.driver_name }}
                         </div>
                       </template>
                     </q-field>
@@ -311,7 +317,7 @@ const onUpdate = () => {
                               style: 'currency',
                               currency: 'IDR',
                               minimumFractionDigits: 0
-                            }).format(tradeDetails.trading.trade_cost)
+                            }).format(tradeDetails.trading ? tradeDetails.trading.trade_cost : 0)
                           }}
                         </div>
                       </template>
@@ -422,7 +428,7 @@ const onUpdate = () => {
                             Intl.NumberFormat('id-ID', {
                               style: 'unit',
                               unit: 'kilogram'
-                            }).format(details.trading.customer_total_weight)
+                            }).format(details.trading?.customer_total_weight)
                           }}
                         </div>
                       </template>
@@ -443,7 +449,7 @@ const onUpdate = () => {
                               style: 'currency',
                               currency: 'IDR',
                               minimumFractionDigits: 0
-                            }).format(details.trading.customer_average_price ?? 0)
+                            }).format(details.trading?.customer_average_price ?? 0)
                           }}
                         </div>
                       </template>
@@ -492,6 +498,18 @@ const onUpdate = () => {
                       filled
                       label="Upah Supir (Rp/kg)"
                     />
+
+                    <q-number
+                      v-model="details.form.loader_fee"
+                      :dense="$q.screen.lt.md"
+                      :error="errors.hasOwnProperty('loader_fee')"
+                      :error-message="errors.loader_fee"
+                      :options="page.currencyFormat"
+
+                      class="tw-w-full"
+                      filled
+                      label="Upah Muat (Rp/kg)"
+                    />
                   </div>
 
                   <div class="tw-flex tw-flex-col tw-space-y-2">
@@ -525,7 +543,7 @@ const onUpdate = () => {
                               style: 'currency',
                               currency: 'IDR',
                               minimumFractionDigits: 0
-                            }).format(details.trading.customer_total_price ? details.trading.customer_total_price * -1 : 0)
+                            }).format(details.trading ? details.trading.customer_total_price ? details.trading.customer_total_price * -1 : 0 : 0)
                           }}
                         </q-td>
                       </q-tr>
@@ -537,7 +555,19 @@ const onUpdate = () => {
                               style: 'currency',
                               currency: 'IDR',
                               minimumFractionDigits: 0
-                            }).format(details.trading.trade_cost ? details.trading.trade_cost * -1 : 0)
+                            }).format(details.trading ? details.trading.trade_cost ? details.trading.trade_cost * -1 : 0 : 0)
+                          }}
+                        </q-td>
+                      </q-tr>
+                      <q-tr>
+                        <q-td>Transport Mobil (Minyak) :</q-td>
+                        <q-td class="text-right">
+                          {{
+                            Intl.NumberFormat('id-ID', {
+                              style: 'currency',
+                              currency: 'IDR',
+                              minimumFractionDigits: 0
+                            }).format(details.trading ? details.trading.car_transport ? details.trading.car_transport * -1 : 0 : 0)
                           }}
                         </q-td>
                       </q-tr>
@@ -562,6 +592,19 @@ const onUpdate = () => {
                               currency: 'IDR',
                               minimumFractionDigits: 0
                             }).format(details.form.driver_price ? details.form.driver_price * -1 : 0)
+                          }}
+                        </q-td>
+                      </q-tr>
+
+                      <q-tr>
+                        <q-td>Upah Muat :</q-td>
+                        <q-td class="text-right">
+                          {{
+                            Intl.NumberFormat('id-ID', {
+                              style: 'currency',
+                              currency: 'IDR',
+                              minimumFractionDigits: 0
+                            }).format(details.form.loader_price ? details.form.loader_price * -1 : 0)
                           }}
                         </q-td>
                       </q-tr>

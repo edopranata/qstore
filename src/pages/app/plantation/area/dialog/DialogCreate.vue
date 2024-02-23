@@ -11,15 +11,15 @@ const {errors} = storeToRefs(useAreasStore())
 </script>
 
 <template>
-  <q-dialog v-model="dialog.edit" persistent transition-hide="scale" transition-show="scale">
+  <q-dialog v-model="dialog.create" persistent transition-hide="scale" transition-show="scale">
     <q-card style="width: 600px;">
       <q-card-section>
-        <div class="text-h6">Edit data area</div>
+        <div class="text-h6">Create new Area</div>
       </q-card-section>
 
       <q-form
         class="q-gutter-md"
-        @reset="onReset()"
+        @reset="onReset('create')"
         @submit="submitForm(path)"
       >
         <q-card-section class="q-pt-none">
@@ -31,6 +31,7 @@ const {errors} = storeToRefs(useAreasStore())
             label="Nama Area *"
             lazy-rules
           />
+
         </q-card-section>
 
         <q-card-actions align="right">
@@ -43,3 +44,6 @@ const {errors} = storeToRefs(useAreasStore())
   </q-dialog>
 </template>
 
+<style scoped>
+
+</style>

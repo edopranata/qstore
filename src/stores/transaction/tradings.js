@@ -3,7 +3,9 @@ import {useAuthStore} from "stores/authStore";
 import {reactive, ref} from "vue";
 import {LocalStorage, Notify} from "quasar";
 import {api} from "boot/axios";
+import {usePageStore} from "stores/helper/pageStore";
 
+const {setting} = usePageStore()
 const {can} = useAuthStore()
 export const useTradingsStore = defineStore('tradings', {
   state: () => ({
@@ -16,6 +18,8 @@ export const useTradingsStore = defineStore('tradings', {
         driver_id: '',
         car_fee: '',
         driver_fee: '',
+        loader_fee: '',
+        car_transport: '',
       },
       drivers: [],
       drivers_option: [],
@@ -64,6 +68,9 @@ export const useTradingsStore = defineStore('tradings', {
         car_fee: '',
         driver_fee: '',
         car_price: '',
+        loader_fee: '',
+        loader_price: '',
+        car_transport: '',
         driver_price: '',
         net_income: '',
         trade_status: '',
@@ -131,13 +138,13 @@ export const useTradingsStore = defineStore('tradings', {
 
   actions: {
     setError(e) {
-      if(e.hasOwnProperty('response')){
+      if (e.hasOwnProperty('response')) {
         if (e.response.status === 422) {
           let error = e.response.data.errors;
           for (let property in error) {
             this.errors[property] = error[property][0];
           }
-        }else if (e.response.status === 401) {
+        } else if (e.response.status === 401) {
           LocalStorage.remove('token')
           LocalStorage.remove('permission')
           this.router.replace({name: 'unauthorized'})
@@ -150,7 +157,7 @@ export const useTradingsStore = defineStore('tradings', {
           })
           this.router.replace({name: 'app.unauthorized'})
         }
-      }else{
+      } else {
         Notify.create({
           position: "top",
           type: 'negative',
@@ -178,6 +185,14 @@ export const useTradingsStore = defineStore('tradings', {
         }
       }
       this[prop].table.selected = []
+      this.loadSetting(prop)
+    },
+    loadSetting(prop = 'parent') {
+      for (let property in setting) {
+        if (this[prop].form.hasOwnProperty(property)) {
+          this[prop].form[property] = setting[property]
+        }
+      }
     },
     async getTradeDataFromApi(path, startRow, count, filter, sortBy, descending) {
       const data = {
@@ -259,7 +274,7 @@ export const useTradingsStore = defineStore('tradings', {
         this.details.table.filter = String(Date.now())
         this.onReset('details')
         this.router.push({
-          name: 'app.transaction.pembelianSawit.index'
+          name: 'app.jualBeliSawit.pembelianSawit.index'
         })
       }).catch(e => {
         this.setError(e);
@@ -284,9 +299,9 @@ export const useTradingsStore = defineStore('tradings', {
         })
         this[prop].table.filter = String(Date.now())
         this.onReset(prop)
-        if (response.data.hasOwnProperty('data') && prop === 'parent' && can('app.transaction.pembelianSawit.viewDetailsTransaction')) {
+        if (response.data.hasOwnProperty('data') && prop === 'parent' && can('app.jualBeliSawit.pembelianSawit.viewDetailsTransaction')) {
           this.router.push({
-            name: 'app.transaction.pembelianSawit.viewDetailsTransaction',
+            name: 'app.jualBeliSawit.pembelianSawit.viewDetailsTransaction',
             params: {id: response.data.data.id}
           })
         } else {
@@ -322,6 +337,7 @@ export const useTradingsStore = defineStore('tradings', {
         this.details.form.net_price = response.data.trading ? response.data.trading.net_price : 0
         this.details.form.car_fee = response.data.trading ? response.data.trading.car_fee : 0
         this.details.form.driver_fee = response.data.trading ? response.data.trading.driver_fee : 0
+        this.details.form.loader_fee = response.data.trading ? response.data.trading.loader_fee : 0
         this.details.form.trade_status = response.data.trading ? response.data.trading.trade_status !== null : false
       } catch (e) {
         this.setError(e)

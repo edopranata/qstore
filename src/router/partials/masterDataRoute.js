@@ -8,7 +8,7 @@ export default [
       {
         path: 'mobil',
         name: 'app.masterData.mobil.index',
-        component: () => import('pages/app/masterData/car/CarIndex.vue'),
+        component: () => import('pages/app/car/carData/CarIndex.vue'),
         meta: {
           auth: true,
         },
@@ -16,7 +16,7 @@ export default [
       {
         path: 'supir',
         name: 'app.masterData.supir.index',
-        component: () => import('pages/app/masterData/driver/DriverIndex.vue'),
+        component: () => import('pages/app/car/driverData/DriverIndex.vue'),
         meta: {
           auth: true,
         },

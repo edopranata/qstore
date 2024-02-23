@@ -1,23 +1,23 @@
 <script setup>
-import {useCarsStore} from "stores/data/car";
+import {useCustomersStore} from "stores/data/customer";
 import {useAuthStore} from "stores/authStore";
 import {onMounted, ref, watch} from 'vue'
 import {useRoute} from "vue-router";
 import {storeToRefs} from "pinia";
-import DialogDelete from "pages/app/masterData/car/dialog/DialogDelete.vue";
-import DialogCreate from "pages/app/masterData/car/dialog/DialogCreate.vue";
-import DialogEdit from "pages/app/masterData/car/dialog/DialogEdit.vue";
+import DialogDelete from "pages/app/deliveryOrder/collector/dialog/DialogDelete.vue";
+import DialogCreate from "pages/app/deliveryOrder/collector/dialog/DialogCreate.vue";
+import DialogEdit from "pages/app/deliveryOrder/collector/dialog/DialogEdit.vue";
 
-const {table, openDialog, dialog, form, deleted} = useCarsStore()
-const cars = useCarsStore()
+const {table, openDialog, dialog, form, deleted} = useCustomersStore()
+const customers = useCustomersStore()
 const {can} = useAuthStore()
-const {getSelected: selected} = storeToRefs(useCarsStore())
+const {getSelected: selected} = storeToRefs(useCustomersStore())
 const {path} = useRoute()
 
 const tableRef = ref()
 
 async function onRequest(props) {
-  await cars.getCarsData(path, props)
+  await customers.getCustomersData(path, props)
 }
 
 watch(table.search, () => {
@@ -29,39 +29,39 @@ watch(table.search, () => {
 watch(dialog, () => {
   for (let property in dialog) {
     if (dialog[property]) {
-      cars.errors = {}
+      customers.errors = {}
     }
   }
   if (dialog.create) {
     table.selected = [];
   }
 })
-
 watch(selected, (selected_item) => {
   if (selected_item.length > 0) {
-    deleted.car_id = selected_item.map(i => i['id'])
-    deleted.data = selected_item.map(i => i['name'] + ' ' + i['no_pol'])
+    deleted.customer_id = selected_item.map(i => i['id'])
+    deleted.data = selected_item.map(i => `${i['name']} ${i['type'] = 'farmer' ? 'Petani' : 'Pengepul'}`)
 
     if (selected_item.length === 1) {
       form.id = selected_item[0].id
       form.name = selected_item[0].name
-      form.status = selected_item[0].status
-      form.no_pol = selected_item[0].no_pol
-      form.description = selected_item[0].description
-      form.year = selected_item[0].year
+      form.type = selected_item[0].type
+      form.phone = selected_item[0].phone
+      form.address = selected_item[0].address
+      form.distance = selected_item[0].distance
     } else {
-      cars.onReset()
+      customers.onReset()
     }
   } else {
-    cars.onReset()
-    deleted.car_id = []
+    customers.onReset()
+    deleted.customer_id = []
     deleted.data = []
   }
+
 }, {
   deep: true,
 })
 onMounted(() => {
-  cars.onReset()
+  customers.onReset()
   table.selected = []
   // get initial data from server (1st page)
   tableRef.value.requestServerInteraction()
@@ -84,7 +84,7 @@ onMounted(() => {
         :filter="table.filter"
         :loading="table.loading"
         :rows="table.data ?? []"
-        :selection="can('app.masterData.mobil.[deleteCar]') ? 'multiple' :'single'"
+        :selection="can('app.deliveryOrder.dataPengepul.[hapusDataPengepul]') ? 'multiple' :'single'"
         binary-state-sort
         bordered
         row-key="id"
@@ -93,18 +93,18 @@ onMounted(() => {
         <template v-slot:top>
           <q-toolbar class="text-primary">
             <q-toolbar-title>
-              Cars Data
+              Data Pengepul
             </q-toolbar-title>
-            <div v-if="can('app.masterData.mobil.[createCar,updateCar,deleteCar]')"
+            <div v-if="can('app.deliveryOrder.dataPengepul.[simpanDataPengepul,updateDataPengepul,hapusDataPengepul]')"
                  class="tw-space-x-2">
               <q-btn
-                v-if="can('app.masterData.mobil.deleteCar')"
+                v-if="can('app.deliveryOrder.dataPengepul.hapusDataPengepul')"
                 :disable="!selected.length > 0"
                 :label="!$q.screen.lt.md ? 'Delete' : ''"
                 :loading="table.loading"
                 :round="$q.screen.lt.md"
-                color="negative"
                 :dense="$q.screen.lt.md"
+                color="negative"
                 glossy
                 icon="delete"
                 @click.prevent="openDialog('delete')"
@@ -114,13 +114,13 @@ onMounted(() => {
                 </q-tooltip>
               </q-btn>
               <q-btn
-                v-if="can('app.masterData.mobil.updateCar')"
+                v-if="can('app.deliveryOrder.dataPengepul.updateDataPengepul')"
                 :disable="selected.length !== 1"
                 :label="!$q.screen.lt.md ? 'Edit Data' : ''"
                 :loading="table.loading"
                 :round="$q.screen.lt.md"
-                color="warning"
                 :dense="$q.screen.lt.md"
+                color="warning"
                 glossy
                 icon="edit"
                 @click.prevent="openDialog('edit')"
@@ -130,12 +130,12 @@ onMounted(() => {
                 </q-tooltip>
               </q-btn>
               <q-btn
-                v-if="can('app.masterData.mobil.createCar')"
+                v-if="can('app.deliveryOrder.dataPengepul.simpanDataPengepul')"
                 :label="!$q.screen.lt.md ? 'Create New' : ''"
                 :loading="table.loading"
                 :round="$q.screen.lt.md"
-                color="secondary"
                 :dense="$q.screen.lt.md"
+                color="secondary"
                 glossy
                 icon="add_circle"
                 @click.prevent="openDialog('create')"
@@ -153,29 +153,18 @@ onMounted(() => {
             <q-th></q-th>
             <q-th class="text-left">#</q-th>
             <q-th>
-              <q-select
-                v-model="table.search.status"
-                :options="table.car_status"
-                clearable
-                dense
-                emit-value
-                label="Status Kepemilikan"
-                map-options
-                option-label="desc"
-                option-value="id"
-              />
-            </q-th>
-            <q-th>
               <q-input v-model="table.search.name" :loading="table.loading" clearable debounce="500" dense
                        label="Search Name"/>
             </q-th>
             <q-th>
-              <q-input v-model="table.search.no_pol" :loading="table.loading" clearable debounce="500" dense
-                       label="Search Plat No"/>
+              <q-input v-model="table.search.phone" :loading="table.loading" clearable debounce="500" dense
+                       label="Search Phone"/>
             </q-th>
             <q-th>
-              <q-input v-model="table.search.year" :loading="table.loading" clearable debounce="500" dense
-                       label="Search Year"/>
+              <q-input v-model="table.search.address" :loading="table.loading" clearable debounce="500" dense
+                       label="Search Address"/>
+            </q-th>
+            <q-th>
             </q-th>
             <q-th>
               <q-input v-model="table.search.user" :loading="table.loading" clearable debounce="500" dense
@@ -190,9 +179,9 @@ onMounted(() => {
             {{ props.rowIndex + 1 }}
           </q-td>
         </template>
-        <template v-slot:body-cell-status="props">
+        <template v-slot:body-cell-type="props">
           <q-td :props="props">
-            {{ props.value === 'yes' ? 'Milik Sendiri' : 'Tidak' }}
+            {{ props.row.type === 'farmers' ? 'Petani' : 'Pengepul' }}
           </q-td>
         </template>
       </q-table>

@@ -2,7 +2,9 @@ import {defineStore} from 'pinia'
 import {reactive} from "vue";
 import {api} from "boot/axios";
 import {LocalStorage, Notify} from "quasar";
+import {usePageStore} from "stores/helper/pageStore";
 
+const {setting} = usePageStore()
 export const usePlantationsStore = defineStore('plantation', {
   state: () => ({
     form: {
@@ -13,8 +15,10 @@ export const usePlantationsStore = defineStore('plantation', {
       trade_cost: '',
       car_id: '',
       driver_id: '',
-      car_fee: 0,
-      driver_fee: 0,
+      car_fee: '',
+      loader_land_fee: '',
+      car_transport: '',
+      driver_fee: '',
       land_id: [],
     },
     areas: [],
@@ -43,14 +47,14 @@ export const usePlantationsStore = defineStore('plantation', {
         {name: "no", label: "No", field: "id", sortable: false, align: 'left'},
         {name: "trade_date", label: "Tanggal Transaksi", field: "trade_date", sortable: true, align: 'left'},
         {name: "driver_name", label: "Nama Supir / Mobil", field: "driver_name", sortable: false, align: 'left'},
-        {name: "trade_cost", label: "Uang Jalan (Rp)", field: "trade_cost", sortable: true},
+        {name: "wide_total", label: "Luas Lahan (Ha)", field: "wide_total", sortable: true},
+        {name: "trees_total", label: "Jumlah Pohon (Btg)", field: "trees_total", sortable: true},
         {name: "net_price", label: "Harga (Rp)", field: "net_price", sortable: true},
         {name: "net_weight", label: "Tonase (kg)", field: "net_weight", sortable: true},
         {name: "net_total", label: "Total (Rp)", field: "net_total", sortable: true},
-        {name: "wide_total", label: "Luas Lahan (Ha)", field: "wide_total", sortable: true},
-        {name: "trees_total", label: "Jumlah Pohon (Btg)", field: "trees_total", sortable: true},
+        {name: "gross_total", label: "Total Biaya (Rp)", field: "gross_total", sortable: true},
+        {name: "net_income", label: "Total Biaya (Rp)", field: "net_income", sortable: true},
         {name: "created_by", label: "User", field: "created_by", sortable: false, align: 'left'},
-        {name: "invoice", label: "Invoice Status", field: "invoice", sortable: false, align: 'left'},
         {name: "created_at", label: "Created At", field: "created_at", sortable: true, align: 'left'},
       ]),
       data: [],
@@ -132,7 +136,14 @@ export const usePlantationsStore = defineStore('plantation', {
       }
       this.errors = {}
       this.table.selected = []
-
+      this.getSetting()
+    },
+    getSetting() {
+      for (let property in setting){
+        if(this.form.hasOwnProperty(property)){
+          this.form[property] = setting[property]
+        }
+      }
     },
     async getPlantationDataFromApi(path, startRow, count, filter, sortBy, descending) {
       const data = {

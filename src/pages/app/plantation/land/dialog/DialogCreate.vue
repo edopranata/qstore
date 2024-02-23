@@ -11,15 +11,15 @@ const {errors} = storeToRefs(useLandsStore())
 </script>
 
 <template>
-  <q-dialog v-model="dialog.edit" persistent transition-hide="scale" transition-show="scale">
+  <q-dialog v-model="dialog.create" persistent transition-hide="scale" transition-show="scale">
     <q-card style="width: 600px;">
       <q-card-section>
-        <div class="text-h6">Edit Data Lahan</div>
+        <div class="text-h6">Create new</div>
       </q-card-section>
 
       <q-form
         class="q-gutter-md"
-        @reset="onReset()"
+        @reset="onReset('create')"
         @submit="submitForm(path)"
       >
         <q-card-section class="q-pt-none">
@@ -81,3 +81,6 @@ const {errors} = storeToRefs(useLandsStore())
   </q-dialog>
 </template>
 
+<style scoped>
+
+</style>

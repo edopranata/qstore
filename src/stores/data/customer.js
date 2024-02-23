@@ -10,13 +10,8 @@ export const useCustomersStore = defineStore('customers', {
       edit: false,
       delete: false,
     },
-    customers: [
-      {id: 'farmer', desc: 'Petani'},
-      {id: 'collector', desc: 'Pengepul'},
-    ],
     form: {
       id: '',
-      type: '',
       name: '',
       phone: '',
       address: '',
@@ -47,7 +42,6 @@ export const useCustomersStore = defineStore('customers', {
       loading: false,
       headers: reactive([
         {name: "no", label: "No", field: "id", sortable: false, align: 'left'},
-        {name: "type", label: "Customer Type", field: "type", sortable: true, align: 'left'},
         {name: "name", label: "Name", field: "name", sortable: true, align: 'left'},
         {name: "Phone", label: "Phone Number", field: "phone", sortable: true, align: 'left'},
         {name: "address", label: "Address", field: "address", sortable: true, align: 'left'},

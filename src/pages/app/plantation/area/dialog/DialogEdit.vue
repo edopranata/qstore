@@ -14,7 +14,7 @@ const {errors} = storeToRefs(useAreasStore())
   <q-dialog v-model="dialog.edit" persistent transition-hide="scale" transition-show="scale">
     <q-card style="width: 600px;">
       <q-card-section>
-        <div class="text-h6">Edit data area</div>
+        <div class="text-h6">Edit Area</div>
       </q-card-section>
 
       <q-form

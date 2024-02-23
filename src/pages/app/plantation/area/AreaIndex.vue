@@ -1,23 +1,23 @@
 <script setup>
-import {useDriversStore} from "stores/data/drivers";
+import {useAreasStore} from "stores/data/area";
 import {useAuthStore} from "stores/authStore";
 import {onMounted, ref, watch} from 'vue'
 import {useRoute} from "vue-router";
 import {storeToRefs} from "pinia";
-import DialogDelete from "pages/app/masterData/driver/dialog/DialogDelete.vue";
-import DialogCreate from "pages/app/masterData/driver/dialog/DialogCreate.vue";
-import DialogEdit from "pages/app/masterData/driver/dialog/DialogEdit.vue";
+import DialogDelete from "pages/app/masterData/area/dialog/DialogDelete.vue";
+import DialogCreate from "pages/app/masterData/area/dialog/DialogCreate.vue";
+import DialogEdit from "pages/app/masterData/area/dialog/DialogEdit.vue";
 
-const {table, openDialog, dialog, form, deleted} = useDriversStore()
-const drivers = useDriversStore()
+const {table, openDialog, dialog, form, deleted} = useAreasStore()
+const areas = useAreasStore()
 const {can} = useAuthStore()
-const {getSelected: selected} = storeToRefs(useDriversStore())
+const {getSelected: selected} = storeToRefs(useAreasStore())
 const {path} = useRoute()
 
 const tableRef = ref()
 
 async function onRequest(props) {
-  await drivers.getDriversData(path, props)
+  await areas.getAreasData(path, props)
 }
 
 watch(table.search, () => {
@@ -29,38 +29,35 @@ watch(table.search, () => {
 watch(dialog, () => {
   for (let property in dialog) {
     if (dialog[property]) {
-      drivers.errors = {}
+      areas.errors = {}
     }
   }
   if (dialog.create) {
     table.selected = [];
   }
 })
+
 watch(selected, (selected_item) => {
   if (selected_item.length > 0) {
-    deleted.driver_id = selected_item.map(i => i['id'])
+    deleted.area_id = selected_item.map(i => i['id'])
     deleted.data = selected_item.map(i => i['name'])
 
     if (selected_item.length === 1) {
-
       form.id = selected_item[0].id
       form.name = selected_item[0].name
-      form.phone = selected_item[0].phone
-      form.address = selected_item[0].address
     } else {
-      drivers.onReset()
+      areas.onReset()
     }
   } else {
-    drivers.onReset()
-    deleted.driver_id = []
+    areas.onReset()
+    deleted.area_id = []
     deleted.data = []
   }
-
 }, {
   deep: true,
 })
 onMounted(() => {
-  drivers.onReset()
+  areas.onReset()
   table.selected = []
   // get initial data from server (1st page)
   tableRef.value.requestServerInteraction()
@@ -83,7 +80,7 @@ onMounted(() => {
         :filter="table.filter"
         :loading="table.loading"
         :rows="table.data ?? []"
-        :selection="can('app.masterData.supir.[deleteDriver]') ? 'multiple' :'single'"
+        :selection="can('app.perkebunan.wilayah.[hapusDataWilayah]') ? 'multiple' :'single'"
         binary-state-sort
         bordered
         row-key="id"
@@ -92,16 +89,16 @@ onMounted(() => {
         <template v-slot:top>
           <q-toolbar class="text-primary">
             <q-toolbar-title>
-              Drivers Data
+              Data Wilayah
             </q-toolbar-title>
-            <div v-if="can('app.masterData.supir.[createDriver,updateDriver,deleteDriver]')"
+            <div v-if="can('app.perkebunan.wilayah.[simpanDataWilayah,updateDataWilayah,hapusDataWilayah]')"
                  class="tw-space-x-2">
               <q-btn
-                v-if="can('app.masterData.supir.deleteDriver')"
+                v-if="can('app.perkebunan.wilayah.hapusDataWilayah')"
+                :dense="$q.screen.lt.md"
                 :disable="!selected.length > 0"
                 :label="!$q.screen.lt.md ? 'Delete' : ''"
                 :loading="table.loading"
-                :dense="$q.screen.lt.md"
                 :round="$q.screen.lt.md"
                 color="negative"
                 glossy
@@ -113,11 +110,11 @@ onMounted(() => {
                 </q-tooltip>
               </q-btn>
               <q-btn
-                v-if="can('app.masterData.supir.updateDriver')"
+                v-if="can('app.perkebunan.wilayah.updateDataWilayah')"
+                :dense="$q.screen.lt.md"
                 :disable="selected.length !== 1"
                 :label="!$q.screen.lt.md ? 'Edit Data' : ''"
                 :loading="table.loading"
-                :dense="$q.screen.lt.md"
                 :round="$q.screen.lt.md"
                 color="warning"
                 glossy
@@ -129,10 +126,10 @@ onMounted(() => {
                 </q-tooltip>
               </q-btn>
               <q-btn
-                v-if="can('app.masterData.supir.createDriver')"
+                v-if="can('app.perkebunan.wilayah.simpanDataWilayah')"
+                :dense="$q.screen.lt.md"
                 :label="!$q.screen.lt.md ? 'Create New' : ''"
                 :loading="table.loading"
-                :dense="$q.screen.lt.md"
                 :round="$q.screen.lt.md"
                 color="secondary"
                 glossy
@@ -154,14 +151,6 @@ onMounted(() => {
             <q-th>
               <q-input v-model="table.search.name" :loading="table.loading" clearable debounce="500" dense
                        label="Search Name"/>
-            </q-th>
-            <q-th>
-              <q-input v-model="table.search.phone" :loading="table.loading" clearable debounce="500" dense
-                       label="Search Phone"/>
-            </q-th>
-            <q-th>
-              <q-input v-model="table.search.address" :loading="table.loading" clearable debounce="500" dense
-                       label="Search Address"/>
             </q-th>
             <q-th>
               <q-input v-model="table.search.user" :loading="table.loading" clearable debounce="500" dense

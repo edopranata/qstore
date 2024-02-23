@@ -36,7 +36,7 @@ export const useAreasStore = defineStore('areas', {
       loading: false,
       headers: reactive([
         {name: "no", label: "No", field: "id", sortable: false, align: 'left'},
-        {name: "name", label: "Area Name", field: "name", sortable: true, align: 'left'},
+        {name: "name", label: "Nama Area", field: "name", sortable: true, align: 'left'},
         {name: "user", label: "Created By", field: 'created_by', sortable: false, align: 'left'},
         {name: "created_at", label: "Created At", field: "created_at", sortable: true, align: 'left'},
       ]),

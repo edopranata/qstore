@@ -7,6 +7,10 @@ import invoiceRoute from "src/router/partials/invoiceRoute"
 import loanRoute from "src/router/partials/loanRoute";
 import reportRoute from "src/router/partials/reportRoute";
 import costRoute from "src/router/partials/costRoute";
+import plantationRoute from "src/router/partials/plantationRoute";
+import tradingRoute from "src/router/partials/tradingRoute";
+import carRoute from "src/router/partials/carRoute";
+import deliveryOrderRoute from "src/router/partials/deliveryOrderRoute";
 
 const routes = [
   {
@@ -37,6 +41,11 @@ const routes = [
           auth: true
         }
       },
+      ...carRoute,
+      ...plantationRoute,
+      ...tradingRoute,
+      ...deliveryOrderRoute,
+
       ...managementRoute,
       ...settingsRoute,
       ...masterDataRoute,
