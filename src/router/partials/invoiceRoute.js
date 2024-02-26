@@ -7,7 +7,7 @@ export default [
       {
         path: 'buatInvoiceDO',
         name: 'app.invoice.buatInvoiceDO.index',
-        component: () => import('pages/app/invoice/deliveryOrder/InvoiceDeliveryOrderIndex.vue'),
+        component: () => import('pages/app/deliveryOrder/invoice/InvoiceDeliveryOrderIndex.vue'),
         meta: {
           auth: true,
         },

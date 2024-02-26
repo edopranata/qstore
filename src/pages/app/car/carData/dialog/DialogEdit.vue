@@ -13,7 +13,7 @@ const {errors} = storeToRefs(useCarsStore())
   <q-dialog v-model="dialog.edit" persistent transition-hide="scale" transition-show="scale">
     <q-card style="width: 600px;">
       <q-card-section>
-        <div class="text-h6">Edit Car</div>
+        <div class="text-h6">Ubah Data Mobil</div>
       </q-card-section>
 
       <q-form

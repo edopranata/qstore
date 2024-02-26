@@ -93,7 +93,7 @@ onMounted(() => {
         <template v-slot:top>
           <q-toolbar class="text-primary">
             <q-toolbar-title>
-              Cars Data
+              Data Mobil
             </q-toolbar-title>
             <div v-if="can('app.masterData.mobil.[createCar,updateCar,deleteCar]')"
                  class="tw-space-x-2">

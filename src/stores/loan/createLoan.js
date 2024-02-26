@@ -98,7 +98,7 @@ export const useLoanCreateStore = defineStore('loanCreate', {
         }else{
           this.table.loading = false
           this.onReset()
-          this.router.replace({name: 'app.pinjaman.dataPinjaman.index'})
+          return true
         }
       } catch (e) {
         this.setError(e)

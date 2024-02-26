@@ -2,7 +2,9 @@ import {defineStore} from 'pinia'
 import {reactive, ref} from "vue";
 import {api} from "boot/axios";
 import {LocalStorage, Notify} from "quasar";
+import {usePageStore} from "stores/helper/pageStore";
 
+const {setting} = usePageStore()
 export const useDeliveryOrderStore = defineStore('deliveryOrder', {
   state: () => ({
     customers: [],
@@ -112,6 +114,10 @@ export const useDeliveryOrderStore = defineStore('deliveryOrder', {
         if (name === 'customer_id') {
           this.selected_customer = null
         }
+      }
+
+      if(setting.hasOwnProperty('do_margin')){
+        this.form.margin = setting.do_margin
       }
     },
     async getDeliveriesDataFromApi(path, startRow, count, filter, sortBy, descending) {

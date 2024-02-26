@@ -93,12 +93,12 @@ export const useTradingsStore = defineStore('tradings', {
         loading: false,
         headers: reactive([
           {name: "no", label: "No", field: "id", sortable: false, align: 'left'},
+          {name: "farmer_status", label: "Invoice Status", field: "farmer_status", sortable: true, align: 'left'},
           {name: "trade_date", label: "Tanggal Transaksi", field: "trade_date", sortable: true, align: 'left'},
           {name: "customer_name", label: "Petani", field: "customer_name", sortable: false, align: 'left'},
           {name: "weight", label: "Berat (kg)", field: "weight", sortable: true},
           {name: "price", label: "Harga (Rp)", field: "price", sortable: true},
           {name: "total", label: "Total (Rp)", field: "total", sortable: true},
-          {name: "farmer_status", label: "Invoice Status", field: "farmer_status", sortable: true, align: 'left'},
           {name: "created_by", label: "User", field: "created_by", sortable: false, align: 'left'},
           {name: "created_at", label: "Created At", field: "created_at", sortable: true, align: 'left'},
         ]),

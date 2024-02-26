@@ -22,6 +22,7 @@ onBeforeMount( async () => {
   modal.in = false
   modal.out = false
   await loan.onReset()
+  select.type = 'farmer'
   await loan.loadAllCustomers(path)
 })
 watch(getSelectedType, (selectedType) => {
@@ -57,6 +58,8 @@ const getLoanList = () => {
 
 const onRequest = async (props) => {
   await loan.getLoanData(path, props)
+
+  select.type = 'farmer'
 }
 
 const onPrint = async (invoice) => {
@@ -85,6 +88,8 @@ const searchCustomer = (val, update) => {
 
 const onSubmit = async () => {
   await loan.submitLoan(path)
+
+  select.type = 'farmer'
 }
 </script>
 
@@ -259,9 +264,7 @@ const onSubmit = async () => {
         <div class="md:tw-grid md:tw-grid-cols-3 md:tw-gap-4">
           <div class="lg:tw-col-span-1 tw-col-span-2">
             <div class="q-gutter-sm md:tw-mb-11">
-              <q-radio v-model="select.type" label="Petani" val="farmer"/>
-              <q-radio v-model="select.type" label="Pengepul" val="collector"/>
-              <q-radio v-model="select.type" label="Supir" val="driver"/>
+              <q-radio class="hidden" v-model="select.type" label="Petani" val="farmer"/>
             </div>
             <q-select
               v-if="!!select.type"
@@ -326,10 +329,10 @@ const onSubmit = async () => {
           <template v-slot:top>
             <div class="tw-flex tw-space-x-2 tw-w-full">
               <q-btn
-                v-if="can('app.pinjaman.pinjamanBaru.[index,simpanPinjamanBaru]')"
+                v-if="can('app.jualBeliSawit.pinjamanBaru.[index,simpanPinjamanBaru]')"
                 :dense="$q.screen.lt.lg"
                 :loading="table.loading"
-                :to="{name: 'app.pinjaman.pinjamanBaru.index'}"
+                :to="{name: 'app.jualBeliSawit.pinjamanBaru.index'}"
                 color="secondary"
                 glossy
                 icon="add_circle"
@@ -337,12 +340,12 @@ const onSubmit = async () => {
                 type="submit"
               >
                 <q-tooltip>
-                  Pinjaman Baru (Pelanggan / Supir)
+                  Pinjaman Baru (Petani)
                 </q-tooltip>
               </q-btn>
               <q-space></q-space>
               <q-btn
-                v-if="can('app.pinjaman.dataPinjaman.index')"
+                v-if="can('app.jualBeliSawit.pinjamanBaru.index')"
                 :dense="$q.screen.lt.lg"
                 :disable="!select.customer_id"
                 :loading="table.loading"
@@ -357,7 +360,7 @@ const onSubmit = async () => {
                 </q-tooltip>
               </q-btn>
               <q-btn
-                v-if="can('app.pinjaman.dataPinjaman.index')"
+                v-if="can('app.jualBeliSawit.pinjamanBaru.index')"
                 :dense="$q.screen.lt.lg"
                 :disable="!select.customer_id"
                 :loading="table.loading"

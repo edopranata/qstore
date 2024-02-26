@@ -92,7 +92,7 @@ onMounted(() => {
         <template v-slot:top>
           <q-toolbar class="text-primary">
             <q-toolbar-title>
-              Drivers Data
+              Data Supir
             </q-toolbar-title>
             <div v-if="can('app.masterData.supir.[createDriver,updateDriver,deleteDriver]')"
                  class="tw-space-x-2">

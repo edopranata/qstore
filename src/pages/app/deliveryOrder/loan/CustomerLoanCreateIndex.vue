@@ -4,9 +4,10 @@ import {usePageStore} from "stores/helper/pageStore";
 import {useAuthStore} from "stores/authStore";
 import {storeToRefs} from "pinia";
 import {onMounted, watch} from "vue";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {date} from "quasar";
 
+const router = useRouter()
 const page = usePageStore()
 const {can} = useAuthStore()
 const {select, form, table, dialog} = useLoanCreateStore()
@@ -18,6 +19,7 @@ const loan = useLoanCreateStore()
 onMounted(async () => {
   loan.onReset()
   await loan.loadAllCustomers(path)
+  form.type = 'collector'
 })
 
 watch(getSelectedType, (selectedType) => {
@@ -45,11 +47,16 @@ const searchCustomer = (val, update) => {
 }
 
 const onSubmit = async () => {
-  await loan.submitForm(path)
+  const data = await loan.submitForm(path)
+
+  if(data){
+    await router.replace({name: 'app.deliveryOrder.dataPinjamanPengepul.index'})
+  }
 }
 
 const onReset = () => {
   loan.onReset()
+  select.type = 'collector'
 }
 </script>
 
@@ -106,9 +113,7 @@ const onReset = () => {
           <div class="md:tw-grid md:tw-grid-cols-3 md:tw-gap-4">
             <div class="lg:tw-col-span-1 tw-col-span-2">
               <div class="q-gutter-sm md:tw-mb-11">
-                <q-radio v-model="form.type" label="Petani" val="farmer"/>
-                <q-radio v-model="form.type" label="Pengepul" val="collector"/>
-                <q-radio v-model="form.type" label="Supir" val="driver"/>
+                <q-radio class="hidden" v-model="form.type" label="Pengepul" val="farmer"/>
               </div>
               <q-field
                 v-if="!!form.type"
@@ -148,7 +153,7 @@ const onReset = () => {
                 fill-input
                 filled
                 hide-selected
-                label="Pelanggan"
+                label="Pengepul"
                 option-label="name"
                 option-value="id"
                 use-input
@@ -185,14 +190,14 @@ const onReset = () => {
                 :options="page.currencyFormat"
                 class="tw-w-full"
                 filled
-                label="Pinjaman (Rp)"
+                label="Jumlah Pinjaman (Rp)"
               />
             </div>
           </div>
         </q-card-section>
         <q-card-actions class="tw-p-4">
           <q-btn
-            v-if="!!form.type && can('app.pinjaman.pinjamanBaru.simpanPinjamanBaru')"
+            v-if="!!form.type && can('app.deliveryOrder.pinjamanBaru.simpanPinjamanBaru')"
             :dense="$q.screen.lt.lg"
             :label="!$q.screen.lt.md ? 'Simpan data' : ''"
             :loading="table.loading"

@@ -709,6 +709,29 @@ const onUpdate = () => {
             }}
           </q-td>
         </template>
+
+        <template v-slot:body-cell-farmer_status="props">
+          <q-td :props="props" class="text-left">
+            <div v-if="props.value">
+              {{ props.value }}
+            </div>
+            <q-btn
+              v-else
+              :dense="$q.screen.lt.lg"
+              :label="!$q.screen.lt.md ? 'Buat Invoice' : ''"
+              :loading="details.table.loading"
+              :round="$q.screen.lt.md"
+              glossy
+              icon="print"
+              size="sm"
+              :to="{name: 'app.jualBeliSawit.buatInvoicePetani.details', params: {id: props.row.customer_id}}"
+            >
+              <q-tooltip>
+                Buat invoice untuk petani ini
+              </q-tooltip>
+            </q-btn>
+          </q-td>
+        </template>
       </q-table>
     </q-card>
   </q-page>

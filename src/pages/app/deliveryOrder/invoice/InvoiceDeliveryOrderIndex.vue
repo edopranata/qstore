@@ -24,7 +24,6 @@ const type = ['Customer']
 onMounted(async () => {
   invoiceDO.onReset()
   await invoiceDO.getCustomersOrder(path)
-
   if (query.hasOwnProperty('type')) {
     if (type.includes(query.type)) {
       form.type = query.type
@@ -39,6 +38,7 @@ onMounted(async () => {
       }
     }
   }
+  table.data = []
 })
 
 watch(getCustomerOption, async (getSelected) => {
@@ -103,7 +103,7 @@ const onReset = () => {
             </div>
           </div>
         </q-card-section>
-        <q-checkbox v-if="can('app.deliveryOrder.invoiceData.printInvoice')" size="lg" v-model="dialog.print" :val="dialog.print" label="Simpan dan print" />
+        <q-checkbox v-if="can('app.deliveryOrder.dataInvoicePengepul.printInvoice')" size="lg" v-model="dialog.print" :val="dialog.print" label="Simpan dan print" />
         <q-card-actions>
           <q-btn
             v-close-popup

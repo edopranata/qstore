@@ -14,7 +14,7 @@ const {errors} = storeToRefs(useDriversStore())
   <q-dialog v-model="dialog.create" persistent transition-hide="scale" transition-show="scale">
     <q-card style="width: 600px;">
       <q-card-section>
-        <div class="text-h6">Create new driver</div>
+        <div class="text-h6">Tambah data supir</div>
       </q-card-section>
 
       <q-form

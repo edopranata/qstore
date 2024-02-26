@@ -167,6 +167,8 @@ onMounted(() => {
             <q-th>
             </q-th>
             <q-th>
+            </q-th>
+            <q-th>
               <q-input v-model="table.search.user" :loading="table.loading" clearable debounce="500" dense
                        label="Search Create By"/>
             </q-th>
@@ -182,6 +184,17 @@ onMounted(() => {
         <template v-slot:body-cell-type="props">
           <q-td :props="props">
             {{ props.row.type === 'farmers' ? 'Petani' : 'Pengepul' }}
+          </q-td>
+        </template>
+        <template v-slot:body-cell-loan="props">
+          <q-td :props="props" class="text-right">
+            {{
+              Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+              }).format(parseFloat(props.value ?? 0))
+            }}
           </q-td>
         </template>
       </q-table>

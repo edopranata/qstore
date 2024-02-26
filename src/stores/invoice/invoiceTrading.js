@@ -29,6 +29,18 @@ export const useInvoiceTradingStore = defineStore('invoiceTrading', {
       ]),
       data: [],
     },
+    details:{
+      customer: {},
+      headers: reactive([
+        {name: "no", label: "No", field: "id", sortable: false, align: 'left'},
+        {name: "trade_date", label: "Tanggal Transaksi", field: "trade_date", sortable: true, align: 'left'},
+        {name: "car", label: "Mobil/Supir",  sortable: true, align: 'left'},
+        {name: "weight", label: "Berat (kg)", field: "weight", sortable: true},
+        {name: "price", label: "Harga (Rp)", field: "price", sortable: true},
+        {name: "total", label: "Total (Rp)", field: "total", sortable: true},
+      ]),
+      data: []
+    },
     errors: {},
   }),
 
@@ -38,7 +50,15 @@ export const useInvoiceTradingStore = defineStore('invoiceTrading', {
     },
 
     getSummaries(state){
-      return state.table.selected.length > 0 ? state.table.selected[0].hasOwnProperty('trade_total') ? state.table.selected[0].trade_total - state.form.installment: 0 : 0
+      const data = {}
+      data.loan = state.details.customer?.loan ?? 0
+      data.total = state.details.data ? state.details.data.length > 0 ? state.details.data.reduce((total, next) => total + next.total, 0) : 0 : 0
+      data.weight = state.details.data ? state.details.data.length > 0 ? state.details.data.reduce((total, next) => total + next.weight, 0) : 0 : 0
+      data.price = state.details.data ? state.details.data.length > 0 ? state.details.data.reduce((total, next) => total + next.price, 0) / state.details.data.length : 0 : 0
+      data.loan_status = data.loan !== 0
+      data.loan_total = data.loan - state.form.installment ?? 0
+      data.net_total = data.total - state.form.installment ?? 0
+      return data
     }
   },
 
@@ -92,6 +112,21 @@ export const useInvoiceTradingStore = defineStore('invoiceTrading', {
       this.table.loading = false
     },
 
+    async getSingleCustomerTrade(path) {
+      this.table.loading = true
+      try {
+        const response = await api.get(path)
+        this.details.customer = response.data.customer
+        this.details.data = response.data.details
+        this.form.trade_details_id = response.data.details.map(item => item.id)
+        this.form.customer_id = response.data.customer.id
+      } catch (e) {
+        this.setError(e)
+      }
+
+      this.table.loading = false
+    },
+
     async submitForm(path) {
       this.table.loading = true
       const params = this.form;
@@ -113,8 +148,7 @@ export const useInvoiceTradingStore = defineStore('invoiceTrading', {
         if(this.dialog.print && invoice_number){
           this.router.replace({name: 'app.invoice.invoiceData.printInvoice', params: { invoice_number : invoice_number }})
         }else {
-          this.getCustomerTrade(path)
-          this.onReset()
+          this.router.replace({name: 'app.jualBeliSawit.buatInvoicePetani.index'})
         }
       }).catch(e => {
         this.setError(e);

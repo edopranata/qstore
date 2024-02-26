@@ -46,6 +46,7 @@ export const useCustomersStore = defineStore('customers', {
         {name: "Phone", label: "Phone Number", field: "phone", sortable: true, align: 'left'},
         {name: "address", label: "Address", field: "address", sortable: true, align: 'left'},
         {name: "distance", label: "Distance", field: "distance", sortable: true, align: 'left'},
+        {name: "loan", label: "Pinjaman", field: "loan", sortable: true, align: 'left'},
         {name: "user", label: "Created By", field: 'created_by', sortable: false, align: 'left'},
         {name: "created_at", label: "Created At", field: "created_at", sortable: true, align: 'left'},
       ]),

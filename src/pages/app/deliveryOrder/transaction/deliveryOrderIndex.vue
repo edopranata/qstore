@@ -175,7 +175,7 @@ const onUpdate = () => {
               fill-input
               filled
               hide-selected
-              label="Pelanggan"
+              label="Pilih Pengepul"
               option-label="name"
               option-value="id"
               use-input
@@ -212,7 +212,7 @@ const onUpdate = () => {
               :stack-label="!!form.delivery_date"
               class="tw-w-full"
               filled
-              label="Tanggal Transaksi">
+              label="Tanggal DO">
               <template v-slot:control>
                 <div class="self-center full-width no-outline" tabindex="0">
                   {{ date.formatDate(form.delivery_date, 'DD MMMM YYYY') }}
@@ -449,7 +449,7 @@ const onUpdate = () => {
 
         <template v-slot:body-selection="scope">
           <q-checkbox v-model="scope.selected"
-                      :disable="scope.row.customer_name === 'Plantation' || scope.row.customer_name === 'Trading' || !!scope.row.invoice_status || !!scope.row.income_status"/>
+                      :disable="scope.row.customer_name === 'Plantation' || scope.row.customer_name === 'Trading'"/>
         </template>
 
         <template v-slot:body-cell-no="props">
