@@ -24,20 +24,20 @@ const type = ['Customer']
 onMounted(async () => {
   invoiceDO.onReset()
   await invoiceDO.getCustomersOrder(path)
-  if (query.hasOwnProperty('type')) {
-    if (type.includes(query.type)) {
-      form.type = query.type
-    }
-    if (query.hasOwnProperty('customer_id')) {
-      const selected = select.customers.filter(customer => customer.id === parseInt(query.customer_id))
-      if (selected.length === 1) {
-        select.selected_customer = selected[0]
-        await invoiceDO.getDeliveryOrderData()
-      } else {
-        select.selected_customer = null
-      }
-    }
-  }
+  // if (query.hasOwnProperty('type')) {
+  //   if (type.includes(query.type)) {
+  //     form.type = query.type
+  //   }
+  //   if (query.hasOwnProperty('customer_id')) {
+  //     const selected = select.customers.filter(customer => customer.id === parseInt(query.customer_id))
+  //     if (selected.length === 1) {
+  //       select.selected_customer = selected[0]
+  //       await invoiceDO.getDeliveryOrderData()
+  //     } else {
+  //       select.selected_customer = null
+  //     }
+  //   }
+  // }
   table.data = []
 })
 

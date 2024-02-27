@@ -229,6 +229,7 @@ export const useLoanStore = defineStore('loan', {
           }
 
         } catch (e) {
+          this.table.loading = false
           this.setError(e)
         }
       }

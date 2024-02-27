@@ -21,7 +21,22 @@ export default [
           auth: true,
         },
       },
-
+      {
+        path: 'dataPinjamanSupir',
+        name: 'app.mobil.dataPinjamanSupir.index',
+        component: () => import('pages/app/car/loan/DriverLoanIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'pinjamanBaru',
+        name: 'app.mobil.pinjamanBaru.index',
+        component: () => import('pages/app/car/loan/DriverLoanCreateIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
     ]
   },
 ]
