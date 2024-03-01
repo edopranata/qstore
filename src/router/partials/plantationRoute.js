@@ -30,6 +30,14 @@ export default [
         },
       },
 
+      {
+        path: 'biayaKebun',
+        name: 'app.perkebunan.biayaKebun.index',
+        component: () => import('pages/app/plantation/cost/PlantationCostIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
     ]
   },
 ]

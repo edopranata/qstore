@@ -83,7 +83,7 @@ onMounted(() => {
         :filter="table.filter"
         :loading="table.loading"
         :rows="table.data ?? []"
-        :selection="can('app.masterData.supir.[deleteDriver]') ? 'multiple' :'single'"
+        :selection="can('app.mobil.dataSupir.[hapusDataSupir]') ? 'multiple' :'single'"
         binary-state-sort
         bordered
         row-key="id"
@@ -94,10 +94,10 @@ onMounted(() => {
             <q-toolbar-title>
               Data Supir
             </q-toolbar-title>
-            <div v-if="can('app.masterData.supir.[createDriver,updateDriver,deleteDriver]')"
+            <div v-if="can('app.mobil.dataSupir.[simpanDataSupir,updateDataSupir,hapusDataSupir]')"
                  class="tw-space-x-2">
               <q-btn
-                v-if="can('app.masterData.supir.deleteDriver')"
+                v-if="can('app.mobil.dataSupir.hapusDataSupir')"
                 :disable="!selected.length > 0"
                 :label="!$q.screen.lt.md ? 'Delete' : ''"
                 :loading="table.loading"
@@ -113,7 +113,7 @@ onMounted(() => {
                 </q-tooltip>
               </q-btn>
               <q-btn
-                v-if="can('app.masterData.supir.updateDriver')"
+                v-if="can('app.mobil.dataSupir.updateDataSupir')"
                 :disable="selected.length !== 1"
                 :label="!$q.screen.lt.md ? 'Edit Data' : ''"
                 :loading="table.loading"
@@ -129,7 +129,7 @@ onMounted(() => {
                 </q-tooltip>
               </q-btn>
               <q-btn
-                v-if="can('app.masterData.supir.createDriver')"
+                v-if="can('app.mobil.dataSupir.simpanDataSupir')"
                 :label="!$q.screen.lt.md ? 'Create New' : ''"
                 :loading="table.loading"
                 :dense="$q.screen.lt.md"

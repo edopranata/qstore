@@ -37,6 +37,14 @@ export default [
           auth: true,
         },
       },
+      {
+        path: 'biayaMobil',
+        name: 'app.mobil.biayaMobil.index',
+        component: () => import('pages/app/car/cost/CarCostIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
     ]
   },
 ]

@@ -84,7 +84,7 @@ onMounted(() => {
         :filter="table.filter"
         :loading="table.loading"
         :rows="table.data ?? []"
-        :selection="can('app.masterData.mobil.[deleteCar]') ? 'multiple' :'single'"
+        :selection="can('app.mobil.dataMobil.[hapusDataMobil]') ? 'multiple' :'single'"
         binary-state-sort
         bordered
         row-key="id"
@@ -95,10 +95,10 @@ onMounted(() => {
             <q-toolbar-title>
               Data Mobil
             </q-toolbar-title>
-            <div v-if="can('app.masterData.mobil.[createCar,updateCar,deleteCar]')"
+            <div v-if="can('app.mobil.dataMobil.[simpanDataMobil,updateDataMobil,hapusDataMobil]')"
                  class="tw-space-x-2">
               <q-btn
-                v-if="can('app.masterData.mobil.deleteCar')"
+                v-if="can('app.mobil.dataMobil.hapusDataMobil')"
                 :disable="!selected.length > 0"
                 :label="!$q.screen.lt.md ? 'Delete' : ''"
                 :loading="table.loading"
@@ -114,7 +114,7 @@ onMounted(() => {
                 </q-tooltip>
               </q-btn>
               <q-btn
-                v-if="can('app.masterData.mobil.updateCar')"
+                v-if="can('app.mobil.dataMobil.updateDataMobil')"
                 :disable="selected.length !== 1"
                 :label="!$q.screen.lt.md ? 'Edit Data' : ''"
                 :loading="table.loading"
@@ -130,7 +130,7 @@ onMounted(() => {
                 </q-tooltip>
               </q-btn>
               <q-btn
-                v-if="can('app.masterData.mobil.createCar')"
+                v-if="can('app.mobil.dataMobil.simpanDataMobil')"
                 :label="!$q.screen.lt.md ? 'Create New' : ''"
                 :loading="table.loading"
                 :round="$q.screen.lt.md"

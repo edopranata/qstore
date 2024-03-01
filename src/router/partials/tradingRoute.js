@@ -49,6 +49,14 @@ export default [
         },
       },
       {
+        path: 'biayaJualBeliSawit',
+        name: 'app.jualBeliSawit.biayaJualBeliSawit.index',
+        component: () => import('pages/app/trading/cost/TradingCostIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
         path: 'buatInvoicePetani',
         name: 'app.jualBeliSawit.buatInvoicePetani.index',
         component: () => import('pages/app/trading/invoice/InvoiceTradingIndex.vue'),

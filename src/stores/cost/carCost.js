@@ -8,18 +8,18 @@ export const useCarCostStore = defineStore('carCost', {
     form: {
       edit: false,
       id: null,
-      category: '',
+      cost_type_id: '',
       car_id: '',
       trade_date: '',
       description: '',
       amount: '',
     },
-    cost_type: [
-      { title: 'Biaya Pembelian', val: 'pembelian'},
-      { title: 'Biaya Jasa', val: 'jasa'},
-      { title: 'Lainnya', val: 'lainnya'},
-    ],
+
     select: {
+      cost_type: [],
+      cost_type_option: [],
+      selected_cost_type: [],
+
       cars: [],
       cars_option: [],
       selected_car: null,
@@ -34,7 +34,7 @@ export const useCarCostStore = defineStore('carCost', {
       },
       search: {
         no_pol: '',
-        category: '',
+        cost_type_id: '',
         description: '',
       },
       from: 0,
@@ -45,7 +45,7 @@ export const useCarCostStore = defineStore('carCost', {
         {name: "no", label: "No", field: "id", sortable: false, align: 'left'},
         {name: "trade_date", label: "Tanggal", field: "trade_date", sortable: true, align: 'left'},
         {name: "subject", label: "Mobil", field: 'subject', sortable: false, align: 'left'},
-        {name: "category", label: "Kategory", field: 'category', sortable: true, align: 'left'},
+        {name: "cost_type", label: "Jenis Biaya", field: 'cost_type', sortable: true, align: 'left'},
         {name: "description", label: "Keterangan", field: 'description', sortable: true, align: 'left'},
         {name: "amount", label: "Jumlah Biaya (Rp)", field: 'amount', sortable: true, align: 'right'},
         {name: "created_at", label: "Created At", field: "created_at", sortable: true, align: 'left'},
@@ -61,6 +61,9 @@ export const useCarCostStore = defineStore('carCost', {
     },
     getSelectedCar(state){
       return state.select.selected_car
+    },
+    getSelectedCostType(state){
+      return state.select.selected_cost_type
     }
   },
 
@@ -73,6 +76,9 @@ export const useCarCostStore = defineStore('carCost', {
           if (property === 'car_id') {
             this.select.selected_car = null
           }
+          if (property === 'cost_type_id') {
+            this.select.selected_cost_type = null
+          }
           if(property === 'edit'){
             this.form.edit = false
           }
@@ -83,6 +89,9 @@ export const useCarCostStore = defineStore('carCost', {
         delete this.errors[name]
         if (name === 'car_id') {
           this.select.selected_car = null
+        }
+        if(name === 'cost_type_id'){
+          this.select.selected_cost_type = null
         }
       }
     },
@@ -133,7 +142,7 @@ export const useCarCostStore = defineStore('carCost', {
       }
       // search
       data.no_pol = this.table.search.no_pol ?? ''
-      data.category = this.table.search.category?.val ?? ''
+      data.cost_type_id = this.table.search.cost_type_id ?? ''
       data.description = this.table.search.description ?? ''
       try {
         const params = new URLSearchParams(data);
@@ -180,6 +189,7 @@ export const useCarCostStore = defineStore('carCost', {
       try {
         const response = await api.get(path)
         this.select.cars = response.data.cars
+        this.select.cost_type = response.data.cost_type
       } catch (e) {
         this.setError(e)
       }

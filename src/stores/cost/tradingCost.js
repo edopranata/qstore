@@ -8,16 +8,16 @@ export const useTradingCostStore = defineStore('tradingCost', {
     form: {
       edit: false,
       id: null,
-      category: '',
+      cost_type_id: '',
       trade_date: '',
       description: '',
       amount: '',
     },
-    cost_type: [
-      { title: 'Upah Muat', val: 'muat'},
-      { title: 'Pembelian', val: 'pembelian'},
-      { title: 'Lainnya', val: 'lainnya'},
-    ],
+    select: {
+      cost_type: [],
+      cost_type_option: [],
+      selected_cost_type: [],
+    },
     table: {
       pagination: {
         sortBy: '',
@@ -37,7 +37,7 @@ export const useTradingCostStore = defineStore('tradingCost', {
       headers: reactive([
         {name: "no", label: "No", field: "id", sortable: false, align: 'left'},
         {name: "trade_date", label: "Tanggal", field: "trade_date", sortable: true, align: 'left'},
-        {name: "category", label: "Kategory", field: 'category', sortable: true, align: 'left'},
+        {name: "cost_type", label: "Jenis Biaya", field: 'cost_type', sortable: true, align: 'left'},
         {name: "description", label: "Keterangan", field: 'description', sortable: true, align: 'left'},
         {name: "amount", label: "Jumlah Biaya (Rp)", field: 'amount', sortable: true, align: 'right'},
         {name: "created_at", label: "Created At", field: "created_at", sortable: true, align: 'left'},
@@ -51,6 +51,9 @@ export const useTradingCostStore = defineStore('tradingCost', {
     getSelected(state) {
       return state.table.selected
     },
+    getSelectedCostType(state){
+      return state.select.selected_cost_type
+    }
   },
 
   actions: {
@@ -62,11 +65,17 @@ export const useTradingCostStore = defineStore('tradingCost', {
           if(property === 'edit'){
             this.form.edit = false
           }
+          if (property === 'cost_type_id') {
+            this.select.selected_cost_type = null
+          }
         }
         this.table.selected = []
       } else {
         this.form[name] = null
         delete this.errors[name]
+        if(name === 'cost_type_id'){
+          this.select.selected_cost_type = null
+        }
       }
     },
     unsetError (name){
@@ -115,7 +124,7 @@ export const useTradingCostStore = defineStore('tradingCost', {
         })
       }
       // search
-      data.category = this.table.search.category?.val ?? ''
+      data.cost_type_id = this.table.search.cost_type_id ?? ''
       data.description = this.table.search.description ?? ''
       try {
         const params = new URLSearchParams(data);
@@ -156,6 +165,15 @@ export const useTradingCostStore = defineStore('tradingCost', {
       // ...and turn of loading indicator
       this.table.loading = false
       return true
+    },
+
+    async loadAllCost(path) {
+      try {
+        const response = await api.get(path)
+        this.select.cost_type = response.data.cost_type
+      } catch (e) {
+        this.setError(e)
+      }
     },
 
     async submitForm(path) {
