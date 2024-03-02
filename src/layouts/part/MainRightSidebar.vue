@@ -8,7 +8,7 @@ import {useQuasar} from "quasar";
 const $q = useQuasar()
 const page = usePageStore()
 const auth = useAuthStore()
-const {user} = storeToRefs(useAuthStore())
+const {user, errors: authErrors} = storeToRefs(useAuthStore())
 const {errors} = storeToRefs(usePageStore())
 const form = reactive({
   password: '',
@@ -34,11 +34,7 @@ const changePassword = async () => {
     cancel: true,
     persistent: true
   }).onOk( async () => {
-    page.rightDrawer = false
-    await auth.changePassword(form).then( () => {
-      form.password = ''
-      form.password_confirmation = ''
-    })
+    await auth.changePassword(form)
   })
 }
 
@@ -67,7 +63,8 @@ const changePassword = async () => {
 
     <q-item>
       <q-item-section>
-        <q-input type="password" standout v-model="form.password"  label="Current Password" />
+        <q-input type="password" standout v-model="form.password"  label="New Password" :error="authErrors.hasOwnProperty('password')"
+                 :error-message="authErrors.password"/>
       </q-item-section>
     </q-item>
 

@@ -125,7 +125,7 @@ const onDelete = () => {
     cancel: true,
     persistent: true
   }).onOk(() => {
-    plantation.submitTradingDelete(path)
+    plantation.submitDelete(path)
   })
 }
 

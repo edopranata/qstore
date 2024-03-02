@@ -157,6 +157,9 @@ export const useAuthStore = defineStore('auth', {
           type: 'positive',
           message: 'Password berhasil di ubah'
         })
+        this.form.password = ''
+        this.form.password_confirmation = ''
+        usePage.rightDrawer = false
       } catch (e) {
         this.setErrors(e)
       }
