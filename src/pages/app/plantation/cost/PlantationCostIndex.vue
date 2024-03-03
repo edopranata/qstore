@@ -22,8 +22,8 @@ onMounted(async () => {
 })
 
 watch([getSelectedLand, getSelectedCostType], ([selectedLand, selectedCostType]) => {
-  form.land_id = selectedLand ? selectedLand.id : selectedLand
-  form.cost_type_id = selectedCostType ? selectedCostType.id : selectedCostType
+  form.land_id = selectedLand ? selectedLand.id : null
+  form.cost_type_id = selectedCostType ? selectedCostType.id : null
 })
 
 watch(table.search, () => {
@@ -94,14 +94,17 @@ const onUpdate = () => {
       form[property] = sel[property]
 
       if (property === 'land_id') {
+        console.log(sel.subject_id)
         form.land_id = sel.subject_id
-        let c = select.lands.filter(land => land.id === form.land_id)
-        select.selected_land = c[0]
+        let l = select.lands.filter(land => land.id === form.land_id)
+        console.log(l)
+        select.selected_land = l[0]
       }
       if (property === 'cost_type_id') {
-        form.cost_type_id = sel.cost_type_id
-        let c = select.cost_type.filter(cost_type => cost_type.id === form.cost_type_id)
-        select.selected_cost_type = c[0]
+        console.log(sel)
+        let ct = select.cost_type.filter(cost_type => cost_type.id === sel.cost_type_id)
+        console.log(ct)
+        select.selected_cost_type = ct[0]
       }
       if (property === 'trade_date') {
         form.trade_date = String(sel.trade_date).split(' ')[0]

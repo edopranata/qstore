@@ -65,6 +65,47 @@ export default [
           auth: true,
         },
       },
+      {
+        path: 'laporan',
+        name: 'app.deliveryOrder.laporan.index',
+        component: () => import('pages/app/deliveryOrder/report/ReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'laporan/deliveryOrder',
+        name: 'app.deliveryOrder.laporan.deliveryOrder',
+        component: () => import('pages/app/deliveryOrder/report/DOReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'laporan/printDeliveryOrder',
+        name: 'app.deliveryOrder.laporan.printdeliveryOrder',
+        component: () => import('pages/app/deliveryOrder/report/DOReportPrint.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+
+      {
+        path: 'laporan/rekapitulasiDO',
+        name: 'app.deliveryOrder.laporan.rekapitulasiDO',
+        component: () => import('pages/app/deliveryOrder/report/DORecapReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'laporan/printRekapitulasiDO',
+        name: 'app.deliveryOrder.laporan.printRekapitulasiDO',
+        component: () => import('pages/app/deliveryOrder/report/DORecapReportPrint.vue'),
+        meta: {
+          auth: true,
+        },
+      },
     ]
   },
 ]

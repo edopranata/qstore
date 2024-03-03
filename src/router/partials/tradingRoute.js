@@ -88,7 +88,47 @@ export default [
           auth: true,
         },
       },
+      {
+        path: 'laporan',
+        name: 'app.jualBeliSawit.laporan.index',
+        component: () => import('pages/app/trading/report/ReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'laporan/jualBeliSawit',
+        name: 'app.jualBeliSawit.laporan.jualBeliSawit',
+        component: () => import('pages/app/trading/report/TradingReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'laporan/printJualBeliSawit',
+        name: 'app.jualBeliSawit.laporan.printJualBeliSawit',
+        component: () => import('pages/app/trading/report/TradingReportPrint.vue'),
+        meta: {
+          auth: true,
+        },
+      },
 
+      {
+        path: 'laporan/rekapituliasiJualBeliSawit',
+        name: 'app.jualBeliSawit.laporan.rekapituliasiJualBeliSawit',
+        component: () => import('pages/app/trading/report/TradingRecapReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'laporan/printRekapituliasiJualBeliSawit',
+        name: 'app.jualBeliSawit.laporan.printRekapituliasiJualBeliSawit',
+        component: () => import('pages/app/trading/report/TradingRecapReportPrint.vue'),
+        meta: {
+          auth: true,
+        },
+      },
     ]
   },
 ]
