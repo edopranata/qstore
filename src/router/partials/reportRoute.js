@@ -64,7 +64,7 @@ export default [
       {
         path: 'dataLaporan/penghasilanMobil',
         name: 'app.laporan.dataLaporan.penghasilanMobil',
-        component: () => import('pages/app/report/car/CarReportIndex.vue'),
+        component: () => import('pages/app/car/report/CarReportIndex.vue'),
         meta: {
           auth: true,
         },
@@ -72,7 +72,7 @@ export default [
       {
         path: 'dataLaporan/printPenghasilanMobil',
         name: 'app.laporan.dataLaporan.printPenghasilanMobil',
-        component: () => import('pages/app/report/car/CarReportPrint.vue'),
+        component: () => import('pages/app/car/report/CarReportPrint.vue'),
         meta: {
           auth: true,
         },
@@ -80,7 +80,7 @@ export default [
       {
         path: 'dataLaporan/rekapPenghasilanMobil',
         name: 'app.laporan.dataLaporan.rekapPenghasilanMobil',
-        component: () => import('pages/app/report/car/CarRecapReportIndex.vue'),
+        component: () => import('pages/app/car/report/CarRecapReportIndex.vue'),
         meta: {
           auth: true,
         },
@@ -88,7 +88,7 @@ export default [
       {
         path: 'dataLaporan/printRekapPenghasilanMobil',
         name: 'app.laporan.dataLaporan.printRekapPenghasilanMobil',
-        component: () => import('pages/app/report/car/CarRecapReportPrint.vue'),
+        component: () => import('pages/app/car/report/CarRecapReportPrint.vue'),
         meta: {
           auth: true,
         },

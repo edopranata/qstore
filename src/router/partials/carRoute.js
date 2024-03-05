@@ -45,6 +45,47 @@ export default [
           auth: true,
         },
       },
+      {
+        path: 'laporan',
+        name: 'app.mobil.laporan.index',
+        component: () => import('pages/app/car/report/ReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'laporan/penghasilanMobil',
+        name: 'app.mobil.laporan.penghasilanMobil',
+        component: () => import('pages/app/car/report/CarReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'laporan/printPenghasilanMobil',
+        name: 'app.mobil.laporan.printPenghasilanMobil',
+        component: () => import('pages/app/car/report/CarReportPrint.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+
+      {
+        path: 'laporan/rekapPenghasilanMobil',
+        name: 'app.mobil.laporan.rekapPenghasilanMobil',
+        component: () => import('pages/app/car/report/CarRecapReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'laporan/printRekapPenghasilanMobil',
+        name: 'app.mobil.laporan.printRekapPenghasilanMobil',
+        component: () => import('pages/app/car/report/CarRecapReportPrint.vue'),
+        meta: {
+          auth: true,
+        },
+      },
     ]
   },
 ]

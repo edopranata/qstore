@@ -37,6 +37,4 @@ import MainRightSidebar from "layouts/part/MainRightSidebar.vue";
 
 const {leftDrawer, rightDrawer, print} = storeToRefs(usePageStore())
 
-
-
 </script>

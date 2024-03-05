@@ -281,6 +281,11 @@ const onSubmit = async () => {
         :columns="table.headers"
         row-key="id"
       >
+        <template v-slot:body-cell-no="props">
+          <q-td :props="props">
+            {{ props.rowIndex + 1 }}
+          </q-td>
+        </template>
         <template v-slot:body-cell-car="props">
           <q-td>
             <div class="tw-flex tw-flex-col">

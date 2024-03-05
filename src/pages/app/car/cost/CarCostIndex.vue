@@ -269,7 +269,7 @@ const onDelete = async () => {
         </q-card-section>
         <q-card-section class="tw-flex justify-between tw-space-x-2">
           <q-btn
-            v-if="can('app.biaya.biayaMobil.simpanBiayaMobil')"
+            v-if="can('app.mobil.biayaMobil.simpanBiayaMobil')"
             :dense="$q.screen.lt.lg"
             :label="!$q.screen.lt.md ? 'Simpan data' : ''"
             :loading="table.loading"
@@ -300,7 +300,7 @@ const onDelete = async () => {
           </q-btn>
           <q-space></q-space>
           <q-btn
-            v-if="can('app.biaya.biayaMobil.hapusBiayaMobil')"
+            v-if="can('app.mobil.biayaMobil.hapusBiayaMobil')"
             :dense="$q.screen.lt.lg"
             :disable="selected.length !== 1"
             :label="!$q.screen.lt.md ? 'Hapus data' : ''"
@@ -317,7 +317,7 @@ const onDelete = async () => {
             </q-tooltip>
           </q-btn>
           <q-btn
-            v-if="can('app.biaya.biayaMobil.ubahBiayaMobil')"
+            v-if="can('app.mobil.biayaMobil.ubahBiayaMobil')"
             :dense="$q.screen.lt.lg"
             :disable="selected.length !== 1"
             :label="!$q.screen.lt.md ? 'Ubah data' : ''"

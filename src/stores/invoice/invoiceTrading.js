@@ -52,9 +52,9 @@ export const useInvoiceTradingStore = defineStore('invoiceTrading', {
     getSummaries(state){
       const data = {}
       data.loan = state.details.customer?.loan ?? 0
-      data.total = state.details.data ? state.details.data.length > 0 ? state.details.data.reduce((total, next) => total + next.total, 0) : 0 : 0
-      data.weight = state.details.data ? state.details.data.length > 0 ? state.details.data.reduce((total, next) => total + next.weight, 0) : 0 : 0
-      data.price = state.details.data ? state.details.data.length > 0 ? state.details.data.reduce((total, next) => total + next.price, 0) / state.details.data.length : 0 : 0
+      data.total = parseFloat(state.details.data ? state.details.data.length > 0 ? state.details.data.reduce((total, next) => total + parseFloat(next.total), 0) : 0 : 0)
+      data.weight = parseFloat(state.details.data ? state.details.data.length > 0 ? state.details.data.reduce((total, next) => total + parseFloat(next.weight), 0) : 0 : 0)
+      data.price = parseFloat(state.details.data ? state.details.data.length > 0 ? state.details.data.reduce((total, next) => total + parseFloat(next.price), 0) / parseFloat(state.details.data.length) : 0 : 0)
       data.loan_status = data.loan !== 0
       data.loan_total = data.loan - state.form.installment ?? 0
       data.net_total = data.total - state.form.installment ?? 0

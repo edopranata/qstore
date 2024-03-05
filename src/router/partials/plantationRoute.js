@@ -38,6 +38,47 @@ export default [
           auth: true,
         },
       },
+      {
+        path: 'laporan',
+        name: 'app.perkebunan.laporan.index',
+        component: () => import('pages/app/plantation/report/ReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'laporan/perkebunan',
+        name: 'app.perkebunan.laporan.perkebunan',
+        component: () => import('pages/app/plantation/report/PlantationReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'laporan/printPerkebunan',
+        name: 'app.perkebunan.laporan.printPerkebunan',
+        component: () => import('pages/app/plantation/report/PlantationReportPrint.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+
+      {
+        path: 'laporan/rekapituliasiPerkebunan',
+        name: 'app.perkebunan.laporan.rekapituliasiPerkebunan',
+        component: () => import('pages/app/plantation/report/PlantationRecapReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'laporan/printRekapituliasiPerkebunan',
+        name: 'app.perkebunan.laporan.printRekapituliasiPerkebunan',
+        component: () => import('pages/app/plantation/report/PlantationRecapReportPrint.vue'),
+        meta: {
+          auth: true,
+        },
+      },
     ]
   },
 ]

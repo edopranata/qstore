@@ -93,21 +93,21 @@ const onPrint = () => {
                   Intl.NumberFormat('id-ID', {
                     style: 'unit',
                     unit: 'kilogram'
-                  }).format(item.customer_weight)
+                  }).format(parseFloat(item.customer_weight))
                 }}</span>
               <span class="tw-px-4 tw-border-gray-800 tw-border-l tw-text-right">{{
                   Intl.NumberFormat('id-ID', {
                     style: 'currency',
                     currency: 'IDR',
                     minimumFractionDigits: 0
-                  }).format(item.customer_price)
+                  }).format(parseFloat(item.customer_price))
                 }}</span>
               <span class="tw-px-4 tw-border-gray-800 tw-border-x tw-text-right">{{
                   Intl.NumberFormat('id-ID', {
                     style: 'currency',
                     currency: 'IDR',
                     minimumFractionDigits: 0
-                  }).format(item.customer_total)
+                  }).format(parseFloat(item.customer_total))
                 }}</span>
             </div>
 
@@ -120,7 +120,7 @@ const onPrint = () => {
                     style: 'currency',
                     currency: 'IDR',
                     minimumFractionDigits: 0
-                  }).format(summaries.total)
+                  }).format(parseFloat(summaries.total))
                 }}</span>
             </div>
           </template>
@@ -134,21 +134,21 @@ const onPrint = () => {
                   Intl.NumberFormat('id-ID', {
                     style: 'unit',
                     unit: 'kilogram'
-                  }).format(item.weight)
+                  }).format(parseFloat(item.weight))
                 }}</span>
               <span class="tw-px-4 tw-border-gray-800 tw-border-l tw-text-right">{{
                   Intl.NumberFormat('id-ID', {
                     style: 'currency',
                     currency: 'IDR',
                     minimumFractionDigits: 0
-                  }).format(item.price)
+                  }).format(parseFloat(item.price))
                 }}</span>
               <span class="tw-px-4 tw-border-gray-800 tw-border-x tw-text-right">{{
                   Intl.NumberFormat('id-ID', {
                     style: 'currency',
                     currency: 'IDR',
                     minimumFractionDigits: 0
-                  }).format(item.total)
+                  }).format(parseFloat(item.total))
                 }}</span>
             </div>
 
@@ -161,7 +161,7 @@ const onPrint = () => {
                     style: 'currency',
                     currency: 'IDR',
                     minimumFractionDigits: 0
-                  }).format(summaries.total_trading)
+                  }).format(parseFloat(summaries.total_trading))
                 }}</span>
             </div>
           </template>
@@ -186,7 +186,7 @@ const onPrint = () => {
                   style: 'currency',
                   currency: 'IDR',
                   minimumFractionDigits: 0
-                }).format(sub_total ?? 0)
+                }).format(parseFloat(sub_total ?? 0))
               }}</span>
           </div>
 
