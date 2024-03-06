@@ -21,7 +21,7 @@ watch(getTypeChange, (optType) => {
 
 onMounted(async () => {
   table.data = []
-  form.type = 'Period'
+  form.type = 'Daily'
   report.onReset()
 })
 
@@ -51,6 +51,65 @@ const onSubmit = async () => {
           </q-tabs>
           <q-separator/>
           <q-tab-panels v-model="form.type" animated class="shadow-2 rounded-borders">
+            <q-tab-panel name="Daily">
+              <q-card flat>
+                <q-card-section class="no-padding tw-mb-4">
+                  <div class="text-h6">Laporan Harian Pendapatan Jual Beli Sawit</div>
+                </q-card-section>
+                <q-card-section class="no-padding">
+                  <div class="tw-flex tw-flex-col md:tw-grid md:tw-grid-cols-2">
+                    <div class="tw-grid tw-grid-cols-2 tw-gap-4">
+                      <q-field
+                        :dense="$q.screen.lt.md"
+                        :error="errors.hasOwnProperty('daily')"
+                        :error-message="errors.daily"
+                        :loading="table.loading"
+                        :stack-label="!!form.daily"
+                        class="tw-w-full"
+
+                        filled
+                        label="Tanggal Laporan">
+                        <template v-slot:control>
+                          <div class="self-center full-width no-outline" tabindex="0">
+                            {{ date.formatDate(form.daily, 'DD MMMM YYYY') }}
+                          </div>
+                        </template>
+                        <template v-slot:append>
+                          <q-icon class="cursor-pointer" name="event" tabindex="0">
+                            <q-popup-proxy cover transition-hide="scale" transition-show="scale">
+                              <q-date v-model="form.daily"
+                                      :on-update:model-value="report.unsetError('daily')">
+                                <div class="row items-center justify-end">
+                                  <q-btn v-close-popup color="primary" flat label="Close"/>
+                                </div>
+                              </q-date>
+                            </q-popup-proxy>
+                          </q-icon>
+                        </template>
+                      </q-field>
+                    </div>
+                  </div>
+                </q-card-section>
+                <q-card-actions class="no-padding tw-mt-4">
+                  <div class="md:tw-col-span-4 tw-col-span-2 tw-space-x-2">
+                    <q-btn v-if="can('app.jualBeliSawit.laporan.jualBeliSawit')" :disable="table.loading"
+                           :loading="table.loading" color="primary"
+                           glossy
+
+                           label="Lihat laporan"
+                           type="submit"/>
+                    <q-btn
+                      v-if="can('app.jualBeliSawit.laporan.printJualBeliSawit')"
+                      :disable="table.loading || !form.type || !form.period_start || !form.period_end"
+                      :loading="table.loading"
+                      :to="{name: 'app.jualBeliSawit.laporan.printJualBeliSawit', query: {type: form.type, daily: form.daily }}"
+                      color="deep-orange"
+                      glossy icon="print" label="Print laporan"/>
+                  </div>
+                </q-card-actions>
+              </q-card>
+            </q-tab-panel>
+
             <q-tab-panel name="Period">
               <q-card flat>
                 <q-card-section class="no-padding tw-mb-4">
@@ -227,91 +286,166 @@ const onSubmit = async () => {
               <th class="text-right">Timbangan Lap</th>
               <th class="text-right">Harga Lap (Avg) (Rp/kg)</th>
               <th class="text-right">Hasil Petani</th>
-              <th class="text-right">Timbangan Pabrik</th>
               <th class="text-right">Harga DO</th>
               <th class="text-right">Margin</th>
+              <th class="text-right">Timbangan Pabrik</th>
+              <th class="text-right">Biaya</th>
               <th class="text-right">Bruto</th>
               <th class="text-right">Pendapatan</th>
             </tr>
             </thead>
             <tbody v-if="table.data.length > 0">
-            <tr v-for="( detail, i) in table.data" :key="i">
-              <td>
-                {{ i + 1 }}
-              </td>
-              <td>{{ detail.date }}</td>
-              <td><div>{{ detail.car?.no_pol }} ({{ detail.driver?.name }})</div></td>
-              <td class="text-right">
-                {{
-                  new Intl.NumberFormat('id-ID', {
-                    style: 'unit',
-                    unit: 'kilogram'
-                  }).format(detail.customer_weight)
-                }}
-              </td>
-              <td class="text-right">
-                {{
-                  new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR',
-                    maximumFractionDigits: 2
-                  }).format(detail.customer_average)
-                }}
-              </td>
-              <td class="text-right">
-                {{
-                  new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR',
-                    maximumFractionDigits: 2
-                  }).format(detail.customer_total)
-                }}
-              </td>
-              <td class="text-right">
-                {{
-                  new Intl.NumberFormat('id-ID', {
-                    style: 'unit',
-                    unit: 'kilogram'
-                  }).format(detail.net_weight)
-                }}
-              </td>
-              <td class="text-right">
-                {{
-                  new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR',
-                    maximumFractionDigits: 2
-                  }).format(detail.net_price)
-                }}
-              </td>
-              <td class="text-right">
-                {{
-                  new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR',
-                    maximumFractionDigits: 2
-                  }).format(detail.margin)
-                }}
-              </td>
-              <td class="text-right">
-                {{
-                  new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR',
-                    maximumFractionDigits: 2
-                  }).format(detail.gross_total)
-                }}
-              </td>
-              <td class="text-right">
-                {{
-                  new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR',
-                    maximumFractionDigits: 2
-                  }).format(detail.net_total)
-                }}
-              </td>
-            </tr>
+            <template v-for="( detail, i) in table.data" :key="i">
+              <tr>
+                <td class="text-bold ">
+                  {{ i + 1 }}
+                </td>
+                <td class="text-bold ">{{ detail.date }}</td>
+                <td class="text-bold ">
+                  <div>{{ detail.car?.no_pol }} ({{ detail.driver?.name }})</div>
+                </td>
+                <td class="text-bold text-right">
+                  {{
+                    new Intl.NumberFormat('id-ID', {
+                      style: 'unit',
+                      unit: 'kilogram'
+                    }).format(detail.customer_weight)
+                  }}
+                </td>
+                <td class="text-bold text-right">
+                  {{
+                    new Intl.NumberFormat('id-ID', {
+                      style: 'currency',
+                      currency: 'IDR',
+                      maximumFractionDigits: 2
+                    }).format(detail.customer_average)
+                  }}
+                </td>
+                <td class="text-bold text-right">
+                  {{
+                    new Intl.NumberFormat('id-ID', {
+                      style: 'currency',
+                      currency: 'IDR',
+                      maximumFractionDigits: 2
+                    }).format(detail.customer_total)
+                  }}
+                </td>
+                <td class="text-bold text-right">
+                  {{
+                    new Intl.NumberFormat('id-ID', {
+                      style: 'currency',
+                      currency: 'IDR',
+                      maximumFractionDigits: 2
+                    }).format(detail.net_price)
+                  }}
+                </td>
+                <td class="text-bold text-right">
+                  {{
+                    new Intl.NumberFormat('id-ID', {
+                      style: 'currency',
+                      currency: 'IDR',
+                      maximumFractionDigits: 2
+                    }).format(detail.margin)
+                  }}
+                </td>
+                <td class="text-bold text-right">
+                  {{
+                    new Intl.NumberFormat('id-ID', {
+                      style: 'unit',
+                      unit: 'kilogram'
+                    }).format(detail.net_weight)
+                  }}
+                </td>
+                <td class="text-bold text-right">
+                  {{
+                    new Intl.NumberFormat('id-ID', {
+                      style: 'currency',
+                      currency: 'IDR',
+                      maximumFractionDigits: 2
+                    }).format(detail.cost_total)
+                  }}
+                </td>
+                <td class="text-bold text-right">
+                  {{
+                    new Intl.NumberFormat('id-ID', {
+                      style: 'currency',
+                      currency: 'IDR',
+                      maximumFractionDigits: 2
+                    }).format(detail.gross_total)
+                  }}
+                </td>
+                <td class="text-bold text-right">
+                  {{
+                    new Intl.NumberFormat('id-ID', {
+                      style: 'currency',
+                      currency: 'IDR',
+                      maximumFractionDigits: 2
+                    }).format(detail.net_total)
+                  }}
+                </td>
+              </tr>
+              <tr v-for="(cus, c) in detail.details" :key="c">
+                <td></td>
+                <td></td>
+                <td>{{ cus.customer?.name }}</td>
+                <td class="text-right">
+                  {{
+                    new Intl.NumberFormat('id-ID', {
+                      style: 'unit',
+                      unit: 'kilogram'
+                    }).format(parseFloat(cus.weight))
+                  }}
+                </td>
+                <td class="text-right">
+                  {{
+                    new Intl.NumberFormat('id-ID', {
+                      style: 'currency',
+                      currency: 'IDR',
+                      maximumFractionDigits: 2
+                    }).format(parseFloat(cus.price))
+                  }}
+                </td>
+                <td class="text-right">
+                  {{
+                    new Intl.NumberFormat('id-ID', {
+                      style: 'currency',
+                      currency: 'IDR',
+                      maximumFractionDigits: 2
+                    }).format(parseFloat(cus.price) * parseFloat(cus.weight))
+                  }}
+                </td>
+                <td class="text-right">
+                  {{
+                    new Intl.NumberFormat('id-ID', {
+                      style: 'currency',
+                      currency: 'IDR',
+                      maximumFractionDigits: 2
+                    }).format(parseFloat(detail.net_price))
+                  }}
+                </td>
+                <td class="text-right">
+                  {{
+                    new Intl.NumberFormat('id-ID', {
+                      style: 'currency',
+                      currency: 'IDR',
+                      maximumFractionDigits: 2
+                    }).format(parseFloat(detail.net_price) - parseFloat(cus.price))
+                  }}
+                </td>
+                <td class="text-right"></td>
+                <td class="text-right"></td>
+                <td class="text-right">
+                  {{
+                    new Intl.NumberFormat('id-ID', {
+                      style: 'currency',
+                      currency: 'IDR',
+                      maximumFractionDigits: 2
+                    }).format(parseFloat(cus.weight) * parseFloat(parseFloat(detail.net_price) - parseFloat(cus.price)))
+                  }}
+                </td>
+                <td class="text-right"></td>
+              </tr>
+            </template>
             </tbody>
           </q-markup-table>
         </q-card-section>

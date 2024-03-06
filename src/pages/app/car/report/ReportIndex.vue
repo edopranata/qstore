@@ -9,8 +9,8 @@ const {can} = useAuthStore()
     <div class="tw-grid tw-grid-cols-3 tw-gap-4">
       <q-list v-if="can('app.mobil.laporan.[penghasilanMobil,printPenghasilanMobil,rekapPenghasilanMobil,printRekapPenghasilanMobil]')" bordered padding>
         <q-item-label header>Rekap Penghasilan Mobil</q-item-label>
-        <q-item v-if="can('app.mobil.laporan.penghasilanMobil.[penghasilanMobil,printPenghasilanMobil]')" v-ripple
-                :to="{name: 'app.perkebunan.laporan.penghasilanMobil'}"
+        <q-item v-if="can('app.mobil.laporan.[penghasilanMobil,printPenghasilanMobil]')" v-ripple
+                :to="{name: 'app.mobil.laporan.penghasilanMobil'}"
                 clickable>
           <q-item-section>
             <q-item-label>Laporan penghasilan mobil</q-item-label>

@@ -5,13 +5,15 @@ import {api} from "boot/axios";
 export const useTradingReportStore = defineStore('TradingReport', {
   state: () => ({
     form: {
-      type: 'Period',
+      type: 'Daily',
+      daily: null,
       period_start: null,
       period_end: null,
       monthly: null,
       annual: null,
     },
     reportOptions: [
+      {label: 'Harian', value: 'Daily'},
       {label: 'Periode', value: 'Period'},
       {label: 'Bulanan', value: 'Monthly'},
       {label: 'Tahunan', value: 'Annual'},

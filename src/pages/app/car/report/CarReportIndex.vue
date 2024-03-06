@@ -193,16 +193,16 @@ const searchCar = (val, update) => {
                 </q-card-section>
                 <q-card-actions class="no-padding tw-mt-4">
                   <div class="md:tw-col-span-4 tw-col-span-2 tw-space-x-2">
-                    <q-btn v-if="can('app.laporan.dataLaporan.penghasilanMobil')" :disable="table.loading" :loading="table.loading" color="primary"
+                    <q-btn v-if="can('app.mobil.laporan.penghasilanMobil')" :disable="table.loading" :loading="table.loading" color="primary"
                            glossy
 
                            label="Lihat laporan"
                            type="submit"/>
                     <q-btn
-                      v-if="can('app.laporan.dataLaporan.printPenghasilanMobil')"
+                      v-if="can('app.mobil.laporan.printPenghasilanMobil')"
                       :disable="table.loading || !form.type || !form.period_start || !form.period_end || !form.car_id.length"
                       :loading="table.loading"
-                      :to="{name: 'app.laporan.dataLaporan.printPenghasilanMobil', query: {type: form.type, period_end: form.period_end, period_start: form.period_start, car_id: select.selected_cars.map(e => e.id) }}"
+                      :to="{name: 'app.mobil.laporan.printPenghasilanMobil', query: {type: form.type, period_end: form.period_end, period_start: form.period_start, car_id: select.selected_cars.map(e => e.id) }}"
                       color="deep-orange"
                       glossy icon="print" label="Print laporan"/>
                   </div>
@@ -289,14 +289,14 @@ const searchCar = (val, update) => {
                 </q-card-section>
                 <q-card-actions class="no-padding tw-mt-4">
                   <div class="md:tw-col-span-4 tw-col-span-2 tw-space-x-2">
-                    <q-btn v-if="can('app.laporan.dataLaporan.penghasilanMobil')" :disable="table.loading" :loading="table.loading" color="primary"
+                    <q-btn v-if="can('app.mobil.laporan.penghasilanMobil')" :disable="table.loading" :loading="table.loading" color="primary"
                            glossy
                            label="Lihat laporan"
                            type="submit"/>
-                    <q-btn v-if="can('app.laporan.dataLaporan.printPenghasilanMobil')"
+                    <q-btn v-if="can('app.mobil.laporan.printPenghasilanMobil')"
                            :disable="table.loading || !form.type || String(form.monthly).length !== 7"
                            :loading="table.loading"
-                           :to="{name: 'app.laporan.dataLaporan.printPenghasilanMobil', query: {type: form.type, monthly: form.monthly, car_id: select.selected_cars.map(e => e.id)}}"
+                           :to="{name: 'app.mobil.laporan.printPenghasilanMobil', query: {type: form.type, monthly: form.monthly, car_id: select.selected_cars.map(e => e.id)}}"
                            color="deep-orange"
                            glossy icon="print" label="Print laporan"/>
                   </div>
@@ -382,14 +382,14 @@ const searchCar = (val, update) => {
                 </q-card-section>
                 <q-card-actions class="no-padding tw-mt-4">
                   <div class="md:tw-col-span-4 tw-col-span-2 tw-space-x-2">
-                    <q-btn v-if="can('app.laporan.dataLaporan.penghasilanMobil')" :disable="table.loading" :loading="table.loading" color="primary"
+                    <q-btn v-if="can('app.mobil.laporan.penghasilanMobil')" :disable="table.loading" :loading="table.loading" color="primary"
                            glossy
                            label="Lihat laporan"
                            type="submit"/>
-                    <q-btn v-if="can('app.laporan.dataLaporan.printPenghasilanMobil')"
+                    <q-btn v-if="can('app.mobil.laporan.printPenghasilanMobil')"
                            :disable="table.loading || !form.type || !form.annual || String(form.annual).length !== 4"
                            :loading="table.loading"
-                           :to="{name: 'app.laporan.dataLaporan.printPenghasilanMobil', query: {type: form.type, annual: form.annual, car_id: select.selected_cars.map(e => e.id)}}"
+                           :to="{name: 'app.mobil.laporan.printPenghasilanMobil', query: {type: form.type, annual: form.annual, car_id: select.selected_cars.map(e => e.id)}}"
                            color="deep-orange"
                            glossy icon="print" label="Print laporan"/>
                   </div>
