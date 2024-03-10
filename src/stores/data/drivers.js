@@ -196,7 +196,7 @@ export const useDriversStore = defineStore('drivers', {
         Notify.create({
           position: "top",
           type: 'positive',
-          message: params.hasOwnProperty('id') ? 'Data mobil berhasil di update' : 'Data mobil berhasil disimpan'
+          message: params.hasOwnProperty('id') ? 'Data supir berhasil di update' : 'Data supir berhasil disimpan'
         })
         this.table.filter = String(Date.now())
         this.onReset()

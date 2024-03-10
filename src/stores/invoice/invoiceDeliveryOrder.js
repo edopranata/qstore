@@ -232,7 +232,7 @@ export const useInvoiceDeliveryOrderStore = defineStore('invoiceDO', {
         })
         const invoice_number = response.data.data?.invoice_number
         if(this.dialog.print && invoice_number){
-          this.router.replace({name: 'app.deliveryOrder.invoiceData.printInvoice', params: { invoice_number : invoice_number }})
+          this.router.replace({name: 'app.deliveryOrder.dataInvoicePengepul.printInvoice', params: { invoice_number : invoice_number }})
         }else {
           this.table.data = []
           this.onReset()

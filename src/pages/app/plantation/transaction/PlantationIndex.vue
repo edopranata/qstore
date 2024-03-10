@@ -197,7 +197,7 @@ const onUpdate = () => {
                 :error-message="errors.trade_date"
                 :stack-label="!!form.trade_date"
                 filled
-                label="Tanggal Transaksi">
+                label="Tanggal Panen">
                 <template v-slot:control>
                   <div class="self-center full-width no-outline" tabindex="0">
                     {{ date.formatDate(form.trade_date, 'DD MMMM YYYY') }}
@@ -374,7 +374,7 @@ const onUpdate = () => {
               </q-select>
             </div>
             <div class="tw-grid tw-gap-2 tw-grid-cols-2 tw-content-start">
-              <div class="tw-font-bold tw-col-span-2">Lahan kebun yang panen</div>
+              <div class="tw-font-bold tw-col-span-2">Uang jalan dan biaya</div>
               <q-number
                 v-model="form.trade_cost"
                 :bg-color="!!form.id ? 'yellow-2' : ''"

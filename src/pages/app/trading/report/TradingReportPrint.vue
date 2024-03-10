@@ -51,7 +51,7 @@ const onPrint = () => {
 
     <div class="tw-grid tw-grid-cols-10 tw-font-sans tw-font-bold">
       <div class="tw-col-span-10 tw-flex justify-start tw-space-x-2">
-        <div>Rekap laporan pendapatan DO</div>
+        <div>Rekap laporan pendapatan jual beli sawit</div>
         <span v-if="refForm.type.toLowerCase() === 'period'">{{
             `periode ${refForm.period_start} - ${refForm.period_end}`
           }}</span>

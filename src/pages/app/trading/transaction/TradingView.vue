@@ -45,31 +45,31 @@ watch([getSelectedCustomer, formField], ([cusSel, formDetails]) => {
     }
   }
   if (formDetails.price && formDetails.weight) {
-    details.form.total = formDetails.price * formDetails.weight
+    details.form.total = parseFloat(formDetails.price) * parseFloat(formDetails.weight)
   }
   if (formDetails.net_weight && formDetails.net_price) {
-    details.form.net_total = formDetails.net_weight * formDetails.net_price
+    details.form.net_total = parseFloat(formDetails.net_weight) * parseFloat(formDetails.net_price)
 
-    let net_total = details.form.net_total ?? 0
-    let trade_cost = details.trading.trade_cost ?? 0
-    let car_transport = details.trading.car_transport ?? 0
-    let car_price = details.form.car_price ?? 0
-    let driver_price = details.form.driver_price ?? 0
-    let loader_price = details.form.loader_price ?? 0
-    let customer_total = details.trading.customer_total_price ?? 0
-    let cost = car_price + driver_price + customer_total + loader_price + trade_cost + car_transport
+    let net_total = parseFloat(details.form.net_total ?? 0)
+    let trade_cost = parseFloat(details.trading.trade_cost ?? 0)
+    let car_transport = parseFloat(details.trading.car_transport ?? 0)
+    let car_price = parseFloat(details.form.car_price ?? 0)
+    let driver_price = parseFloat(details.form.driver_price ?? 0)
+    let loader_price = parseFloat(details.form.loader_price ?? 0)
+    let customer_total = parseFloat(details.trading.customer_total_price ?? 0)
+    let cost = parseFloat(car_price) + parseFloat(driver_price) + parseFloat(customer_total) + parseFloat(loader_price) + parseFloat(trade_cost) + parseFloat(car_transport)
 
     details.form.net_income = net_total - cost
   }
   if (formDetails.net_total && formDetails.car_fee) {
-    details.form.car_price = formDetails.net_weight * formDetails.car_fee
+    details.form.car_price = parseFloat(formDetails.net_weight) * parseFloat(formDetails.car_fee)
   }
   if (formDetails.net_total && formDetails.driver_fee) {
-    details.form.driver_price = formDetails.net_weight * formDetails.driver_fee
+    details.form.driver_price = parseFloat(formDetails.net_weight) * parseFloat(formDetails.driver_fee)
   }
 
   if (formDetails.net_total && formDetails.loader_fee) {
-    details.form.loader_price = formDetails.net_weight * formDetails.loader_fee
+    details.form.loader_price = parseFloat(formDetails.net_weight) * parseFloat(formDetails.loader_fee)
   }
 
 }, {deep: true})
@@ -156,7 +156,7 @@ const onUpdate = () => {
           default-opened
           header-class="bg-blue text-white"
           icon="scale"
-          label="Data Timbangan Petani"
+          label="Data Timbangan Lapangan"
         >
           <q-card>
             <q-card-section>
@@ -620,7 +620,7 @@ const onUpdate = () => {
                               style: 'currency',
                               currency: 'IDR',
                               minimumFractionDigits: 0
-                            }).format(details.form.net_income ? details.form.net_income : 0)
+                            }).format(parseFloat(details.form.net_income ? details.form.net_income : 0))
                           }}
                         </q-th>
                       </q-tr>

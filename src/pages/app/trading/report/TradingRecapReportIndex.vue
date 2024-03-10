@@ -53,7 +53,7 @@ const onSubmit = async () => {
             <q-tab-panel name="Monthly">
               <q-card flat>
                 <q-card-section class="no-padding tw-mb-4">
-                  <div class="text-h6">Laporan Bulanan Rekapitulasi Pendapatan DO</div>
+                  <div class="text-h6">Laporan Bulanan Rekapitulasi Jual Beli Sawit</div>
                 </q-card-section>
                 <q-card-section class="no-padding">
                   <div class="tw-flex tw-flex-col md:tw-grid md:tw-grid-cols-2">
@@ -92,7 +92,7 @@ const onSubmit = async () => {
             <q-tab-panel name="Annual">
               <q-card flat>
                 <q-card-section class="no-padding tw-mb-4">
-                  <div class="text-h6">Laporan Tahunan Rekapitulasi Pendapatan DO</div>
+                  <div class="text-h6">Laporan Tahunan Rekapitulasi Jual Beli Sawit</div>
                 </q-card-section>
                 <q-card-section class="no-padding">
                   <div class="tw-flex tw-flex-col md:tw-grid md:tw-grid-cols-2">

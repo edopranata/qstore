@@ -36,7 +36,7 @@ onMounted(async () => {
         <template v-slot:top>
           <q-toolbar class="text-primary">
             <q-toolbar-title>
-              Data invoice petani yang belum di cairkan
+              Data invoice petani yang belum dibayarkan
             </q-toolbar-title>
           </q-toolbar>
         </template>

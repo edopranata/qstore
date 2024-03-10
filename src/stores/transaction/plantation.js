@@ -53,7 +53,7 @@ export const usePlantationsStore = defineStore('plantation', {
         {name: "net_weight", label: "Tonase (kg)", field: "net_weight", sortable: true},
         {name: "net_total", label: "Total (Rp)", field: "net_total", sortable: true},
         {name: "gross_total", label: "Total Biaya (Rp)", field: "gross_total", sortable: true},
-        {name: "net_income", label: "Total Biaya (Rp)", field: "net_income", sortable: true},
+        {name: "net_income", label: "Penghasilan (Rp)", field: "net_income", sortable: true},
         {name: "created_by", label: "User", field: "created_by", sortable: false, align: 'left'},
         {name: "created_at", label: "Created At", field: "created_at", sortable: true, align: 'left'},
       ]),

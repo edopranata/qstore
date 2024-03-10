@@ -13,7 +13,7 @@ const {can} = useAuthStore()
                 :to="{name: 'app.perkebunan.laporan.perkebunan'}"
                 clickable>
           <q-item-section>
-            <q-item-label>Laporan Transaksi Delivery Order</q-item-label>
+            <q-item-label>Laporan Transaksi Hasil Kebun</q-item-label>
             <q-item-label caption lines="1">
               Laporan transaksi penjualan hasil perkebunan, bulan atau periode
             </q-item-label>
@@ -24,7 +24,7 @@ const {can} = useAuthStore()
                 :to="{name: 'app.perkebunan.laporan.rekapituliasiPerkebunan'}"
                 clickable>
           <q-item-section>
-            <q-item-label>Laporan Rekapitulasi Delivery Order</q-item-label>
+            <q-item-label>Laporan Rekapitulasi Hasil Kebun</q-item-label>
             <q-item-label caption lines="1">
               Laporan rekapitulasi delivery order berdasarkan tahun, bulan
             </q-item-label>

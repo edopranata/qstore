@@ -48,7 +48,7 @@ export const useCarsStore = defineStore('cars', {
       headers: reactive([
         {name: "no", label: "No", field: "id", sortable: false, align: 'left'},
         {name: "status", label: "Kepemilikan", field: "status", sortable: true, align: 'left'},
-        {name: "name", label: "Nama", field: "name", sortable: true, align: 'left'},
+        {name: "name", label: "Merk Mobil", field: "name", sortable: true, align: 'left'},
         {name: "plat_no", label: "Plat No", field: "no_pol", sortable: true, align: 'left'},
         {name: "year", label: "Tahun", field: "year", sortable: true, align: 'left'},
         {name: "user", label: "Created By", field: 'created_by', sortable: false, align: 'left'},
