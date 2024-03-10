@@ -100,7 +100,7 @@ const onSubmit = async () => {
                            type="submit"/>
                     <q-btn
                       v-if="can('app.jualBeliSawit.laporan.printJualBeliSawit')"
-                      :disable="table.loading || !form.type || !form.period_start || !form.period_end"
+                      :disable="table.loading || !form.type || !form.daily"
                       :loading="table.loading"
                       :to="{name: 'app.jualBeliSawit.laporan.printJualBeliSawit', query: {type: form.type, daily: form.daily }}"
                       color="deep-orange"

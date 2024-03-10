@@ -78,14 +78,14 @@ const onRequest = async (props) => {
           <template v-slot:body-cell-detail_trades="props">
             <q-td :props="props">
               <div>
-                {{ new Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(props.row.detail_trades.length > 0 ? props.row.detail_trades.reduce((total, item) => total + item.total, 0) : 0) }}
+                {{ new Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(parseFloat(props.row.detail_trades.length > 0 ? props.row.detail_trades.reduce((total, item) => parseFloat(total) + parseFloat(item.total), 0) : 0)) }}
               </div>
             </q-td>
           </template>
           <template v-slot:body-cell-detail_do="props">
             <q-td :props="props">
               <div>
-                {{ new Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(props.row.detail_do.length > 0 ? props.row.detail_do.reduce((total, item) => total + item.customer_total, 0) : 0) }}
+                {{ new Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(parseFloat(props.row.detail_do.length > 0 ? props.row.detail_do.reduce((total, item) => parseFloat(total) + parseFloat(item.customer_total), 0) : 0)) }}
               </div>
             </q-td>
           </template>
@@ -95,7 +95,7 @@ const onRequest = async (props) => {
                   new Intl.NumberFormat('id-ID', {
                     style: 'currency',
                     'currency': 'IDR'
-                  }).format(props.value ? props.value.debit ? props.value.debit : props.value.credit : 0)
+                  }).format(parseFloat(props.value ? props.value.debit ? props.value.debit : props.value.credit : 0))
                 }}
               </div>
               <div class="text-caption">{{ props.value ? props.value.debit ? 'Pinjaman' : 'Angsuran' : '' }}</div>

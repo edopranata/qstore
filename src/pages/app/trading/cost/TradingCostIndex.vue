@@ -208,7 +208,7 @@ const onDelete = async () => {
         </q-card-section>
         <q-card-section class="tw-flex justify-between tw-space-x-2">
           <q-btn
-            v-if="can('app.biaya.biayaPembelianSawit.simpanPembelianSawit')"
+            v-if="can('app.jualBeliSawit.biayaJualBeliSawit.simpanBiayaJualBeliSawit')"
             :dense="$q.screen.lt.lg"
             :label="!$q.screen.lt.md ? 'Simpan data' : ''"
             :loading="table.loading"
@@ -239,7 +239,7 @@ const onDelete = async () => {
           </q-btn>
           <q-space></q-space>
           <q-btn
-            v-if="can('app.biaya.biayaPembelianSawit.hapusPembelianSawit')"
+            v-if="can('app.jualBeliSawit.biayaJualBeliSawit.hapusJBiayaualBeliSawit')"
             :dense="$q.screen.lt.lg"
             :disable="selected.length !== 1"
             :label="!$q.screen.lt.md ? 'Hapus data' : ''"
@@ -256,7 +256,7 @@ const onDelete = async () => {
             </q-tooltip>
           </q-btn>
           <q-btn
-            v-if="can('app.biaya.biayaPembelianSawit.ubahPembelianSawit')"
+            v-if="can('app.jualBeliSawit.biayaJualBeliSawit.ubahJuBiayaalBeliSawit')"
             :dense="$q.screen.lt.lg"
             :disable="selected.length !== 1"
             :label="!$q.screen.lt.md ? 'Ubah data' : ''"

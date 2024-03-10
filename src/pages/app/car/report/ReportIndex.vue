@@ -8,7 +8,7 @@ const {can} = useAuthStore()
   <q-page class="tw-space-y-4" padding>
     <div class="tw-grid tw-grid-cols-3 tw-gap-4">
       <q-list v-if="can('app.mobil.laporan.[penghasilanMobil,printPenghasilanMobil,rekapPenghasilanMobil,printRekapPenghasilanMobil]')" bordered padding>
-        <q-item-label header>Rekap Penghasilan Mobil</q-item-label>
+        <q-item-label header>Penghasilan Mobil</q-item-label>
         <q-item v-if="can('app.mobil.laporan.[penghasilanMobil,printPenghasilanMobil]')" v-ripple
                 :to="{name: 'app.mobil.laporan.penghasilanMobil'}"
                 clickable>
@@ -31,6 +31,21 @@ const {can} = useAuthStore()
           </q-item-section>
         </q-item>
 
+      </q-list>
+
+      <q-list v-if="can('app.mobil.laporan.[pinjamanSupir,printPinjamanSupir]')" bordered padding>
+
+        <q-item-label header>Pinjaman Supir</q-item-label>
+        <q-item v-if="can('app.mobil.laporan.[pinjamanSupir,printPinjamanSupir]')" v-ripple
+                :to="{name: 'app.mobil.laporan.printPinjamanSupir'}"
+                clickable>
+          <q-item-section>
+            <q-item-label>Laporan pinjaman supir</q-item-label>
+            <q-item-label caption lines="1">
+              Laporan jumlah sisa pinjaman supir
+            </q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </div>
   </q-page>

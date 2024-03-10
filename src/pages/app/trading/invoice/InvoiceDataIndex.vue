@@ -78,7 +78,7 @@ const onRequest = async (props) => {
           <template v-slot:body-cell-detail_trades="props">
             <q-td :props="props">
               <div>
-                {{ new Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(props.row.detail_trades.length > 0 ? props.row.detail_trades.reduce((total, item) => total + item.total, 0) : 0) }}
+                {{ new Intl.NumberFormat('id-ID', {style: 'currency', currency: 'IDR'}).format(props.row.detail_trades.length > 0 ? props.row.detail_trades.reduce((total, item) => parseFloat(total) + parseFloat(item.total), 0) : 0) }}
               </div>
             </q-td>
           </template>

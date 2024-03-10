@@ -68,93 +68,167 @@ const onPrint = () => {
         <th class="tw-border tw-border-gray-900 tw-py-1 tw-px-2 text-right">Timbangan Lap</th>
         <th class="tw-border tw-border-gray-900 tw-py-1 tw-px-2 text-right">Harga Lap (Avg) (Rp/kg)</th>
         <th class="tw-border tw-border-gray-900 tw-py-1 tw-px-2 text-right">Hasil Petani</th>
-        <th class="tw-border tw-border-gray-900 tw-py-1 tw-px-2 text-right">Timbangan Pabrik</th>
         <th class="tw-border tw-border-gray-900 tw-py-1 tw-px-2 text-right">Harga DO</th>
         <th class="tw-border tw-border-gray-900 tw-py-1 tw-px-2 text-right">Margin</th>
+        <th class="tw-border tw-border-gray-900 tw-py-1 tw-px-2 text-right">Timbangan Pabrik</th>
+        <th class="tw-border tw-border-gray-900 tw-py-1 tw-px-2 text-right">Biaya</th>
         <th class="tw-border tw-border-gray-900 tw-py-1 tw-px-2 text-right">Bruto</th>
         <th class="tw-border tw-border-gray-900 tw-py-1 tw-px-2 text-right">Pendapatan</th>
       </tr>
       </thead>
       <tbody>
-      <tr v-for="(detail, i) in table.data" :key="i">
-        <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2">
-          {{ i + 1 }}
-        </td>
-        <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2">{{ detail.date }}</td>
-        <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2">
-          <div>{{ detail.car?.no_pol }} ({{ detail.driver?.name }})</div>
-        </td>
-        <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
-          {{
-            new Intl.NumberFormat('id-ID', {
-              style: 'unit',
-              unit: 'kilogram'
-            }).format(detail.customer_weight)
-          }}
-        </td>
-        <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
-          {{
-            new Intl.NumberFormat('id-ID', {
-              style: 'currency',
-              currency: 'IDR',
-              maximumFractionDigits: 2
-            }).format(detail.customer_average)
-          }}
-        </td>
-        <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
-          {{
-            new Intl.NumberFormat('id-ID', {
-              style: 'currency',
-              currency: 'IDR',
-              maximumFractionDigits: 2
-            }).format(detail.customer_total)
-          }}
-        </td>
-        <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
-          {{
-            new Intl.NumberFormat('id-ID', {
-              style: 'unit',
-              unit: 'kilogram'
-            }).format(detail.net_weight)
-          }}
-        </td>
-        <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
-          {{
-            new Intl.NumberFormat('id-ID', {
-              style: 'currency',
-              currency: 'IDR',
-              maximumFractionDigits: 2
-            }).format(detail.net_price)
-          }}
-        </td>
-        <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
-          {{
-            new Intl.NumberFormat('id-ID', {
-              style: 'currency',
-              currency: 'IDR',
-              maximumFractionDigits: 2
-            }).format(detail.margin)
-          }}
-        </td>
-        <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
-          {{
-            new Intl.NumberFormat('id-ID', {
-              style: 'currency',
-              currency: 'IDR',
-              maximumFractionDigits: 2
-            }).format(detail.gross_total)
-          }}
-        </td>
-        <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
-          {{
-            new Intl.NumberFormat('id-ID', {
-              style: 'currency',
-              currency: 'IDR',
-              maximumFractionDigits: 2
-            }).format(detail.net_total)
-          }}
-        </td>
-      </tr>
+      <template v-for="(detail, i) in table.data" :key="i">
+        <tr :class="detail.details.length > 0 ? 'text-bold' : ''">
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2">
+            {{ i + 1 }}
+          </td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2">{{ detail.date }}</td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2">
+            <div>{{ detail.car?.no_pol }} ({{ detail.driver?.name }})</div>
+          </td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
+            {{
+              new Intl.NumberFormat('id-ID', {
+                style: 'unit',
+                unit: 'kilogram'
+              }).format(detail.customer_weight)
+            }}
+          </td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
+            {{
+              new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                maximumFractionDigits: 2
+              }).format(detail.customer_average)
+            }}
+          </td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
+            {{
+              new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                maximumFractionDigits: 2
+              }).format(detail.customer_total)
+            }}
+          </td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
+            {{
+              new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                maximumFractionDigits: 2
+              }).format(detail.net_price)
+            }}
+          </td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
+            {{
+              new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                maximumFractionDigits: 2
+              }).format(detail.margin)
+            }}
+          </td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
+            {{
+              new Intl.NumberFormat('id-ID', {
+                style: 'unit',
+                unit: 'kilogram'
+              }).format(detail.net_weight)
+            }}
+          </td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
+            {{
+              new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                maximumFractionDigits: 2
+              }).format(detail.cost_total)
+            }}
+          </td>
+          <td :class="detail.details.length > 0 ? 'tw-font-bold' : ''"
+              class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
+            {{
+              new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                maximumFractionDigits: 2
+              }).format(detail.gross_total)
+            }}
+          </td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
+            {{
+              new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                maximumFractionDigits: 2
+              }).format(detail.net_total)
+            }}
+          </td>
+        </tr>
+        <tr v-for="(cus, c) in detail.details" :key="c">
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2"></td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2"></td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2">{{ cus.customer?.name }}</td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
+            {{
+              new Intl.NumberFormat('id-ID', {
+                style: 'unit',
+                unit: 'kilogram'
+              }).format(parseFloat(cus.weight))
+            }}
+          </td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
+            {{
+              new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                maximumFractionDigits: 2
+              }).format(parseFloat(cus.price))
+            }}
+          </td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
+            {{
+              new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                maximumFractionDigits: 2
+              }).format(parseFloat(cus.price) * parseFloat(cus.weight))
+            }}
+          </td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
+            {{
+              new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                maximumFractionDigits: 2
+              }).format(parseFloat(detail.net_price))
+            }}
+          </td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
+            {{
+              new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                maximumFractionDigits: 2
+              }).format(parseFloat(detail.net_price) - parseFloat(cus.price))
+            }}
+          </td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right"></td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right"></td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right">
+            {{
+              new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                maximumFractionDigits: 2
+              }).format(parseFloat(cus.weight) * parseFloat(parseFloat(detail.net_price) - parseFloat(cus.price)))
+            }}
+          </td>
+          <td class="tw-border tw-border-slate-900 tw-py-1 tw-px-2 text-right"></td>
+        </tr>
+      </template>
       </tbody>
       <tfoot>
       <tr>
@@ -188,14 +262,6 @@ const onPrint = () => {
         <th class="tw-border tw-border-gray-900 tw-py-1 tw-px-2 text-right">
           {{
             new Intl.NumberFormat('id-ID', {
-              style: 'unit',
-              unit: 'kilogram'
-            }).format(summaries.net_weight)
-          }}
-        </th>
-        <th class="tw-border tw-border-gray-900 tw-py-1 tw-px-2 text-right">
-          {{
-            new Intl.NumberFormat('id-ID', {
               style: 'currency',
               currency: 'IDR',
               maximumFractionDigits: 2
@@ -209,6 +275,23 @@ const onPrint = () => {
               currency: 'IDR',
               maximumFractionDigits: 2
             }).format(summaries.margin)
+          }}
+        </th>
+        <th class="tw-border tw-border-gray-900 tw-py-1 tw-px-2 text-right">
+          {{
+            new Intl.NumberFormat('id-ID', {
+              style: 'unit',
+              unit: 'kilogram'
+            }).format(summaries.net_weight)
+          }}
+        </th>
+        <th class="tw-border tw-border-gray-900 tw-py-1 tw-px-2 text-right">
+          {{
+            new Intl.NumberFormat('id-ID', {
+              style: 'currency',
+              currency: 'IDR',
+              maximumFractionDigits: 2
+            }).format(summaries.cost_total)
           }}
         </th>
         <th class="tw-border tw-border-gray-900 tw-py-1 tw-px-2 text-right">

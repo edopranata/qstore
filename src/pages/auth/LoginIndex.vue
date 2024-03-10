@@ -26,9 +26,8 @@ const onReset = () => {
 </script>
 
 <template>
-  <q-page>
-    <div class="tw-flex tw-justify-center tw-items-center tw-h-screen">
-      <q-card flat square style="min-width: 420px">
+  <q-page class="flex flex-center" :padding="$q.screen.lt.sm">
+      <q-card bordered style="width: 420px">
         <q-img alt="Img" src="/undraw/mobile_login.svg"/>
         <q-form
           class="q-gutter-md"
@@ -71,8 +70,6 @@ const onReset = () => {
           </q-card-actions>
         </q-form>
       </q-card>
-    </div>
-
   </q-page>
 </template>
 
