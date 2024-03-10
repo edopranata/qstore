@@ -32,6 +32,31 @@ const {can} = useAuthStore()
         </q-item>
 
       </q-list>
+
+      <q-list v-if="can('app.jualBeliSawit.laporan.[pinjamanPetani,printPinjamanPetani]')" bordered padding>
+
+        <q-item-label header>Pinjaman Petani</q-item-label>
+        <q-item v-if="can('app.jualBeliSawit.laporan.[pinjamanPetani,printPinjamanPetani]')" v-ripple
+                :to="{name: 'app.jualBeliSawit.laporan.printPinjamanPetani'}"
+                clickable>
+          <q-item-section>
+            <q-item-label>Laporan pinjaman petani</q-item-label>
+            <q-item-label caption lines="1">
+              Laporan jumlah sisa pinjaman petani
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item v-if="can('app.jualBeliSawit.laporan.[rekapPinjamanPetani,printRekapPinjamanPetani]')" v-ripple
+                :to="{name: 'app.jualBeliSawit.laporan.rekapPinjamanPetani'}"
+                clickable>
+          <q-item-section>
+            <q-item-label>Rekapitulasi pinjaman petani</q-item-label>
+            <q-item-label caption lines="1">
+              Laporan rekapitulasi angsuran dan pinjaman petani
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
     </div>
   </q-page>
 </template>

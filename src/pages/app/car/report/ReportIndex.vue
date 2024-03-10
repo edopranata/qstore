@@ -46,6 +46,16 @@ const {can} = useAuthStore()
             </q-item-label>
           </q-item-section>
         </q-item>
+        <q-item v-if="can('app.mobil.laporan.[rekapPinjamanSupir,printRekapPinjamanSupir]')" v-ripple
+                :to="{name: 'app.mobil.laporan.rekapPinjamanSupir'}"
+                clickable>
+          <q-item-section>
+            <q-item-label>Rekapitulasi pinjaman supir</q-item-label>
+            <q-item-label caption lines="1">
+              Laporan rekapitulasi angsuran dan pinjaman supir
+            </q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </div>
   </q-page>

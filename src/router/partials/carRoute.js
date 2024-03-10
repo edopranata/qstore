@@ -103,6 +103,23 @@ export default [
           auth: true,
         },
       },
+
+      {
+        path: 'laporan/rekapPinjamanSupir',
+        name: 'app.mobil.laporan.rekapPinjamanSupir',
+        component: () => import('pages/app/car/report/LoanRecapReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'laporan/printRekapPinjamanSupir',
+        name: 'app.mobil.laporan.printRekapPinjamanSupir',
+        component: () => import('pages/app/car/report/LoanRecapReportPrint.vue'),
+        meta: {
+          auth: true,
+        },
+      },
     ]
   },
 ]

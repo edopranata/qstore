@@ -30,7 +30,31 @@ const {can} = useAuthStore()
             </q-item-label>
           </q-item-section>
         </q-item>
+      </q-list>
 
+      <q-list v-if="can('app.deliveryOrder.laporan.[pinjamanPengepul,printPinjamanPengepul]')" bordered padding>
+
+        <q-item-label header>Pinjaman Pengepul</q-item-label>
+        <q-item v-if="can('app.deliveryOrder.laporan.[pinjamanPengepul,printPinjamanPengepul]')" v-ripple
+                :to="{name: 'app.deliveryOrder.laporan.printPinjamanPengepul'}"
+                clickable>
+          <q-item-section>
+            <q-item-label>Laporan pinjaman pengepul</q-item-label>
+            <q-item-label caption lines="1">
+              Laporan jumlah sisa pinjaman pengepul
+            </q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item v-if="can('app.deliveryOrder.laporan.[rekapPinjamanPengepul,printRekapPinjamanPengepul]')" v-ripple
+                :to="{name: 'app.deliveryOrder.laporan.rekapPinjamanPengepul'}"
+                clickable>
+          <q-item-section>
+            <q-item-label>Rekapitulasi pinjaman pengepul</q-item-label>
+            <q-item-label caption lines="1">
+              Laporan rekapitulasi angsuran dan pinjaman pengepul
+            </q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </div>
   </q-page>

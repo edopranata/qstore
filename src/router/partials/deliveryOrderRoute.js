@@ -106,6 +106,41 @@ export default [
           auth: true,
         },
       },
+
+
+      {
+        path: 'laporan/pinjamanPengepul',
+        name: 'app.deliveryOrder.laporan.pinjamanPengepul',
+        component: () => import('pages/app/deliveryOrder/report/LoanReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'laporan/printPinjamanPengepul',
+        name: 'app.deliveryOrder.laporan.printPinjamanPengepul',
+        component: () => import('pages/app/deliveryOrder/report/LoanReportPrint.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+
+      {
+        path: 'laporan/rekapPinjamanPengepul',
+        name: 'app.deliveryOrder.laporan.rekapPinjamanPengepul',
+        component: () => import('pages/app/deliveryOrder/report/LoanRecapReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'laporan/printRekapPinjamanPengepul',
+        name: 'app.deliveryOrder.laporan.printRekapPinjamanPengepul',
+        component: () => import('pages/app/deliveryOrder/report/LoanRecapReportPrint.vue'),
+        meta: {
+          auth: true,
+        },
+      },
     ]
   },
 ]

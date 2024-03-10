@@ -129,6 +129,42 @@ export default [
           auth: true,
         },
       },
+
+
+
+      {
+        path: 'laporan/pinjamanPetani',
+        name: 'app.jualBeliSawit.laporan.pinjamanPetani',
+        component: () => import('pages/app/trading/report/LoanReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'laporan/printPinjamanPetani',
+        name: 'app.jualBeliSawit.laporan.printPinjamanPetani',
+        component: () => import('pages/app/trading/report/LoanReportPrint.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+
+      {
+        path: 'laporan/rekapPinjamanPetani',
+        name: 'app.jualBeliSawit.laporan.rekapPinjamanPetani',
+        component: () => import('pages/app/trading/report/LoanRecapReportIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'laporan/printRekapPinjamanPetani',
+        name: 'app.jualBeliSawit.laporan.printRekapPinjamanPetani',
+        component: () => import('pages/app/trading/report/LoanRecapReportPrint.vue'),
+        meta: {
+          auth: true,
+        },
+      },
     ]
   },
 ]
