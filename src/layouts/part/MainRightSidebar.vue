@@ -38,6 +38,17 @@ const changePassword = async () => {
   })
 }
 
+const saveSetting = async () => {
+  $q.dialog({
+    title: 'Simpan pengaturan',
+    message: 'Anda yakin akan merubah pengaturan default?',
+    cancel: true,
+    persistent: true
+  }).onOk( async () => {
+    await page.saveSetting()
+  })
+}
+
 </script>
 
 <template>
@@ -94,9 +105,15 @@ const changePassword = async () => {
           :options="page.currencyFormat"
           class="tw-w-full"
           filled
+          stack-label
           :data-value="property"
           :label="String(prop).replace('_', ' ').toLocaleUpperCase('id-ID')"
         />
+      </q-item-section>
+    </q-item>
+    <q-item>
+      <q-item-section>
+        <q-btn color="primary" glossy label="Save as default" @click="saveSetting" />
       </q-item-section>
     </q-item>
 

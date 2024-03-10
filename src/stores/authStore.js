@@ -64,6 +64,7 @@ export const useAuthStore = defineStore('auth', {
 
     },
     setAuthenticated(data, token) {
+      console.log('trigger')
       if (data && token) {
         const permissions = data.routes
         // const menu = data.menu
@@ -86,6 +87,7 @@ export const useAuthStore = defineStore('auth', {
         // LocalStorage.set('menu', menu)
         usePage.menus = data.menu
         usePage.setting = data.setting
+        usePage.default_setting = data.setting
       }
 
     },
