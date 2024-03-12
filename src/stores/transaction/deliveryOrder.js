@@ -39,6 +39,7 @@ export const useDeliveryOrderStore = defineStore('deliveryOrder', {
       loading: false,
       headers: reactive([
         {name: "no", label: "No", field: "id", sortable: false, align: 'left'},
+        {name: "invoice_status", label: "Invoice", field: "invoice_status", sortable: false, align: 'left'},
         {name: "customer.name", label: "Customer", field: "customer_name", sortable: false, align: 'left'},
         {name: "delivery_date", label: "Delivery Date", field: "delivery_date", sortable: true, align: 'left'},
         {name: "net_weight", label: "Weight", field: "net_weight", sortable: true},
@@ -47,7 +48,6 @@ export const useDeliveryOrderStore = defineStore('deliveryOrder', {
         {name: "gross_total", label: "Gross Total", field: "gross_total", sortable: true},
         {name: "net_customer", label: "Net Customer", sortable: false},
         {name: "net_total", label: "Net Income", field: "net_total", sortable: true},
-        {name: "invoice_status", label: "Invoice", field: "invoice_status", sortable: false, align: 'left'},
         {name: "income_status", label: "Income", field: "income_status", sortable: false, align: 'left'},
       ]),
       data: [],

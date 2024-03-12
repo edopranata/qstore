@@ -457,6 +457,30 @@ const onUpdate = () => {
             {{ props.rowIndex + 1 }}
           </q-td>
         </template>
+
+        <template v-slot:body-cell-invoice_status="props">
+          <q-td :props="props" class="text-left">
+            <div v-if="props.value">
+              {{ props.value }}
+            </div>
+            <q-btn
+              v-else
+              :disable="props.row.customer_name === 'Plantation' || props.row.customer_name === 'Trading'"
+              :dense="$q.screen.lt.lg"
+              :label="!$q.screen.lt.md ? 'Buat Invoice' : ''"
+              :loading="table.loading"
+              :round="$q.screen.lt.md"
+              glossy
+              icon="print"
+              size="sm"
+              :to="{name: 'app.deliveryOrder.buatInvoiceDO.index', query: {customer_id: props.row.customer_id}}"
+            >
+              <q-tooltip>
+                Buat invoice untuk pengepul ini
+              </q-tooltip>
+            </q-btn>
+          </q-td>
+        </template>
         <template v-slot:body-cell-net_weight="props">
           <q-td :props="props" class="text-right">
             {{ Intl.NumberFormat('id-ID', {style: 'unit', unit: 'kilogram'}).format(props.value) }}
