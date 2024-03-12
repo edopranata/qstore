@@ -84,7 +84,7 @@ const searchCustomer = (val, update) => {
       details.customers_option = details.customers.slice(0, 10)
     } else {
       const needle = val.toLowerCase()
-      details.customers_option = details.customers.filter(({no_pol}) => no_pol.toLowerCase().indexOf(needle) > -1).slice(0, 10)
+      details.customers_option = details.customers.filter(({name}) => name.toLowerCase().indexOf(needle) > -1).slice(0, 10)
     }
   })
 }
@@ -184,7 +184,6 @@ const onUpdate = () => {
                       option-label="name"
                       option-value="id"
                       use-input
-                      @change="details.unsetError('customer_id')"
                       @filter="searchCustomer">
                       <template v-slot:option="scope">
                         <q-item v-bind="scope.itemProps">
