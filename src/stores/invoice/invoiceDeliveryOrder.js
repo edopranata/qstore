@@ -67,9 +67,9 @@ export const useInvoiceDeliveryOrderStore = defineStore('invoiceDO', {
     },
     getSummaries(state) {
       let data = {}
-      data.average = state.table.data.length > 0 ? state.table.data.reduce((total, next) => total + next.net_price, 0) / state.table.data.length : 0;
-      data.weight = state.table.data.length > 0 ? state.table.data.reduce((total, next) => total + next.net_weight, 0) : 0
-      data.total = state.table.data.length > 0 ? state.table.data.reduce((total, next) => total + (next.gross_total - next.net_total), 0) : 0
+      data.average = state.table.data.length > 0 ? state.table.data.reduce((total, next) => parseFloat(total) + parseFloat(next.net_price), 0) / parseFloat(state.table.data.length) : 0;
+      data.weight = state.table.data.length > 0 ? state.table.data.reduce((total, next) => parseFloat(total) + parseFloat(next.net_weight), 0) : 0
+      data.total = state.table.data.length > 0 ? state.table.data.reduce((total, next) => parseFloat(total) + (parseFloat(next.gross_total) - parseFloat(next.net_total)), 0) : 0
       data.loan = state.select.selected_customer ? state.select.selected_customer.loan ? state.select.selected_customer.loan : 0 : 0
       return data
     },
