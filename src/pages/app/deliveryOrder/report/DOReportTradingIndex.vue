@@ -54,7 +54,7 @@ const onSubmit = async () => {
             <q-tab-panel name="Period">
               <q-card flat>
                 <q-card-section class="no-padding tw-mb-4">
-                  <div class="text-h6">Periode Laporan Pendapatan DO dari Pengepul</div>
+                  <div class="text-h6">Periode Laporan Pendapatan DO dari Jual Beli Sawit</div>
                 </q-card-section>
                 <q-card-section class="no-padding">
                   <div class="tw-flex tw-flex-col md:tw-grid md:tw-grid-cols-2">
@@ -119,17 +119,17 @@ const onSubmit = async () => {
                 </q-card-section>
                 <q-card-actions class="no-padding tw-mt-4">
                   <div class="md:tw-col-span-4 tw-col-span-2 tw-space-x-2">
-                    <q-btn v-if="can('app.deliveryOrder.laporan.deliveryOrder')" :disable="table.loading"
+                    <q-btn v-if="can('app.deliveryOrder.laporan.deliveryOrderJualBeliSawit')" :disable="table.loading"
                            :loading="table.loading" color="primary"
                            glossy
 
                            label="Lihat laporan"
                            type="submit"/>
                     <q-btn
-                      v-if="can('app.deliveryOrder.laporan.printdeliveryOrder')"
+                      v-if="can('app.deliveryOrder.laporan.printdeliveryOrderJualBeliSawit')"
                       :disable="table.loading || !form.type || !form.period_start || !form.period_end"
                       :loading="table.loading"
-                      :to="{name: 'app.deliveryOrder.laporan.printdeliveryOrder', query: {type: form.type, period_end: form.period_end, period_start: form.period_start }}"
+                      :to="{name: 'app.deliveryOrder.laporan.printdeliveryOrderJualBeliSawit', query: {type: form.type, period_end: form.period_end, period_start: form.period_start }}"
                       color="deep-orange"
                       glossy icon="print" label="Print laporan"/>
                   </div>
@@ -140,7 +140,7 @@ const onSubmit = async () => {
             <q-tab-panel name="Monthly">
               <q-card flat>
                 <q-card-section class="no-padding tw-mb-4">
-                  <div class="text-h6">Laporan Bulanan Pendapatan DO dari Pengepul</div>
+                  <div class="text-h6">Laporan Bulanan Pendapatan DO dari Jual Beli Sawit</div>
                 </q-card-section>
                 <q-card-section class="no-padding">
                   <div class="tw-flex tw-flex-col md:tw-grid md:tw-grid-cols-2">
@@ -161,15 +161,15 @@ const onSubmit = async () => {
                 </q-card-section>
                 <q-card-actions class="no-padding tw-mt-4">
                   <div class="md:tw-col-span-4 tw-col-span-2 tw-space-x-2">
-                    <q-btn v-if="can('app.deliveryOrder.laporan.deliveryOrder')" :disable="table.loading"
+                    <q-btn v-if="can('app.deliveryOrder.laporan.deliveryOrderJualBeliSawit')" :disable="table.loading"
                            :loading="table.loading" color="primary"
                            glossy
                            label="Lihat laporan"
                            type="submit"/>
-                    <q-btn v-if="can('app.deliveryOrder.laporan.printdeliveryOrder')"
+                    <q-btn v-if="can('app.deliveryOrder.laporan.printdeliveryOrderJualBeliSawit')"
                            :disable="table.loading || !form.type || String(form.monthly).length !== 7"
                            :loading="table.loading"
-                           :to="{name: 'app.deliveryOrder.laporan.printdeliveryOrder', query: {type: form.type, monthly: form.monthly}}"
+                           :to="{name: 'app.deliveryOrder.laporan.printdeliveryOrderJualBeliSawit', query: {type: form.type, monthly: form.monthly}}"
                            color="deep-orange"
                            glossy icon="print" label="Print laporan"/>
                   </div>
@@ -179,7 +179,7 @@ const onSubmit = async () => {
             <q-tab-panel name="Annual">
               <q-card flat>
                 <q-card-section class="no-padding tw-mb-4">
-                  <div class="text-h6">Laporan Tahunan Pendapatan DO dari Pengepul</div>
+                  <div class="text-h6">Laporan Tahunan Pendapatan DO dari Jual Beli Sawit</div>
                 </q-card-section>
                 <q-card-section class="no-padding">
                   <div class="tw-flex tw-flex-col md:tw-grid md:tw-grid-cols-2">
@@ -200,15 +200,15 @@ const onSubmit = async () => {
                 </q-card-section>
                 <q-card-actions class="no-padding tw-mt-4">
                   <div class="md:tw-col-span-4 tw-col-span-2 tw-space-x-2">
-                    <q-btn v-if="can('app.deliveryOrder.laporan.deliveryOrder')" :disable="table.loading"
+                    <q-btn v-if="can('app.deliveryOrder.laporan.deliveryOrderJualBeliSawit')" :disable="table.loading"
                            :loading="table.loading" color="primary"
                            glossy
                            label="Lihat laporan"
                            type="submit"/>
-                    <q-btn v-if="can('app.deliveryOrder.laporan.printdeliveryOrder')"
+                    <q-btn v-if="can('app.deliveryOrder.laporan.printdeliveryOrderJualBeliSawit')"
                            :disable="table.loading || !form.type || !form.annual || String(form.annual).length !== 4"
                            :loading="table.loading"
-                           :to="{name: 'app.deliveryOrder.laporan.printdeliveryOrder', query: {type: form.type, annual: form.annual}}"
+                           :to="{name: 'app.deliveryOrder.laporan.printdeliveryOrderJualBeliSawit', query: {type: form.type, annual: form.annual}}"
                            color="deep-orange"
                            glossy icon="print" label="Print laporan"/>
                   </div>

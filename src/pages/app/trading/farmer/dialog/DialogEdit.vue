@@ -27,7 +27,7 @@ const {errors} = storeToRefs(useCustomersStore())
             v-model="form.name"
             :error="errors.hasOwnProperty('name')"
             :error-message="errors.name"
-            :rules="[ val => val && val.length > 4 || 'Customer name must be greater than 3 characters.']"
+            :rules="[ val => val && val.length >= 3 || 'Customer name must be greater than 3 characters.']"
             label="Customer Name *"
             lazy-rules
           />

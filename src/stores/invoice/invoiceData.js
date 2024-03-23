@@ -19,13 +19,13 @@ export const useInvoiceDataStore = defineStore('invoice', {
       headers: reactive([
         {name: "no", label: "No", field: "id", sortable: false, align: 'left'},
         {name: "customer_name", label: "Customer", field: "customer_name", sortable: false, align: 'left'},
-        {name: "trade_date", label: "Trade Date", field: "trade_date", sortable: true, align: 'left'},
-        {name: "invoice_number", label: "No Nota", field: "invoice_number", sortable: true, align: 'left'},
+        {name: "trade_date", label: "Trade Date", field: "trade_date", sortable: false, align: 'left'},
+        {name: "invoice_number", label: "No Nota", field: "invoice_number", sortable: false, align: 'left'},
         {name: "detail_trades", label: "Petani", field: "detail_trades", sortable: false, align: 'right'},
         {name: "detail_do", label: "Pengepul", field: "detail_do", sortable: false, align: 'right'},
         {name: "loan_detail", label: "Pinjaman", field: "loan_detail", sortable: false, align: 'right'},
         {name: "created_by", label: "Created by", field: "created_by", sortable: false, align: 'left'},
-        {name: "created_at", label: "Created by", field: "created_at", sortable: true, align: 'left'},
+        {name: "created_at", label: "Created by", field: "created_at", sortable: false, align: 'left'},
       ]),
       data: [],
     },
@@ -96,16 +96,14 @@ export const useInvoiceDataStore = defineStore('invoice', {
       try {
         const params = new URLSearchParams(data);
         const response = await api.get(path, {params})
-        this.table.data = response.data.data
-
-        // update only rowsNumber = total rows
-        this.table.pagination.rowsNumber = response.data.details.total
+        return response.data
       } catch (e) {
         // this.setError(e)
       }
 
       this.table.loading = false
     },
+
     async getInvoiceData(path, props) {
       const {page, rowsPerPage, sortBy, descending} = props.pagination
       const filter = props.filter
@@ -121,11 +119,11 @@ export const useInvoiceDataStore = defineStore('invoice', {
       // calculate starting row of data
       // fetch data from "server"
       const returnedData = await this.getInvoiceDataFromApi(path, page, fetchCount, filter, sortBy, descending)
-
+      console.log(returnedData)
       if (returnedData) {
         // clear out existing data and add new
         this.table.data = returnedData.data
-
+        console.log('data' + returnedData.meta.total)
         // update only rowsNumber = total rows
         this.table.pagination.rowsNumber = returnedData.meta.total
 

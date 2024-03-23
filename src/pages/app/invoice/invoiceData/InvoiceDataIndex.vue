@@ -39,13 +39,14 @@ const onRequest = async (props) => {
     <q-card bordered>
       <q-card-section class="tw-p-0">
         <q-table
-          flat
           ref="tableRef"
+          v-model:pagination="table.pagination"
           :columns="table.headers ?? []"
           :dense="$q.screen.lt.md"
-          :grid="$q.screen.lt.md"
+          :filter="table.filter"
           :loading="table.loading"
           :rows="table.data ?? []"
+          binary-state-sort
           bordered
           row-key="id"
           @request="onRequest"
@@ -53,7 +54,7 @@ const onRequest = async (props) => {
           <template v-slot:top>
             <q-toolbar class="text-primary">
               <q-toolbar-title>
-                Daftar Invoice
+                Daftar Invoices
               </q-toolbar-title>
             </q-toolbar>
           </template>

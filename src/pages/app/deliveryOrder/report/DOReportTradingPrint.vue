@@ -50,15 +50,13 @@ const onPrint = () => {
 
 
     <div class="tw-grid tw-grid-cols-10 tw-font-sans tw-font-bold">
-      <div class="tw-col-span-10 tw-flex justify-between tw-space-x-2">
-        <div>Rekap laporan pendapatan DO dari Pengepul</div>
-        <div>
-          <span v-if="refForm.type.toLowerCase() === 'period'">{{
-              `periode ${refForm.period_start} - ${refForm.period_end}`
-            }}</span>
-          <span v-if="refForm.type.toLowerCase() === 'annual'">{{ `Tahun ${refForm.annual}` }}</span>
-          <span v-if="refForm.type.toLowerCase() === 'monthly'">{{ `${refForm.monthly}` }}</span>
-        </div>
+      <div class="tw-col-span-10 tw-flex justify-start tw-space-x-2">
+        <div>Rekap laporan pendapatan DO</div>
+        <span v-if="refForm.type.toLowerCase() === 'period'">{{
+            `periode ${refForm.period_start} - ${refForm.period_end}`
+          }}</span>
+        <span v-if="refForm.type.toLowerCase() === 'annual'">{{ `Tahun ${refForm.annual}` }}</span>
+        <span v-if="refForm.type.toLowerCase() === 'monthly'">{{ `${refForm.monthly}` }}</span>
       </div>
     </div>
     <table class="tw-border-collapse tw-border tw-border-slate-900 tw-w-full">

@@ -91,6 +91,40 @@ export default [
       },
 
       {
+        path: 'laporan/deliveryOrderPlantation',
+        name: 'app.deliveryOrder.laporan.deliveryOrderPerkebunan',
+        component: () => import('pages/app/deliveryOrder/report/DOReportPlantationIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'laporan/printDeliveryOrderPlantation',
+        name: 'app.deliveryOrder.laporan.printdeliveryOrderPerkebunan',
+        component: () => import('pages/app/deliveryOrder/report/DOReportPlantationPrint.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+
+      {
+        path: 'laporan/deliveryOrderTrading',
+        name: 'app.deliveryOrder.laporan.deliveryOrderJualBeliSawit',
+        component: () => import('pages/app/deliveryOrder/report/DOReportTradingIndex.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+      {
+        path: 'laporan/printDeliveryOrderTrading',
+        name: 'app.deliveryOrder.laporan.printdeliveryOrderJualBeliSawit',
+        component: () => import('pages/app/deliveryOrder/report/DOReportTradingPrint.vue'),
+        meta: {
+          auth: true,
+        },
+      },
+
+      {
         path: 'laporan/rekapitulasiDO',
         name: 'app.deliveryOrder.laporan.rekapitulasiDO',
         component: () => import('pages/app/deliveryOrder/report/DORecapReportIndex.vue'),
